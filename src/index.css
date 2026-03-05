@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+/* ============================================
+   TrackVolt — Design System Tokens
+   Brand: Athletic Premium · Dark First
+   ============================================ */
+
+:root {
+  /* Brand colours */
+  --volt:       #C8FF00;   /* Primary accent — volt green */
+  --volt-dim:   #9FCC00;   /* Volt dimmed — hover states */
+  --volt-glow:  rgba(200, 255, 0, 0.15); /* Soft volt glow */
+
+  /* Surfaces */
+  --bg-app:     #0D0D14;   /* App background */
+  --bg-card:    #13131E;   /* Card / panel */
+  --bg-raised:  #1A1A28;   /* Elevated element */
+  --bg-input:   #1E1E2E;   /* Input field */
+
+  /* Borders */
+  --border:     rgba(255, 255, 255, 0.06);   /* Default subtle border */
+  --border-med: rgba(255, 255, 255, 0.10);   /* Medium border */
+  --border-str: rgba(200, 255, 0, 0.25);     /* Volt accent border */
+
+  /* Text */
+  --text-primary:   #F0F0F8;   /* Headings & important values */
+  --text-secondary: #8888A0;   /* Labels, captions */
+  --text-muted:     #50505E;   /* Placeholder, disabled */
+
+  /* Semantic colours (keep for data viz / metrics) */
+  --green:  #4ade80;
+  --orange: #fb923c;
+  --pink:   #f472b6;
+  --blue:   #60a5fa;
+  --indigo: #818cf8;
+  --red:    #f87171;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  color-scheme: dark;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', sans-serif;
+  background: var(--bg-app);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+input, select, textarea { font-family: inherit; }
+
+/* Hide number spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }
+
+/* iOS PWA safe area */
+.safe-area-pb { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 0; }
+
+/* Volt accent utility */
+.text-volt   { color: var(--volt); }
+.bg-volt     { background-color: var(--volt); }
+.border-volt { border-color: var(--border-str); }
