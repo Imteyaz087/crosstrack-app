@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStore } from '../stores/useStore'
-import { Download, Upload, Globe, Save, Trash2, Info } from 'lucide-react'
+import { Download, Upload, Globe, Save } from 'lucide-react'
 
 const CARD   = 'var(--bg-card)'
 const RAISED = 'var(--bg-raised)'
@@ -14,10 +14,8 @@ const APP    = 'var(--bg-app)'
 
 export function SettingsPage() {
   const { t, i18n } = useTranslation()
-  const { settings, loadSettings, updateSettings, exportAllData, importData, resetDB } = useStore()
+  const { settings, loadSettings, updateSettings, exportAllData, importData } = useStore()
   const fileRef = useRef<HTMLInputElement>(null)
-  const [importMode, setImportMode] = useState<'overwrite' | 'merge'>('overwrite')
-  const isDev = import.meta.env.DEV
 
   const [form, setForm] = useState({
     displayName:   '',
@@ -62,23 +60,13 @@ export function SettingsPage() {
     URL.revokeObjectURL(url)
   }
 
-  const handleImportClick = (mode: 'overwrite' | 'merge') => {
-    setImportMode(mode)
-    fileRef.current?.click()
-  }
-
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
     const text = await file.text()
-    await importData(text, importMode)
+    await importData(text)
     loadSettings()
     alert('Data imported successfully!')
-    e.target.value = ''
-  }
-
-  const handleResetDB = () => {
-    if (confirm(t('settings.resetDB') + ' — ' + t('common.confirm') + '?')) resetDB()
   }
 
   const field = (label: string, key: keyof typeof form, type = 'text') => (
@@ -97,12 +85,6 @@ export function SettingsPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-xl font-bold text-white">{t('settings.title')}</h1>
-
-      {/* ── Local data notice ─────────────────────────────────────────────── */}
-      <div style={{ background: CARD, borderColor: BORDER }} className="rounded-2xl p-4 border flex gap-3">
-        <Info size={20} style={{ color: VOLT, flexShrink: 0 }} />
-        <p style={{ color: TXT2 }} className="text-sm">{t('settings.localDataNote')}</p>
-      </div>
 
       {/* ── Profile ───────────────────────────────────────────────────── */}
       <div style={{ background: CARD, borderColor: BORDER }} className="rounded-2xl p-4 border">
@@ -167,35 +149,14 @@ export function SettingsPage() {
           <Download size={16} /> {t('settings.exportData')}
         </button>
         <button
-          onClick={() => handleImportClick('overwrite')}
-          style={{ borderColor: BORDER, color: VOLT }}
-          className="w-full flex items-center gap-3 py-2.5 border-b text-sm"
-        >
-          <Upload size={16} /> {t('settings.importOverwrite')}
-        </button>
-        <button
-          onClick={() => handleImportClick('merge')}
+          onClick={() => fileRef.current?.click()}
           style={{ color: VOLT }}
           className="w-full flex items-center gap-3 py-2.5 text-sm"
         >
-          <Upload size={16} /> {t('settings.importMerge')}
+          <Upload size={16} /> {t('settings.importData')}
         </button>
         <input ref={fileRef} type="file" accept=".json" onChange={handleImport} className="hidden" />
       </div>
-
-      {/* ── DEV Tools (localhost / dev only) ───────────────────────────────── */}
-      {isDev && (
-        <div style={{ background: CARD, borderColor: 'var(--volt-dim)', borderWidth: 1 }} className="rounded-2xl p-4 border">
-          <p style={{ color: 'var(--volt-dim)' }} className="text-[10px] uppercase tracking-widest mb-2">{t('settings.devTools')}</p>
-          <button
-            onClick={handleResetDB}
-            style={{ color: 'var(--red, #ef4444)' }}
-            className="w-full flex items-center gap-3 py-2.5 text-sm"
-          >
-            <Trash2 size={16} /> {t('settings.resetDB')}
-          </button>
-        </div>
-      )}
     </div>
   )
 }

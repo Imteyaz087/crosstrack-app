@@ -113,53 +113,40 @@ export function LogPage() {
 
   if (!mode) {
     return (
-      <div className="space-y-6">
-        {/* Header — centered, clear hierarchy */}
-        <div className="text-center pb-1">
-          <h1 className="text-xl font-bold text-white tracking-tight">{t('log.whatLogging')}</h1>
-        </div>
+      <div className="space-y-5">
+        <h1 className="text-xl font-bold text-white">{t('log.whatLogging')}</h1>
 
-        {/* Category sections — aligned, balanced, smooth */}
         {categories.map(cat => (
-          <section key={cat.title} className="space-y-3">
-            <p
-              style={{ color: TXT2 }}
-              className="text-[11px] font-medium uppercase tracking-[0.2em] text-center"
-            >
-              {cat.title}
-            </p>
-            <div className="grid grid-cols-3 gap-2.5">
+          <div key={cat.title}>
+            <p style={{ color: TXT3 }} className="text-[10px] font-semibold uppercase tracking-[0.15em] mb-2">{cat.title}</p>
+            <div className="grid grid-cols-3 gap-3">
               {cat.items.map(({ id, icon: Icon, label, color, border }) => (
                 <button
                   key={id}
                   onClick={() => handleCardClick(id)}
-                  style={{
-                    background: CARD,
-                    borderColor: border,
-                    color,
-                  }}
-                  className="border rounded-2xl aspect-square min-h-[88px] flex flex-col items-center justify-center gap-2 active:scale-[0.97] transition-transform duration-150"
+                  style={{ background: CARD, borderColor: border, color }}
+                  className="border rounded-2xl min-h-[100px] flex flex-col items-center justify-center gap-2.5 active:scale-95 transition-transform"
                 >
-                  <Icon size={26} strokeWidth={1.6} />
-                  <span className="text-[11px] font-semibold leading-tight text-center px-1">{label}</span>
+                  <Icon size={28} strokeWidth={1.8} />
+                  <span className="text-xs font-semibold">{label}</span>
                 </button>
               ))}
             </div>
-          </section>
+          </div>
         ))}
 
         <div style={{ background: CARD, borderColor: BORDER }} className="rounded-2xl p-4 border">
-          <p style={{ color: TXT2 }} className="text-[11px] font-medium uppercase tracking-[0.15em] mb-3">{t('log.quickTemplates')}</p>
+          <p style={{ color: TXT2 }} className="text-[10px] uppercase tracking-widest mb-3">{t('log.quickTemplates')}</p>
           {templates.map(tmpl => (
             <button
               key={tmpl.id}
               onClick={() => addMealFromTemplate(tmpl)}
               style={{ borderColor: BORDER }}
-              className="w-full flex items-center justify-between py-3 px-3 border-b last:border-0 active:opacity-70 transition-opacity last:border-b-0"
+              className="w-full flex items-center justify-between py-3 px-2 border-b last:border-0 active:opacity-70 transition-opacity"
             >
               <div className="text-left">
                 <p className="text-sm text-white font-medium">{tmpl.name}</p>
-                <p style={{ color: TXT3 }} className="text-[11px]">{t(`meals.${tmpl.mealType}`)}</p>
+                <p style={{ color: TXT3 }} className="text-[10px]">{t(`meals.${tmpl.mealType}`)}</p>
               </div>
               <span style={{ color: TXT2 }} className="text-xs">Tap to add</span>
             </button>

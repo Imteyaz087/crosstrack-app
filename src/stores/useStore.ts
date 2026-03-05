@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { db, initializeDB } from '../db/database'
+import { db } from '../db/database'
 import { today, getDayOfWeek, getCurrentWeek, calcMacros } from '../utils/macros'
 import type {
   DailyLog, Workout, MealLog, MealTemplate,
@@ -63,10 +63,9 @@ interface AppStore {
   allDailyLogs: DailyLog[]
   loadAllDailyLogs: () => Promise<void>
 
-  // Export / Import / Reset
+  // Export
   exportAllData: () => Promise<string>
-  importData: (json: string, mode?: 'overwrite' | 'merge') => Promise<void>
-  resetDB: () => Promise<void>
+  importData: (json: string) => Promise<void>
 }
 
 export const useStore = create<AppStore>((set, get) => ({
@@ -243,34 +242,14 @@ export const useStore = create<AppStore>((set, get) => ({
     }
     return JSON.stringify(data, null, 2)
   },
-  importData: async (json, mode = 'overwrite') => {
+  importData: async (json) => {
     const data = JSON.parse(json)
-    const tables = [
-      [db.dailyLogs, data.dailyLogs],
-      [db.workouts, data.workouts],
-      [db.mealLogs, data.mealLogs],
-      [db.foodLibrary, data.foodLibrary],
-      [db.mealTemplates, data.mealTemplates],
-      [db.groceryItems, data.groceryItems],
-      [db.programDays, data.programDays],
-      [db.settings, data.settings],
-    ] as const
-    for (const [table, rows] of tables) {
-      if (!rows?.length) continue
-      if (mode === 'overwrite') await table.clear()
-      await (table as { bulkAdd: (items: unknown[]) => Promise<unknown> }).bulkAdd(rows)
-    }
-  },
-  resetDB: async () => {
-    await db.dailyLogs.clear()
-    await db.workouts.clear()
-    await db.mealLogs.clear()
-    await db.foodLibrary.clear()
-    await db.mealTemplates.clear()
-    await db.groceryItems.clear()
-    await db.programDays.clear()
-    await db.settings.clear()
-    await initializeDB()
-    window.location.reload()
+    if (data.dailyLogs) { await db.dailyLogs.clear(); await db.dailyLogs.bulkAdd(data.dailyLogs) }
+    if (data.workouts) { await db.workouts.clear(); await db.workouts.bulkAdd(data.workouts) }
+    if (data.mealLogs) { await db.mealLogs.clear(); await db.mealLogs.bulkAdd(data.mealLogs) }
+    if (data.foodLibrary) { await db.foodLibrary.clear(); await db.foodLibrary.bulkAdd(data.foodLibrary) }
+    if (data.mealTemplates) { await db.mealTemplates.clear(); await db.mealTemplates.bulkAdd(data.mealTemplates) }
+    if (data.groceryItems) { await db.groceryItems.clear(); await db.groceryItems.bulkAdd(data.groceryItems) }
+    if (data.settings) { await db.settings.clear(); await db.settings.bulkAdd(data.settings) }
   },
 }))
