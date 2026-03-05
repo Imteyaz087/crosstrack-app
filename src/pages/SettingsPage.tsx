@@ -26,7 +26,7 @@ export function SettingsPage() {
     fatTarget:     58,
     calorieTarget: 2100,
     waterTarget:   3000,
-    language:      'en' as 'en' | 'zh-TW',
+    language:      'en' as 'en' | 'zh-TW' | 'zh-CN',
   })
 
   useEffect(() => { loadSettings() }, [])
@@ -112,7 +112,7 @@ export function SettingsPage() {
             <Globe size={14} /> {t('settings.language')}
           </span>
           <div className="flex gap-1">
-            {(['en', 'zh-TW'] as const).map((lang, i) => (
+            {(['en', 'zh-TW', 'zh-CN'] as const).map((lang) => (
               <button
                 key={lang}
                 onClick={() => setForm({ ...form, language: lang })}
@@ -122,7 +122,7 @@ export function SettingsPage() {
                 }
                 className="px-3 py-1 rounded-lg text-xs font-medium border"
               >
-                {i === 0 ? 'EN' : '繁中'}
+                {lang === 'en' ? 'EN' : lang === 'zh-TW' ? '繁中' : '简中'}
               </button>
             ))}
           </div>

@@ -11,6 +11,10 @@ interface AppStore {
   // UI state
   activeTab: string
   setActiveTab: (tab: string) => void
+  moreSubPage: string | null
+  setMoreSubPage: (id: string | null) => void
+  toast: string | null
+  showToast: (msg: string) => void
 
   // Settings
   settings: UserSettings | null
@@ -59,6 +63,14 @@ interface AppStore {
   prs: Workout[]
   loadPRs: () => Promise<void>
 
+  // Movement PRs
+  movementPRs: import('../types').MovementPR[]
+  loadMovementPRs: () => Promise<void>
+
+  // Timer presets
+  timerPresets: import('../types').TimerPreset[]
+  loadTimerPresets: () => Promise<void>
+
   // History
   allDailyLogs: DailyLog[]
   loadAllDailyLogs: () => Promise<void>
@@ -66,11 +78,47 @@ interface AppStore {
   // Export
   exportAllData: () => Promise<string>
   importData: (json: string) => Promise<void>
+
+  // Profile / onboarding
+  profile: (UserSettings & { onboardingComplete?: boolean }) | null
+  isLoading: boolean
+  loadError: string | null
+  loadProfile: () => Promise<void>
+  clearLoadError: () => void
+  saveProfile: (profile: Omit<import('../types').UserProfile, 'createdAt' | 'updatedAt'> & { createdAt?: string; updatedAt?: string }) => Promise<void>
+
+  // Benchmark WODs
+  benchmarkWods: import('../types').BenchmarkWod[]
+  loadBenchmarkWods: () => Promise<void>
+
+  // Food / nutrition
+  recentFoods: FoodItem[]
+  loadRecentFoods: () => Promise<void>
+  saveCustomFood: (food: Omit<FoodItem, 'id'>) => Promise<number>
+
+  // Movement PRs
+  saveMovementPR: (pr: Omit<import('../types').MovementPR, 'id'>) => Promise<void>
+
+  // Weekly plans
+  weeklyPlans: import('../types').WeeklyPlan[]
+  loadWeeklyPlans: (weekKey: string) => Promise<void>
+  saveWeeklyPlan: (plan: Omit<import('../types').WeeklyPlan, 'id'>) => Promise<void>
+  deleteWeeklyPlan: (id: number) => Promise<void>
+  toggleWeeklyPlanComplete: (id: number) => Promise<void>
 }
 
 export const useStore = create<AppStore>((set, get) => ({
   activeTab: 'today',
   setActiveTab: (tab) => set({ activeTab: tab }),
+  moreSubPage: null,
+  setMoreSubPage: (id) => set({ moreSubPage: id }),
+  toast: null,
+  showToast: (msg) => {
+    set({ toast: msg })
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate(10)
+    }
+  },
 
   settings: null,
   loadSettings: async () => {
@@ -221,6 +269,29 @@ export const useStore = create<AppStore>((set, get) => ({
     set({ prs: prWorkouts })
   },
 
+  movementPRs: [],
+  loadMovementPRs: async () => {
+    const prs = await db.movementPRs.orderBy('date').reverse().toArray()
+    set({ movementPRs: prs })
+  },
+
+  timerPresets: [],
+  loadTimerPresets: async () => {
+    let presets = await db.timerPresets.toArray()
+    if (presets.length === 0) {
+      await db.timerPresets.bulkAdd([
+        { name: 'AMRAP 12', mode: 'amrap', totalSeconds: 720 },
+        { name: 'AMRAP 15', mode: 'amrap', totalSeconds: 900 },
+        { name: 'EMOM 10', mode: 'emom', totalSeconds: 600, rounds: 10, workSeconds: 60 },
+        { name: 'Tabata (8 rds)', mode: 'tabata', totalSeconds: 240, rounds: 8, workSeconds: 20, restSeconds: 10 },
+        { name: 'For Time (20 cap)', mode: 'fortime', totalSeconds: 1200 },
+        { name: 'Rest 90s', mode: 'rest', totalSeconds: 90 },
+      ])
+      presets = await db.timerPresets.toArray()
+    }
+    set({ timerPresets: presets })
+  },
+
   allDailyLogs: [],
   loadAllDailyLogs: async () => {
     const logs = await db.dailyLogs.orderBy('date').toArray()
@@ -237,11 +308,115 @@ export const useStore = create<AppStore>((set, get) => ({
       groceryItems: await db.groceryItems.toArray(),
       programDays: await db.programDays.toArray(),
       settings: await db.settings.toArray(),
+      movementPRs: await db.movementPRs.toArray(),
+      benchmarkWods: await db.benchmarkWods.toArray(),
+      timerPresets: await db.timerPresets.toArray(),
+      cycleEntries: await db.cycleEntries.toArray(),
+      bodyMeasurements: await db.bodyMeasurements.toArray(),
+      heartRateLogs: await db.heartRateLogs.toArray(),
+      photoLogs: await db.photoLogs.toArray(),
+      achievements: await db.achievements.toArray(),
       exportedAt: new Date().toISOString(),
-      version: '1.0',
+      version: '2.0',
     }
     return JSON.stringify(data, null, 2)
   },
+  profile: null,
+  isLoading: true,
+  loadError: null,
+  loadProfile: async () => {
+    try {
+      set({ loadError: null })
+      await get().loadSettings()
+      const s = get().settings
+      const done = typeof localStorage !== 'undefined' && localStorage.getItem('trackvolt_onboarding_done') === '1'
+      set({ profile: s ? { ...s, onboardingComplete: done } : null, isLoading: false })
+    } catch (e) {
+      set({ loadError: String(e), isLoading: false })
+    }
+  },
+  clearLoadError: () => set({ loadError: null }),
+  saveProfile: async (profile) => {
+    const settingsData: UserSettings = {
+      displayName: profile.displayName,
+      weightKg: profile.weightKg ?? 70,
+      goal: String(profile.goal ?? 'general_health'),
+      trainingTime: profile.trainingTime,
+      language: profile.language,
+      units: profile.units,
+      proteinTarget: profile.proteinTarget,
+      carbsTarget: profile.carbsTarget,
+      fatTarget: profile.fatTarget,
+      calorieTarget: profile.calorieTarget,
+      waterTarget: profile.waterTarget,
+    }
+    const existing = await db.settings.toCollection().first()
+    if (existing?.id) {
+      await db.settings.update(existing.id, settingsData)
+    } else {
+      await db.settings.add(settingsData)
+    }
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('trackvolt_onboarding_done', '1')
+    }
+    set({ profile: { ...settingsData, onboardingComplete: true } as UserSettings & { onboardingComplete: boolean }, isLoading: false })
+  },
+
+  benchmarkWods: [],
+  loadBenchmarkWods: async () => {
+    const wods = await db.benchmarkWods.toArray()
+    if (wods.length === 0) {
+      const { seedBenchmarkWods } = await import('../db/database')
+      await seedBenchmarkWods()
+      const loaded = await db.benchmarkWods.toArray()
+      set({ benchmarkWods: loaded })
+    } else {
+      set({ benchmarkWods: wods })
+    }
+  },
+
+  recentFoods: [],
+  loadRecentFoods: async () => {
+    const meals = await db.mealLogs.orderBy('date').reverse().limit(50).toArray()
+    const foodIds = [...new Set(meals.map(m => m.foodId))]
+    const foods = await db.foodLibrary.toArray()
+    const recent = foodIds.map(id => foods.find(f => f.id === id)).filter(Boolean) as FoodItem[]
+    set({ recentFoods: recent })
+  },
+  saveCustomFood: async (food) => {
+    const id = await db.foodLibrary.add({ ...food, isCustom: true } as FoodItem) as number
+    get().loadFoods()
+    get().loadRecentFoods()
+    return id
+  },
+
+  saveMovementPR: async (pr) => {
+    await db.movementPRs.add({ ...pr, createdAt: new Date().toISOString() } as import('../types').MovementPR)
+    get().loadMovementPRs()
+  },
+
+  weeklyPlans: [],
+  loadWeeklyPlans: async (weekKey) => {
+    const plans = await db.weeklyPlans.where('weekKey').equals(weekKey).toArray()
+    set({ weeklyPlans: plans })
+  },
+  saveWeeklyPlan: async (plan) => {
+    const withCreated = { ...plan, createdAt: new Date().toISOString() } as import('../types').WeeklyPlan
+    await db.weeklyPlans.add(withCreated)
+    get().loadWeeklyPlans(plan.weekKey)
+  },
+  deleteWeeklyPlan: async (id) => {
+    await db.weeklyPlans.delete(id)
+    set({ weeklyPlans: get().weeklyPlans.filter(p => p.id !== id) })
+  },
+  toggleWeeklyPlanComplete: async (id) => {
+    const p = await db.weeklyPlans.get(id)
+    if (p) {
+      await db.weeklyPlans.update(id, { completed: !p.completed })
+      set({ weeklyPlans: get().weeklyPlans.map(plan => plan.id === id ? { ...plan, completed: !plan.completed } : plan) })
+    }
+  },
+
   importData: async (json) => {
     const data = JSON.parse(json)
     if (data.dailyLogs) { await db.dailyLogs.clear(); await db.dailyLogs.bulkAdd(data.dailyLogs) }
@@ -250,6 +425,15 @@ export const useStore = create<AppStore>((set, get) => ({
     if (data.foodLibrary) { await db.foodLibrary.clear(); await db.foodLibrary.bulkAdd(data.foodLibrary) }
     if (data.mealTemplates) { await db.mealTemplates.clear(); await db.mealTemplates.bulkAdd(data.mealTemplates) }
     if (data.groceryItems) { await db.groceryItems.clear(); await db.groceryItems.bulkAdd(data.groceryItems) }
+    if (data.programDays) { await db.programDays.clear(); await db.programDays.bulkAdd(data.programDays) }
     if (data.settings) { await db.settings.clear(); await db.settings.bulkAdd(data.settings) }
+    if (data.movementPRs?.length) { await db.movementPRs.clear(); await db.movementPRs.bulkAdd(data.movementPRs) }
+    if (data.benchmarkWods?.length) { await db.benchmarkWods.clear(); await db.benchmarkWods.bulkAdd(data.benchmarkWods) }
+    if (data.timerPresets?.length) { await db.timerPresets.clear(); await db.timerPresets.bulkAdd(data.timerPresets) }
+    if (data.cycleEntries?.length) { await db.cycleEntries.clear(); await db.cycleEntries.bulkAdd(data.cycleEntries) }
+    if (data.bodyMeasurements?.length) { await db.bodyMeasurements.clear(); await db.bodyMeasurements.bulkAdd(data.bodyMeasurements) }
+    if (data.heartRateLogs?.length) { await db.heartRateLogs.clear(); await db.heartRateLogs.bulkAdd(data.heartRateLogs) }
+    if (data.photoLogs?.length) { await db.photoLogs.clear(); await db.photoLogs.bulkAdd(data.photoLogs) }
+    if (data.achievements?.length) { await db.achievements.clear(); await db.achievements.bulkAdd(data.achievements) }
   },
 }))

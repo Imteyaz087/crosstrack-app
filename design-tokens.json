@@ -1,0 +1,516 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "meta": {
+    "name": "CrossTrack Design Tokens",
+    "version": "1.0.0",
+    "description": "Complete design token set for CrossTrack fitness PWA",
+    "generated": "2026-03-01"
+  },
+  "color": {
+    "brand": {
+      "primary": { "value": "#22d3ee", "description": "Electric Cyan — primary CTA, active states" },
+      "primaryDark": { "value": "#0891b2", "description": "Deep Cyan — light mode CTA, pressed state" },
+      "primaryLight": { "value": "#67e8f9", "description": "Ice Cyan — glow effects, highlights" },
+      "primarySubtle": { "value": "rgba(34,211,238,0.10)", "description": "Cyan wash 10% — tinted backgrounds" }
+    },
+    "semantic": {
+      "success": {
+        "base": { "value": "#4ade80", "description": "PR!, RX, success toasts" },
+        "bold": { "value": "#16a34a", "description": "Light mode success text" },
+        "muted": { "value": "rgba(74,222,128,0.10)", "description": "Success background" },
+        "border": { "value": "rgba(74,222,128,0.20)", "description": "Success border" }
+      },
+      "warning": {
+        "base": { "value": "#fb923c", "description": "HYROX, warnings, streak" },
+        "bold": { "value": "#ea580c", "description": "Light mode warning text" },
+        "muted": { "value": "rgba(251,146,60,0.10)", "description": "Warning background" },
+        "border": { "value": "rgba(251,146,60,0.20)", "description": "Warning border" }
+      },
+      "error": {
+        "base": { "value": "#f87171", "description": "Delete, validation, PR badge" },
+        "bold": { "value": "#dc2626", "description": "Light mode error text" },
+        "muted": { "value": "rgba(248,113,113,0.10)", "description": "Error background" },
+        "border": { "value": "rgba(248,113,113,0.20)", "description": "Error border" }
+      },
+      "info": {
+        "base": { "value": "#a78bfa", "description": "AI coach, Elite badge, tips" },
+        "bold": { "value": "#7c3aed", "description": "Light mode info text" },
+        "muted": { "value": "rgba(167,139,250,0.10)", "description": "Info background" },
+        "border": { "value": "rgba(167,139,250,0.20)", "description": "Info border" }
+      }
+    },
+    "accent": {
+      "hyrox": { "value": "#fb923c", "description": "HYROX brand orange" },
+      "protein": { "value": "#4ade80", "description": "Macro — protein" },
+      "carbs": { "value": "#fb923c", "description": "Macro — carbs" },
+      "fat": { "value": "#f472b6", "description": "Macro — fat" },
+      "sleep": { "value": "#818cf8", "description": "Sleep metric" },
+      "water": { "value": "#60a5fa", "description": "Water metric" },
+      "energy": { "value": "#facc15", "description": "Energy metric" },
+      "streak": { "value": "#fb923c", "description": "Streak flame" }
+    },
+    "neutral": {
+      "950": { "value": "#020617", "description": "Page bg (dark)" },
+      "900": { "value": "#0f172a", "description": "Card bg (dark)" },
+      "800": { "value": "#1e293b", "description": "Elevated surface, inputs" },
+      "700": { "value": "#334155", "description": "Borders, dividers" },
+      "600": { "value": "#475569", "description": "Disabled text" },
+      "500": { "value": "#64748b", "description": "Tertiary text" },
+      "400": { "value": "#94a3b8", "description": "Secondary text" },
+      "300": { "value": "#cbd5e1", "description": "Subtle emphasis" },
+      "200": { "value": "#e2e8f0", "description": "Light mode borders" },
+      "100": { "value": "#f1f5f9", "description": "Primary text (dark)" },
+      "50": { "value": "#f8fafc", "description": "Light mode bg" }
+    },
+    "surface": {
+      "dark": {
+        "background": { "value": "#020617" },
+        "card": { "value": "rgba(15,23,42,0.60)" },
+        "cardGradientFrom": { "value": "rgba(15,23,42,0.80)" },
+        "cardGradientTo": { "value": "rgba(15,23,42,0.40)" },
+        "elevated": { "value": "#1e293b" },
+        "border": { "value": "rgba(51,65,85,0.50)" },
+        "tabBar": { "value": "rgba(15,23,42,0.95)" }
+      },
+      "light": {
+        "background": { "value": "#f8fafc" },
+        "card": { "value": "#ffffff" },
+        "elevated": { "value": "#f1f5f9" },
+        "border": { "value": "#e2e8f0" },
+        "tabBar": { "value": "rgba(255,255,255,0.90)" }
+      }
+    },
+    "text": {
+      "dark": {
+        "primary": { "value": "#f1f5f9" },
+        "secondary": { "value": "#94a3b8" },
+        "tertiary": { "value": "#64748b" }
+      },
+      "light": {
+        "primary": { "value": "#0f172a" },
+        "secondary": { "value": "#475569" },
+        "tertiary": { "value": "#94a3b8" }
+      }
+    }
+  },
+  "typography": {
+    "fontFamily": {
+      "sans": { "value": "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif" },
+      "mono": { "value": "'SF Mono', 'Menlo', 'Consolas', 'Liberation Mono', monospace" }
+    },
+    "scale": {
+      "hero": {
+        "fontSize": { "value": "2.125rem" },
+        "fontWeight": { "value": 700 },
+        "lineHeight": { "value": 1.2 },
+        "letterSpacing": { "value": "-0.02em" },
+        "description": "Timer display, PR values, HYROX total time"
+      },
+      "h1": {
+        "fontSize": { "value": "1.75rem" },
+        "fontWeight": { "value": 700 },
+        "lineHeight": { "value": 1.21 },
+        "letterSpacing": { "value": "-0.015em" },
+        "description": "Page titles, date display"
+      },
+      "h2": {
+        "fontSize": { "value": "1.375rem" },
+        "fontWeight": { "value": 700 },
+        "lineHeight": { "value": 1.27 },
+        "letterSpacing": { "value": "-0.01em" },
+        "description": "Section headings"
+      },
+      "h3": {
+        "fontSize": { "value": "1.25rem" },
+        "fontWeight": { "value": 600 },
+        "lineHeight": { "value": 1.25 },
+        "letterSpacing": { "value": "0" },
+        "description": "Card titles, workout names"
+      },
+      "h4": {
+        "fontSize": { "value": "1.0625rem" },
+        "fontWeight": { "value": 600 },
+        "lineHeight": { "value": 1.29 },
+        "letterSpacing": { "value": "0" },
+        "description": "Subsection labels"
+      },
+      "body": {
+        "fontSize": { "value": "0.9375rem" },
+        "fontWeight": { "value": 400 },
+        "lineHeight": { "value": 1.47 },
+        "letterSpacing": { "value": "0" },
+        "description": "Primary readable text"
+      },
+      "caption": {
+        "fontSize": { "value": "0.6875rem" },
+        "fontWeight": { "value": 500 },
+        "lineHeight": { "value": 1.18 },
+        "letterSpacing": { "value": "0.06em" },
+        "description": "Overlines, metadata, timestamps"
+      }
+    },
+    "special": {
+      "overline": {
+        "fontSize": { "value": "0.6875rem" },
+        "fontWeight": { "value": 600 },
+        "letterSpacing": { "value": "0.1em" },
+        "textTransform": { "value": "uppercase" }
+      },
+      "scoreDisplay": {
+        "fontSize": { "value": "1.75rem" },
+        "fontWeight": { "value": 700 },
+        "fontFamily": { "value": "mono" },
+        "letterSpacing": { "value": "-0.02em" },
+        "fontVariantNumeric": { "value": "tabular-nums" }
+      },
+      "badge": {
+        "fontSize": { "value": "0.6875rem" },
+        "fontWeight": { "value": 700 },
+        "letterSpacing": { "value": "0.02em" }
+      },
+      "inputValue": {
+        "fontSize": { "value": "1.75rem" },
+        "fontWeight": { "value": 700 },
+        "letterSpacing": { "value": "0" }
+      },
+      "buttonLabel": {
+        "fontSize": { "value": "0.9375rem" },
+        "fontWeight": { "value": 700 },
+        "letterSpacing": { "value": "0" }
+      }
+    }
+  },
+  "spacing": {
+    "0": { "value": "0px" },
+    "1": { "value": "4px", "description": "Icon-to-text micro-gap" },
+    "2": { "value": "8px", "description": "Inline gaps, grid gaps" },
+    "3": { "value": "12px", "description": "Compact card padding" },
+    "4": { "value": "16px", "description": "Standard card padding, section gaps" },
+    "5": { "value": "20px", "description": "Spacious padding" },
+    "6": { "value": "24px", "description": "Between card groups" },
+    "8": { "value": "32px", "description": "Page top padding" },
+    "10": { "value": "40px", "description": "Empty state icon area" },
+    "12": { "value": "48px", "description": "Modal top padding" }
+  },
+  "radius": {
+    "none": { "value": "0px" },
+    "sm": { "value": "8px", "description": "Inputs, small pills, badges" },
+    "md": { "value": "12px", "description": "Buttons, chips, metric cells" },
+    "lg": { "value": "16px", "description": "Cards, sections" },
+    "xl": { "value": "20px", "description": "Modals, bottom sheets" },
+    "full": { "value": "9999px", "description": "Circles, FAB, pills, progress bars" }
+  },
+  "touchTarget": {
+    "minimum": { "value": "44px", "description": "Apple HIG minimum" },
+    "comfortable": { "value": "48px", "description": "Recommended for most interactions" },
+    "gym": { "value": "56px", "description": "Sweaty-hands CTA buttons" }
+  },
+  "shadow": {
+    "card": { "value": "0 1px 3px rgba(0,0,0,0.3)", "description": "Subtle card shadow" },
+    "elevated": { "value": "0 4px 12px rgba(0,0,0,0.4)", "description": "Modal/sheet shadow" },
+    "fab": { "value": "0 4px 16px rgba(34,211,238,0.25)", "description": "Log button glow" },
+    "fabActive": { "value": "0 4px 16px rgba(34,211,238,0.40)", "description": "Log button active glow" }
+  },
+  "animation": {
+    "duration": {
+      "fast": { "value": "100ms", "description": "Touch feedback" },
+      "normal": { "value": "200ms", "description": "Content transitions" },
+      "slow": { "value": "300ms", "description": "Page transitions, toasts" },
+      "celebration": { "value": "600ms", "description": "PR achievement animation" }
+    },
+    "easing": {
+      "default": { "value": "ease-out", "description": "Standard easing" },
+      "spring": { "value": "cubic-bezier(0.34, 1.56, 0.64, 1)", "description": "Bouncy entrance" },
+      "accelerate": { "value": "ease-in", "description": "Exit animations" }
+    },
+    "keyframes": {
+      "fadeIn": {
+        "from": { "opacity": 0, "transform": "translateY(6px)" },
+        "to": { "opacity": 1, "transform": "translateY(0)" }
+      },
+      "slideUp": {
+        "from": { "opacity": 0, "transform": "translateY(16px)" },
+        "to": { "opacity": 1, "transform": "translateY(0)" }
+      },
+      "pageIn": {
+        "from": { "opacity": 0, "transform": "translateY(8px)" },
+        "to": { "opacity": 1, "transform": "translateY(0)" }
+      },
+      "toastIn": {
+        "from": { "opacity": 0, "transform": "translateY(-12px)" },
+        "to": { "opacity": 1, "transform": "translateY(0)" }
+      },
+      "shimmer": {
+        "from": { "backgroundPosition": "-200% 0" },
+        "to": { "backgroundPosition": "200% 0" }
+      },
+      "emptyIn": {
+        "0%": { "opacity": 0, "transform": "scale(0.9)" },
+        "60%": { "transform": "scale(1.02)" },
+        "100%": { "opacity": 1, "transform": "scale(1)" }
+      },
+      "cardPress": {
+        "active": { "transform": "scale(0.98)", "opacity": 0.9 }
+      },
+      "pulse": {
+        "0%": { "transform": "scale(1)", "opacity": 1 },
+        "50%": { "transform": "scale(1.05)", "opacity": 0.8 },
+        "100%": { "transform": "scale(1)", "opacity": 1 }
+      }
+    }
+  },
+  "breakpoint": {
+    "sm": { "value": "375px", "description": "Small phones (iPhone SE)" },
+    "md": { "value": "428px", "description": "Standard phones (iPhone 14)" },
+    "lg": { "value": "768px", "description": "Tablets (iPad Mini+)" }
+  },
+  "layout": {
+    "maxContentWidth": { "value": "512px", "description": "max-w-lg centered" },
+    "pageHorizontalPadding": { "value": "16px" },
+    "tabBarContentHeight": { "value": "56px" },
+    "tabBarTotalClearance": { "value": "88px", "description": "Content + safe area approximation" },
+    "safeAreaTopPlus": { "value": "calc(env(safe-area-inset-top, 0px) + 16px)" },
+    "safeAreaBottom": { "value": "env(safe-area-inset-bottom, 0px)" }
+  },
+  "component": {
+    "card": {
+      "default": {
+        "background": { "value": "rgba(15,23,42,0.60)" },
+        "border": { "value": "1px solid rgba(51,65,85,0.50)" },
+        "borderRadius": { "value": "16px" },
+        "padding": { "value": "16px" }
+      },
+      "hero": {
+        "background": { "value": "linear-gradient(135deg, rgba(15,23,42,0.80), rgba(15,23,42,0.40))" },
+        "border": { "value": "1px solid rgba(51,65,85,0.50)" },
+        "borderRadius": { "value": "16px" },
+        "padding": { "value": "16px" }
+      },
+      "empty": {
+        "background": { "value": "rgba(30,41,59,0.40)" },
+        "border": { "value": "1px dashed rgba(71,85,105,0.40)" },
+        "borderRadius": { "value": "16px" },
+        "padding": { "value": "32px" }
+      },
+      "insight": {
+        "borderRadius": { "value": "12px" },
+        "padding": { "value": "14px 16px" }
+      },
+      "metric": {
+        "background": { "value": "rgba(15,23,42,0.60)" },
+        "border": { "value": "1px solid rgba(51,65,85,0.50)" },
+        "borderRadius": { "value": "12px" },
+        "padding": { "value": "12px" },
+        "minHeight": { "value": "64px" }
+      }
+    },
+    "button": {
+      "primary": {
+        "background": { "value": "#22d3ee" },
+        "color": { "value": "#020617" },
+        "height": { "value": "56px" },
+        "borderRadius": { "value": "16px" },
+        "fontWeight": { "value": 700 },
+        "fontSize": { "value": "0.9375rem" }
+      },
+      "secondary": {
+        "background": { "value": "rgba(34,211,238,0.15)" },
+        "color": { "value": "#22d3ee" },
+        "border": { "value": "1px solid rgba(34,211,238,0.25)" },
+        "height": { "value": "44px" },
+        "borderRadius": { "value": "12px" }
+      },
+      "destructive": {
+        "background": { "value": "rgba(248,113,113,0.10)" },
+        "color": { "value": "#f87171" },
+        "height": { "value": "44px" },
+        "borderRadius": { "value": "12px" }
+      }
+    },
+    "input": {
+      "default": {
+        "background": { "value": "#1e293b" },
+        "color": { "value": "#f1f5f9" },
+        "border": { "value": "none" },
+        "borderRadius": { "value": "8px" },
+        "padding": { "value": "8px 12px" },
+        "fontSize": { "value": "0.875rem" }
+      },
+      "score": {
+        "width": { "value": "80px" },
+        "height": { "value": "56px" },
+        "fontSize": { "value": "1.75rem" },
+        "fontWeight": { "value": 700 },
+        "textAlign": { "value": "center" },
+        "inputMode": { "value": "numeric" },
+        "type": { "value": "text" }
+      },
+      "focus": {
+        "ring": { "value": "2px solid #22d3ee" },
+        "ringOffset": { "value": "0px" }
+      }
+    },
+    "badge": {
+      "rx": {
+        "background": { "value": "rgba(74,222,128,0.20)" },
+        "color": { "value": "#4ade80" }
+      },
+      "scaled": {
+        "background": { "value": "rgba(251,146,60,0.20)" },
+        "color": { "value": "#fb923c" }
+      },
+      "elite": {
+        "background": { "value": "rgba(167,139,250,0.20)" },
+        "color": { "value": "#a78bfa" }
+      },
+      "pr": {
+        "background": { "value": "rgba(248,113,113,0.20)" },
+        "color": { "value": "#f87171" },
+        "animation": { "value": "pulse 2s ease-in-out infinite" }
+      },
+      "benchmark": {
+        "background": { "value": "rgba(251,146,60,0.20)" },
+        "color": { "value": "#fb923c" }
+      },
+      "common": {
+        "fontSize": { "value": "0.6875rem" },
+        "fontWeight": { "value": 700 },
+        "padding": { "value": "2px 10px" },
+        "borderRadius": { "value": "9999px" }
+      }
+    },
+    "streak": {
+      "background": { "value": "rgba(251,146,60,0.10)" },
+      "border": { "value": "1px solid rgba(251,146,60,0.20)" },
+      "color": { "value": "#fb923c" },
+      "borderRadius": { "value": "9999px" },
+      "padding": { "value": "6px 12px" },
+      "iconSize": { "value": "14px" },
+      "fontSize": { "value": "0.75rem" },
+      "fontWeight": { "value": 700 }
+    },
+    "macroBar": {
+      "trackHeight": { "value": "10px" },
+      "trackBackground": { "value": "rgba(51,65,85,0.80)" },
+      "trackRadius": { "value": "9999px" },
+      "fillRadius": { "value": "9999px" },
+      "overColor": { "value": "#ef4444" },
+      "fillAnimation": { "value": "width 500ms ease-out" },
+      "colors": {
+        "protein": { "value": "#4ade80" },
+        "carbs": { "value": "#fb923c" },
+        "fat": { "value": "#f472b6" }
+      }
+    },
+    "tabBar": {
+      "background": { "value": "rgba(15,23,42,0.95)" },
+      "backdropFilter": { "value": "blur(12px)" },
+      "borderTop": { "value": "1px solid rgba(30,41,59,0.80)" },
+      "zIndex": { "value": 50 },
+      "icon": {
+        "sizeInactive": { "value": "22px" },
+        "strokeInactive": { "value": 1.5 },
+        "sizeActive": { "value": "22px" },
+        "strokeActive": { "value": 2.5 },
+        "colorInactive": { "value": "#64748b" },
+        "colorActive": { "value": "#22d3ee" }
+      },
+      "fab": {
+        "size": { "value": "48px" },
+        "background": { "value": "#22d3ee" },
+        "backgroundInactive": { "value": "rgba(34,211,238,0.80)" },
+        "shadow": { "value": "0 4px 16px rgba(34,211,238,0.25)" },
+        "iconSize": { "value": "24px" },
+        "iconColor": { "value": "#020617" }
+      }
+    },
+    "toast": {
+      "success": {
+        "background": { "value": "rgba(74,222,128,0.10)" },
+        "border": { "value": "1px solid rgba(74,222,128,0.20)" },
+        "color": { "value": "#4ade80" }
+      },
+      "error": {
+        "background": { "value": "rgba(248,113,113,0.10)" },
+        "border": { "value": "1px solid rgba(248,113,113,0.20)" },
+        "color": { "value": "#f87171" }
+      },
+      "common": {
+        "borderRadius": { "value": "12px" },
+        "padding": { "value": "12px 16px" },
+        "fontSize": { "value": "0.8125rem" },
+        "animation": { "value": "toastIn 300ms ease-out" },
+        "autoDismiss": { "value": "3000ms" }
+      }
+    },
+    "skeleton": {
+      "background": { "value": "linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%)" },
+      "backgroundSize": { "value": "200% 100%" },
+      "animation": { "value": "shimmer 1.5s ease-in-out infinite" },
+      "borderRadius": { "value": "8px" }
+    },
+    "segmentedControl": {
+      "container": {
+        "background": { "value": "#1e293b" },
+        "borderRadius": { "value": "12px" },
+        "padding": { "value": "4px" }
+      },
+      "segment": {
+        "height": { "value": "40px" },
+        "borderRadius": { "value": "8px" },
+        "fontSize": { "value": "0.8125rem" },
+        "fontWeight": { "value": 700 }
+      },
+      "active": {
+        "cyan": { "background": "rgba(34,211,238,0.20)", "color": "#22d3ee" },
+        "orange": { "background": "rgba(251,146,60,0.20)", "color": "#fb923c" },
+        "red": { "background": "rgba(248,113,113,0.20)", "color": "#f87171" },
+        "violet": { "background": "rgba(167,139,250,0.20)", "color": "#a78bfa" }
+      },
+      "inactive": {
+        "background": { "value": "transparent" },
+        "color": { "value": "#94a3b8" }
+      }
+    },
+    "chip": {
+      "active": {
+        "background": { "value": "rgba(34,211,238,0.20)" },
+        "border": { "value": "1px solid rgba(34,211,238,0.40)" },
+        "color": { "value": "#22d3ee" }
+      },
+      "inactive": {
+        "background": { "value": "rgba(51,65,85,0.50)" },
+        "border": { "value": "none" },
+        "color": { "value": "#64748b" }
+      },
+      "common": {
+        "height": { "value": "32px" },
+        "padding": { "value": "8px 12px" },
+        "borderRadius": { "value": "12px" },
+        "fontSize": { "value": "0.6875rem" },
+        "fontWeight": { "value": 700 }
+      }
+    },
+    "emptyState": {
+      "iconContainer": {
+        "size": { "value": "56px" },
+        "background": { "value": "rgba(51,65,85,0.40)" },
+        "borderRadius": { "value": "16px" }
+      },
+      "icon": {
+        "size": { "value": "28px" },
+        "color": { "value": "#64748b" }
+      },
+      "title": {
+        "fontSize": { "value": "0.9375rem" },
+        "fontWeight": { "value": 500 },
+        "color": { "value": "#94a3b8" }
+      },
+      "description": {
+        "fontSize": { "value": "0.8125rem" },
+        "color": { "value": "#64748b" },
+        "maxWidth": { "value": "240px" }
+      }
+    }
+  }
+}

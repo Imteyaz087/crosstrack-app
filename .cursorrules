@@ -1,0 +1,24 @@
+# Cursor Rules for TrackVolt Project
+
+## MANDATORY: Read Before Any Work
+Before making ANY changes, you MUST read these files:
+1. AGENTS.md — Critical safety rules and project context
+2. TRACKVOLT_MASTER_DOC.md — Full project documentation
+
+## Key Facts
+- LOCAL code ≠ PRODUCTION code. Production has 15+ more features.
+- NEVER deploy to production (npx vercel --prod) without user confirmation.
+- Safe rollback deployment: GTeJwY1rw
+- TypeScript strict mode: unused imports = build failure.
+- IndexedDB is per-origin: localhost data ≠ trackvolt.app data (expected).
+
+## Design Tokens
+Primary accent: #C8FF00 (volt green)
+Background: #0D0D14 → #13131E → #1A1A28 (layered depth)
+Text: #F0F0F8 → #8888A0 → #50505E
+
+## When Making Code Changes
+1. Edit files
+2. Run: npm run build (must pass)
+3. Run: npm run dev (test locally)
+4. STOP — tell user, do NOT deploy

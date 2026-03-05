@@ -4,29 +4,20 @@ import { useStore } from '../stores/useStore'
 import { db } from '../db/database'
 import { Check, RotateCcw, Plus } from 'lucide-react'
 
-const CARD   = 'var(--bg-card)'
-const RAISED = 'var(--bg-raised)'
-const BORDER = 'var(--border)'
-const VOLT   = 'var(--volt)'
-const GLOW   = 'var(--volt-glow)'
-const BSTR   = 'var(--border-str)'
-const TXT2   = 'var(--text-secondary)'
-const TXT3   = 'var(--text-muted)'
-const APP    = 'var(--bg-app)'
-
 export function GroceryPage() {
   const { t } = useTranslation()
   const { groceryItems, loadGrocery, toggleGroceryItem, resetGrocery } = useStore()
-  const [newItem, setNewItem]         = useState('')
+  const [newItem, setNewItem] = useState('')
   const [newCategory, setNewCategory] = useState('Protein')
-  const [newQty, setNewQty]           = useState('')
-  const [showAdd, setShowAdd]         = useState(false)
+  const [newQty, setNewQty] = useState('')
+  const [showAdd, setShowAdd] = useState(false)
 
   useEffect(() => { loadGrocery() }, [])
 
-  const categories: string[] = ['Protein', 'Carbs', 'Vegetables', 'Fats']
+  const categories = ['Protein', 'Carbs', 'Vegetables', 'Fats']
   const categoryColors: Record<string, string> = {
-    Protein: '#4ade80', Carbs: '#fb923c', Vegetables: '#60a5fa', Fats: '#f472b6',
+    Protein: 'text-green-400', Carbs: 'text-orange-400',
+    Vegetables: 'text-blue-400', Fats: 'text-pink-400',
   }
   const categoryKeys: Record<string, string> = {
     Protein: 'grocery.protein', Carbs: 'grocery.carbs',
@@ -49,10 +40,10 @@ export function GroceryPage() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-xl font-bold text-white">{t('grocery.title')}</h1>
-          <p style={{ color: TXT3 }} className="text-[10px]">{checkedCount}/{groceryItems.length} items checked</p>
+          <h1 className="text-xl font-bold text-ct-1">{t('grocery.title')}</h1>
+          <p className="text-[11px] text-ct-2">{checkedCount}/{groceryItems.length} items checked</p>
         </div>
-        <button onClick={resetGrocery} style={{ color: TXT2 }} className="flex items-center gap-1 text-xs">
+        <button onClick={resetGrocery} className="text-ct-2 flex items-center gap-1 text-xs p-1 rounded-lg active:bg-ct-elevated/50" aria-label="Reset all grocery items">
           <RotateCcw size={12} /> {t('grocery.resetAll')}
         </button>
       </div>
@@ -61,78 +52,49 @@ export function GroceryPage() {
         const items = groceryItems.filter(i => i.category === cat)
         if (items.length === 0) return null
         return (
-          <div key={cat} style={{ background: CARD, borderColor: BORDER }} className="rounded-2xl p-4 border">
-            <p style={{ color: categoryColors[cat] }} className="text-[10px] uppercase tracking-widest mb-2">
-              {t(categoryKeys[cat])}
-            </p>
+          <div key={cat} className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
+            <p className={`text-[11px] uppercase tracking-widest mb-2 ${categoryColors[cat]}`}>{t(categoryKeys[cat])}</p>
             {items.map(item => (
-              <button
-                key={item.id}
-                onClick={() => item.id && toggleGroceryItem(item.id)}
-                style={{ borderColor: BORDER }}
-                className="w-full flex items-center gap-3 py-2.5 border-b last:border-0 active:opacity-70 transition-opacity"
-              >
-                <div
-                  style={item.isChecked
-                    ? { background: VOLT, borderColor: VOLT }
-                    : { borderColor: 'rgba(255,255,255,0.2)' }
-                  }
-                  className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors"
-                >
-                  {item.isChecked && <Check size={12} style={{ color: APP }} />}
+              <button key={item.id} onClick={() => item.id && toggleGroceryItem(item.id)}
+                className="w-full flex items-center gap-3 py-2.5 border-b border-slate-700/30 last:border-0 active:bg-slate-700/30">
+                <div role="checkbox" aria-checked={item.isChecked}
+                  className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                    item.isChecked ? 'bg-cyan-500 border-cyan-500' : 'border-slate-500'
+                  }`}>
+                  {item.isChecked && <Check size={12} className="text-slate-900" />}
                 </div>
-                <span
-                  style={item.isChecked ? { color: TXT3 } : { color: 'var(--text-primary)' }}
-                  className={`text-sm flex-1 text-left ${item.isChecked ? 'line-through' : ''}`}
-                >
-                  {item.name}
-                </span>
-                <span style={{ color: TXT3 }} className="text-xs">{item.quantity} {item.unit}</span>
+                <span className={`text-sm flex-1 text-left ${item.isChecked ? 'line-through text-ct-2' : 'text-ct-1'}`}>{item.name}</span>
+                <span className="text-xs text-ct-2">{item.quantity} {item.unit}</span>
               </button>
             ))}
           </div>
         )
       })}
 
-      {/* ── Add custom item ───────────────────────────────────────────── */}
+      {/* Add custom item */}
       {showAdd ? (
-        <div style={{ background: CARD, borderColor: BORDER }} className="rounded-2xl p-4 border space-y-3">
-          <input
-            value={newItem} onChange={e => setNewItem(e.target.value)}
-            placeholder="Item name"
-            style={{ background: RAISED, color: 'white' }}
-            className="w-full rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--volt)]"
-          />
+        <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border space-y-3">
+          <input value={newItem} onChange={e => setNewItem(e.target.value)} placeholder="Item name" aria-label="Item name"
+            className="w-full bg-ct-elevated rounded-xl py-2 px-3 text-ct-1 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400" autoFocus />
           <div className="flex gap-2">
-            <input
-              value={newQty} onChange={e => setNewQty(e.target.value)}
-              placeholder="Qty"
-              style={{ background: RAISED, color: 'white' }}
-              className="flex-1 rounded-lg py-2 px-3 text-sm focus:outline-none"
-            />
-            <select
-              value={newCategory} onChange={e => setNewCategory(e.target.value)}
-              style={{ background: RAISED, color: 'white' }}
-              className="rounded-lg py-2 px-3 text-sm"
-            >
+            <input value={newQty} onChange={e => setNewQty(e.target.value)} placeholder="Qty" aria-label="Quantity"
+              className="flex-1 bg-ct-elevated rounded-xl py-2 px-3 text-ct-1 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400" />
+            <select value={newCategory} onChange={e => setNewCategory(e.target.value)} aria-label="Category"
+              className="bg-ct-elevated rounded-xl py-2 px-3 text-ct-1 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400">
               {categories.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
           <div className="flex gap-2">
-            <button onClick={handleAdd} style={{ background: VOLT, color: APP }} className="flex-1 font-bold py-2 rounded-xl text-sm">
-              {t('common.save')}
-            </button>
-            <button onClick={() => setShowAdd(false)} style={{ background: RAISED, color: 'var(--text-primary)' }} className="flex-1 py-2 rounded-xl text-sm">
-              {t('common.cancel')}
-            </button>
+            <button onClick={handleAdd} disabled={!newItem.trim()}
+              className={`flex-1 font-bold py-2 rounded-xl text-sm ${
+                newItem.trim() ? 'bg-cyan-500 text-slate-900' : 'bg-ct-elevated/60 text-ct-2 cursor-not-allowed'
+              }`}>{t('common.save')}</button>
+            <button onClick={() => setShowAdd(false)} className="flex-1 bg-ct-elevated text-ct-2 py-2 rounded-xl text-sm">{t('common.cancel')}</button>
           </div>
         </div>
       ) : (
-        <button
-          onClick={() => setShowAdd(true)}
-          style={{ background: GLOW, borderColor: BSTR, color: VOLT }}
-          className="w-full border border-dashed py-3 rounded-2xl text-sm font-medium flex items-center justify-center gap-2"
-        >
+        <button onClick={() => setShowAdd(true)}
+          className="w-full bg-slate-800/40 border border-dashed border-slate-600 text-cyan-400 py-3 rounded-ct-lg text-sm font-medium flex items-center justify-center gap-2">
           <Plus size={16} /> {t('grocery.addCustom')}
         </button>
       )}

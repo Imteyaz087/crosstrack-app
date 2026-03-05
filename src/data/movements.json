@@ -1,0 +1,15 @@
+{
+  "movements": [
+    {"id": "back-squat", "name": "Back Squat", "category": "weightlifting", "equipment": ["barbell"], "trackingType": "load", "searchTags": ["squat"], "priority": "high"},
+    {"id": "deadlift", "name": "Deadlift", "category": "weightlifting", "equipment": ["barbell"], "trackingType": "load", "searchTags": ["pull"], "priority": "high"},
+    {"id": "clean", "name": "Clean", "category": "weightlifting", "equipment": ["barbell"], "trackingType": "load", "searchTags": ["oly"], "priority": "high"},
+    {"id": "snatch", "name": "Snatch", "category": "weightlifting", "equipment": ["barbell"], "trackingType": "load", "searchTags": ["oly"], "priority": "high"},
+    {"id": "pull-up", "name": "Pull-up", "category": "gymnastics", "equipment": ["pull-up bar"], "trackingType": "reps", "searchTags": ["pull"], "priority": "high"},
+    {"id": "push-up", "name": "Push-up", "category": "gymnastics", "equipment": [], "trackingType": "reps", "searchTags": ["push"], "priority": "high"},
+    {"id": "thruster", "name": "Thruster", "category": "weightlifting", "equipment": ["barbell"], "trackingType": "load", "searchTags": ["squat"], "priority": "medium"},
+    {"id": "wall-ball", "name": "Wall Ball", "category": "gymnastics", "equipment": ["wall ball"], "trackingType": "reps", "searchTags": ["throwing"], "priority": "medium"},
+    {"id": "burpee", "name": "Burpee", "category": "gymnastics", "equipment": [], "trackingType": "reps", "searchTags": ["cardio"], "priority": "high"},
+    {"id": "double-under", "name": "Double Under", "category": "gymnastics", "equipment": ["jump rope"], "trackingType": "reps", "searchTags": ["jump"], "priority": "medium"},
+    {"id": "row", "name": "Row", "category": "monostructural", "equipment": ["rower"], "trackingType": "time", "searchTags": ["cardio"], "priority": "high"}
+  ]
+}

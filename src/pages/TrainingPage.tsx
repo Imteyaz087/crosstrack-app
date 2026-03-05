@@ -2,69 +2,63 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStore } from '../stores/useStore'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isToday as isDateToday } from 'date-fns'
-import { Trophy, ChevronLeft, ChevronRight } from 'lucide-react'
-
-const CARD  = 'var(--bg-card)'
-const BORDER = 'var(--border)'
-const VOLT  = 'var(--volt)'
-const GLOW  = 'var(--volt-glow)'
-const BSTR  = 'var(--border-str)'
-const TXT2  = 'var(--text-secondary)'
-const TXT3  = 'var(--text-muted)'
-const APP   = 'var(--bg-app)'
+import { Trophy, ChevronLeft, ChevronRight, Dumbbell } from 'lucide-react'
+import { EmptyState } from '../components/EmptyState'
 
 export function TrainingPage() {
   const { t } = useTranslation()
-  const { todayProgram, workouts, prs, loadTodayProgram, loadWorkouts, loadPRs, setActiveTab } = useStore()
+  const { workouts, prs, movementPRs, loadWorkouts, loadPRs, loadMovementPRs, setActiveTab } = useStore()
   const [currentMonth, setCurrentMonth] = useState(new Date())
 
-  useEffect(() => { loadTodayProgram(); loadWorkouts(); loadPRs() }, [])
+  useEffect(() => {
+    Promise.allSettled([loadWorkouts(), loadPRs(), loadMovementPRs()])
+  }, [])
 
   const monthStart = startOfMonth(currentMonth)
-  const monthEnd   = endOfMonth(currentMonth)
-  const days       = eachDayOfInterval({ start: monthStart, end: monthEnd })
-  const startPad   = getDay(monthStart)
-
+  const monthEnd = endOfMonth(currentMonth)
+  const days = eachDayOfInterval({ start: monthStart, end: monthEnd })
+  const startPad = getDay(monthStart)
   const workoutDates = new Set(workouts.map(w => w.date))
-  const dayHeaders   = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+  const dayHeaders = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold text-white">{t('training.title')}</h1>
+      <h1 className="text-[1.75rem] font-bold text-ct-1">{t('training.title')}</h1>
 
-      {/* ── Calendar ──────────────────────────────────────────────────── */}
-      <div style={{ background: CARD, borderColor: BORDER }} className="rounded-2xl p-4 border">
+      {/* Calendar */}
+      <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
         <div className="flex justify-between items-center mb-3">
-          <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}>
-            <ChevronLeft size={18} style={{ color: TXT2 }} />
+          <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
+            className="p-2 rounded-lg active:bg-ct-elevated/50 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+            aria-label={t('training.previousMonth')}
+          >
+            <ChevronLeft size={20} className="text-ct-2" />
           </button>
-          <span className="text-sm font-bold text-white">{format(currentMonth, 'MMMM yyyy')}</span>
-          <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}>
-            <ChevronRight size={18} style={{ color: TXT2 }} />
+          <span className="text-sm font-bold text-ct-1">{format(currentMonth, 'MMMM yyyy')}</span>
+          <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
+            className="p-2 rounded-lg active:bg-ct-elevated/50 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+            aria-label={t('training.nextMonth')}
+          >
+            <ChevronRight size={20} className="text-ct-2" />
           </button>
         </div>
-
         <div className="grid grid-cols-7 gap-1 text-center">
           {dayHeaders.map((d, i) => (
-            <div key={i} style={{ color: TXT3 }} className="text-[10px] font-semibold py-1">{d}</div>
+            <div key={i} className="text-[11px] text-ct-2 font-semibold py-1">{d}</div>
           ))}
           {Array.from({ length: startPad }).map((_, i) => <div key={`pad-${i}`} />)}
           {days.map(day => {
-            const dateStr    = format(day, 'yyyy-MM-dd')
-            const isSunday   = getDay(day) === 0
+            const dateStr = format(day, 'yyyy-MM-dd')
+            const isSunday = getDay(day) === 0
             const hasWorkout = workoutDates.has(dateStr)
-            const isToday    = isDateToday(day)
+            const isToday = isDateToday(day)
             return (
-              <div
-                key={dateStr}
-                style={isToday ? { background: VOLT, color: APP } : {}}
-                className={`py-1.5 rounded-lg text-xs font-medium ${
-                  isToday    ? 'font-bold' :
-                  hasWorkout ? 'bg-green-500/20 text-green-400' :
-                  isSunday   ? 'opacity-30 text-white' :
-                  'text-white'
-                }`}
-              >
+              <div key={dateStr} className={`min-h-[44px] flex items-center justify-center rounded-lg text-xs transition-colors ${
+                isToday ? 'bg-cyan-500 text-slate-900 font-bold'
+                : hasWorkout ? 'bg-green-500/20 text-green-400 font-medium'
+                : isSunday ? 'bg-slate-700/30 text-ct-2'
+                : 'text-ct-2'
+              }`}>
                 {day.getDate()}
               </div>
             )
@@ -72,69 +66,94 @@ export function TrainingPage() {
         </div>
       </div>
 
-      {/* ── Today's Program ───────────────────────────────────────────── */}
-      <div style={{ background: CARD, borderColor: BORDER }} className="rounded-2xl p-4 border">
-        <p style={{ color: TXT2 }} className="text-[10px] uppercase tracking-widest mb-2">{t('training.todayProgram')}</p>
-        {todayProgram ? (
-          <>
-            <p className="text-base font-bold text-white">{todayProgram.dayName} — {todayProgram.focus}</p>
-            {todayProgram.strength !== '—' && (
-              <p style={{ color: TXT2 }} className="text-xs mt-1">
-                <span style={{ color: VOLT }} className="font-semibold">{t('training.strength')}:</span> {todayProgram.strength}
-              </p>
-            )}
-            <p style={{ color: TXT2 }} className="text-xs mt-0.5">
-              <span className="text-orange-400 font-semibold">{t('training.metcon')}:</span> {todayProgram.metcon}
-            </p>
-            {todayProgram.scalingOptions && (
-              <p style={{ color: TXT3 }} className="text-[10px] mt-1">
-                <span style={{ color: TXT2 }}>{t('training.scaling')}:</span> {todayProgram.scalingOptions}
-              </p>
-            )}
-          </>
-        ) : (
-          <p style={{ color: TXT3 }} className="text-sm">Rest / Recovery day</p>
-        )}
-        <button
-          onClick={() => setActiveTab('log')}
-          style={{ background: GLOW, borderColor: BSTR, color: VOLT }}
-          className="mt-3 w-full border font-bold py-2.5 rounded-xl text-sm"
-        >
-          {t('training.logWorkout')}
-        </button>
-      </div>
+      {/* Log Workout Button */}
+      <button onClick={() => setActiveTab('log')}
+        className="w-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-400 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 card-press"
+      >
+        <Dumbbell size={16} />
+        {t('training.logWorkout')}
+      </button>
 
-      {/* ── PR Board ──────────────────────────────────────────────────── */}
-      <div style={{ background: CARD, borderColor: BORDER }} className="rounded-2xl p-4 border">
-        <p style={{ color: TXT2 }} className="text-[10px] uppercase tracking-widest mb-2">{t('training.prBoard')}</p>
-        {prs.length === 0 ? (
-          <p style={{ color: TXT3 }} className="text-sm">No PRs yet — keep training!</p>
+      {/* Movement PRs – gold themed */}
+      <div className="bg-gradient-to-br from-yellow-500/5 to-slate-800/60 rounded-ct-lg p-4 border border-yellow-500/20">
+        <div className="flex items-center gap-2 mb-2">
+          <Trophy size={14} className="text-yellow-400" />
+          <p className="text-[11px] uppercase tracking-widest text-yellow-400/80 font-semibold">{t('training.movementPRs')}</p>
+          <span className="ml-auto text-[11px] text-ct-2">{movementPRs.length} total</span>
+        </div>
+        {movementPRs.length === 0 ? (
+          <p className="text-sm text-ct-2 py-2">{t('training.noPRsYet')}</p>
         ) : (
-          prs.map(pr => (
-            <div key={pr.id} style={{ borderColor: BORDER }} className="flex items-center py-2.5 border-b last:border-0">
-              <Trophy size={14} className="text-red-400 mr-2" />
-              <span className="text-sm text-white flex-1">{pr.name}</span>
-              <span style={{ color: VOLT }} className="text-sm font-bold">{pr.scoreDisplay}</span>
-              <span className="ml-2 px-1.5 py-0.5 bg-red-500/20 text-red-400 rounded text-[10px] font-bold">PR</span>
+          movementPRs.slice(0, 8).map(pr => (
+            <div key={pr.id} className="flex items-center py-2.5 border-b border-slate-700/30 last:border-0">
+              <Trophy size={14} className="text-yellow-400 mr-2 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <span className="text-sm text-ct-1">{pr.movementName}</span>
+                <span className="text-[11px] text-ct-2 ml-2">{pr.prType}</span>
+              </div>
+              <span className="text-sm text-cyan-400 font-bold">{pr.value} {pr.unit}</span>
+              {pr.previousBest && (
+                <span className="ml-2 text-[11px] text-green-400 font-medium">+{Math.round(pr.value - pr.previousBest)}</span>
+              )}
             </div>
           ))
         )}
       </div>
 
-      {/* ── Recent Workouts ───────────────────────────────────────────── */}
-      <div style={{ background: CARD, borderColor: BORDER }} className="rounded-2xl p-4 border">
-        <p style={{ color: TXT2 }} className="text-[10px] uppercase tracking-widest mb-2">Recent Workouts</p>
-        {workouts.slice(0, 5).map(w => (
-          <div key={w.id} style={{ borderColor: BORDER }} className="flex items-center py-2 border-b last:border-0">
-            <div className="flex-1">
-              <p className="text-sm text-white">{w.name}</p>
-              <p style={{ color: TXT3 }} className="text-[10px]">{w.date} | {w.workoutType}</p>
+      {/* Workout PR Board */}
+      <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
+        <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold mb-2">{t('training.prBoard')}</p>
+        {prs.length === 0 ? (
+          <p className="text-sm text-ct-2 py-2">{t('training.noWorkoutPRs')}</p>
+        ) : (
+          prs.slice(0, 5).map(pr => (
+            <div key={pr.id} className="flex items-center py-2.5 border-b border-slate-700/30 last:border-0">
+              <Trophy size={14} className="text-red-400 mr-2 shrink-0" />
+              <span className="text-sm text-ct-1 flex-1">{pr.name}</span>
+              <span className="text-sm text-cyan-400 font-bold">{pr.scoreDisplay}</span>
+              <span className="ml-2 px-1.5 py-0.5 bg-red-500/20 text-red-400 rounded-md text-[11px] font-bold">PR</span>
             </div>
-            <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-              w.rxOrScaled === 'RX' ? 'bg-green-500/20 text-green-400' : 'bg-orange-500/20 text-orange-400'
-            }`}>{w.rxOrScaled}</span>
-          </div>
-        ))}
+          ))
+        )}
+      </div>
+
+      {/* Recent Workouts */}
+      <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
+        <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold mb-2">{t('training.recentWorkouts')}</p>
+        {workouts.length === 0 ? (
+          <EmptyState
+            icon={Dumbbell}
+            title={t('training.noWorkoutsLogged')}
+            description={t('training.noWorkoutsDesc')}
+            action={{ label: t('training.logFirstWorkout'), onClick: () => setActiveTab('log') }}
+          />
+        ) : (
+          workouts.slice(0, 10).map(w => (
+            <div key={w.id} className={`flex items-center py-2.5 border-b border-slate-700/30 last:border-0 ${
+              w.prFlag ? 'border-l-2 border-l-yellow-400/60 pl-2' : ''
+            }`}>
+              {w.prFlag && <Trophy size={14} className="text-yellow-400 mr-1.5 shrink-0" />}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-ct-1 truncate">{w.name}</p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <p className="text-[11px] text-ct-2">{w.date}</p>
+                  <span className={`px-1.5 py-0.5 rounded-md text-[9px] font-bold ${
+                    w.workoutType === 'HYROX' ? 'bg-orange-500/15 text-orange-400'
+                    : w.workoutType === 'Running' || w.workoutType === 'Cardio' ? 'bg-emerald-500/15 text-emerald-400'
+                    : 'bg-ct-elevated/60 text-ct-2'
+                  }`}>{w.workoutType === 'StrengthMetcon' ? 'S+WOD' : w.workoutType}</span>
+                </div>
+              </div>
+              {w.scoreDisplay && <span className="text-[11px] text-cyan-400 font-bold mr-2 shrink-0">{w.scoreDisplay}</span>}
+              <span className={`px-1.5 py-0.5 rounded-md text-[11px] font-bold shrink-0 ${
+                w.rxOrScaled === 'RX' ? 'bg-green-500/20 text-green-400'
+                : w.rxOrScaled === 'Elite' ? 'bg-purple-500/20 text-purple-400'
+                : 'bg-orange-500/20 text-orange-400'
+              }`}>{w.rxOrScaled}</span>
+              {w.prFlag && <span className="ml-1 px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded-md text-[9px] font-bold shrink-0 flex items-center gap-0.5"><Trophy size={8} />PR</span>}
+            </div>
+          ))
+        )}
       </div>
     </div>
   )

@@ -1,18 +1,18 @@
 # TrackVolt App — Master Project Document
-**Owner:** Aron (imteyazmdkaish@gmail.com)
-**Last Updated:** March 5, 2026
+**Owner:** Aron (yimuren1@gmail.com)
+**Last Updated:** March 5, 2026 — Session 3
 **Purpose:** Complete project memory backup — read this at the start of every new session
 
 ---
 
 ## 1. What Is This App?
 
-**TrackVolt** is a fitness Progressive Web App (PWA) built specifically for CrossFit, HYROX, and general athletic performance tracking. It is designed to be a premium, dark-themed mobile app with a volt green (#C8FF00) brand identity.
+**TrackVolt** is a fitness Progressive Web App (PWA) for CrossFit, HYROX, and general athletic performance tracking. Premium dark theme with volt green (#C8FF00) brand identity.
 
 - **Live URL:** https://trackvolt.app
 - **Brand name:** TrackVolt (internal project name: CrossTrack)
-- **Target users:** CrossFit athletes, HYROX competitors, and fitness-focused people
-- **Aron's vision:** A universal, premium fitness app that feels like an Apple Design Award winner — clean, dark, fast, with great visual hierarchy
+- **Target users:** CrossFit athletes, HYROX competitors, fitness-focused people
+- **Vision:** Apple Design Award-worthy fitness app — clean, dark, fast
 
 ---
 
@@ -25,97 +25,99 @@
 | Styling | Tailwind CSS v4 |
 | PWA | vite-plugin-pwa |
 | State Management | Zustand 5 |
-| Local Database | Dexie (IndexedDB wrapper) |
+| Local Database | Dexie (IndexedDB wrapper) — CrossTrackDB v6, 16 tables |
 | Charts | Recharts |
 | Icons | Lucide React |
-| i18n | react-i18next (English + Traditional Chinese) |
+| i18n | react-i18next (en + zh-TW + zh-CN) |
 | Date Utils | date-fns |
 | Routing | React Router DOM v7 |
 | Deployment | Vercel (project: "crosstrack") |
-| Domain | trackvolt.app (registered on Namecheap) |
+| Domain | trackvolt.app (Namecheap) |
 
 ---
 
 ## 3. Deployment & Infrastructure
 
 ### Vercel
-- **Project name:** crosstrack
+- **Dashboard:** https://vercel.com/imteyazmdkaish-1195s-projects/crosstrack
 - **Project ID:** prj_HRKKptQiVRpYrBtmsCVahz3Zv7ah
 - **Org ID:** team_S7ukXJeYnSsExx3B9QOmqqMD
-- **Dashboard:** https://vercel.com/imteyazmdkaish-1195s-projects/crosstrack
-- **Deployments page:** https://vercel.com/imteyazmdkaish-1195s-projects/crosstrack/deployments
+- **Last known good deployment:** GTeJwY1rw
 
-### Important Deployment IDs (save these!)
-| ID | Status | Notes |
-|---|---|---|
-| GTeJwY1rw | ✅ CURRENT PRODUCTION | Full feature version — always protect this |
+### How to Deploy (requires "CONFIRM DEPLOY" from user)
+1. `npm run build` → must pass with zero errors
+2. `npx vercel --prod` from project root
+3. If token error: `npx vercel login` first
 
-### How to Deploy
-1. Run `npm run build` inside `C:\ClaudeWork\Imu\TrackVolt-App\` first
-2. Confirm build succeeds (zero TypeScript errors)
-3. Run `npx vercel --prod` from that folder
-4. If token error: run `npx vercel login` first
-5. `.vercel/project.json` already links to the correct project
-
-### How to Roll Back (Emergency)
-1. Go to https://vercel.com/imteyazmdkaish-1195s-projects/crosstrack/deployments
-2. Find the last known good deployment ID (see table above)
-3. Click `...` → **Promote** → confirm
-4. Hard refresh browser: Ctrl+Shift+R (PWA service worker caches aggressively)
-
-### Old Netlify Account
-- Account was on Netlify but **exceeded credit limit** — deploys paused
-- All deployment now done through **Vercel only**
-- Netlify can be ignored
+### Emergency Rollback
+1. Go to Vercel deployments page
+2. Find deployment **GTeJwY1rw** → ... → Promote
+3. Hard refresh: Ctrl+Shift+R (PWA caches aggressively)
 
 ---
 
-## 4. Local Development
+## 4. Source Code Location & Structure
 
-**Source code location:** `C:\ClaudeWork\Imu\TrackVolt-App\`
+**Path:** `C:\ClaudeWork\Imu\TrackVolt-App\`
 
 ```
 src/
-  App.tsx              — Root component, tab routing
+  App.tsx              — Root component, tab routing via Zustand activeTab
   main.tsx             — Entry point
   index.css            — Design tokens (CSS custom properties)
-  App.css              — (minimal)
   components/
-    TabBar.tsx         — Bottom navigation (5 tabs)
-    MacroBar.tsx       — Vertical macro progress bar component
-  pages/
+    TabBar.tsx         — Bottom 5-tab navigation (Today/Train/Log/Eat/More)
+    MacroBar.tsx       — Vertical macro progress bar
+    PlaceholderPage.tsx — (UNUSED — all pages now real implementations)
+  pages/               — ALL 23 pages are REAL implementations
     TodayPage.tsx      — Home dashboard
-    LogPage.tsx        — Log workouts, meals, metrics
+    LogPage.tsx        — Multi-step CrossFit logging, meals, metrics
     TrainingPage.tsx   — Calendar + program + PRs
     NutritionPage.tsx  — Meal tracking by type
-    ProgressPage.tsx   — Charts, streaks, benchmarks
-    GroceryPage.tsx    — Weekly grocery list
-    SettingsPage.tsx   — User profile and targets
-    MorePage.tsx       — Sub-navigation (Grocery, Progress, Settings)
+    MorePage.tsx       — Sub-navigation hub (18 sub-pages)
+    --- Training sub-pages ---
+    WorkoutHistoryPage.tsx   — Search, stats, workouts grouped by month
+    WeeklyPlannerPage.tsx    — 7-day training planner
+    PRWallPage.tsx           — PR showcase with stats, categories, timeline
+    MovementPRPage.tsx       — Individual movement PR tracking (barbell/gymnastics/etc)
+    WorkoutTemplatesPage.tsx — Benchmark WODs catalog (40+ Girls/Heroes/Open)
+    BenchmarkPage.tsx        — User's logged benchmark results
+    --- Body & Nutrition sub-pages ---
+    MealPrepPage.tsx         — Meal template management
+    GroceryPage.tsx          — Weekly grocery checklist
+    BodyMeasurementsPage.tsx — 11 body measurements with trends
+    HeartRatePage.tsx         — Resting HR + zone logging
+    --- Training Insights sub-pages ---
+    AICoachPage.tsx          — Training insights computed from data
+    ProgressPage.tsx         — Charts, streaks, body composition
+    AchievementsPage.tsx     — 12 gamification badges, 5 categories
+    PhotoLogPage.tsx         — Photo capture with IndexedDB storage
+    --- Timer & Tools ---
+    TimerPage.tsx            — AMRAP/EMOM/Tabata/For Time timer
+    CalcPage.tsx             — 1RM calculator
+    --- App ---
+    CloudSyncPage.tsx        — Export/import JSON backup, data integrity
+    SettingsPage.tsx         — Profile, targets, language, export/import
   stores/
     useStore.ts        — Zustand global state + all DB operations
   db/
-    database.ts        — Dexie DB schema + seed data
+    database.ts        — Dexie DB schema (v6, 16 tables) + seed data
   types/
     index.ts           — All TypeScript interfaces
+  data/
+    benchmarkWods.ts   — 16 benchmark WODs seed data
   utils/
     macros.ts          — Macro calculation helpers
   i18n/
-    en.ts              — English translations
-    zh-TW.ts           — Traditional Chinese translations
-    index.ts           — i18n setup
+    en.ts, zh-TW.ts, zh-CN.ts, index.ts
 ```
 
 ### Dev Commands
 ```bash
-npm run dev      # Start dev server
+npm run dev      # Start dev server (localhost:5174)
 npm run build    # TypeScript check + Vite build
 npm run preview  # Preview production build
 ```
-
-### TypeScript Strictness
-`tsconfig.json` has `"noUnusedLocals": true` and `"noUnusedParameters": true`
-→ Build WILL FAIL if you import anything unused. Always remove unused imports.
 
 ---
 
@@ -124,250 +126,206 @@ npm run preview  # Preview production build
 ### Brand Colors (CSS Custom Properties)
 ```css
 --volt:       #C8FF00   /* PRIMARY accent — volt green */
---volt-dim:   #9FCC00   /* Hover states */
---volt-glow:  rgba(200,255,0,0.15)
-
 --bg-app:     #0D0D14   /* Page background */
 --bg-card:    #13131E   /* Cards */
 --bg-raised:  #1A1A28   /* Elevated elements, inputs */
---bg-input:   #1E1E2E   /* Input fields */
-
 --border:     rgba(255,255,255,0.06)
---border-med: rgba(255,255,255,0.10)
---border-str: rgba(200,255,0,0.25)    /* Volt accent border */
-
 --text-primary:   #F0F0F8
 --text-secondary: #8888A0
 --text-muted:     #50505E
 ```
 
-### Semantic Colors (for data/metrics)
-- Green: `#4ade80` (protein, workouts)
-- Orange: `#fb923c` (carbs, HYROX)
-- Pink: `#f472b6` (fat)
-- Blue: `#60a5fa` (water)
-- Indigo: `#818cf8` (sleep)
-- Red: `#f87171` (PRs)
-- Yellow: `#facc15` (energy)
-- Teal: `#2dd4bf` (recovery)
+### CSS Utility Classes
+- `glass-card` — standard card with glass-morphism
+- `tap-target` — touch-friendly interactive element
+- `page-enter` — page entry animation
+- `stagger-1` through `stagger-6` — staggered entry animations
 
 ### Design Principles
-- **Dark first** — deep near-black backgrounds
-- **Volt green** as the only brand accent, used sparingly for CTAs and highlights
-- **Rounded corners** — cards use `rounded-2xl`
-- **No shadows** — depth created through layered background colors
-- **Premium feel** — tight spacing, clean typography, smooth transitions
-- **Mobile first** — max-width 512px, bottom tab bar
+- Dark first, volt green as only accent (sparingly)
+- Rounded corners, no shadows — depth via layered backgrounds
+- Mobile first, max-width 512px, bottom tab bar
+- Log button: center, raised, gradient violet-to-blue
 
 ---
 
-## 6. App Architecture — The 5 Tabs
+## 6. Database Schema (Dexie / IndexedDB)
 
-### Tab 1: TODAY (`TodayPage.tsx`)
-The home dashboard. Shows:
-- Greeting with user name + date
-- Current training week & phase (Base/Load/Intensity/Deload — 4-week cycle)
-- Today's Training card (from program) → taps to Training tab
-- Macros Today card (protein/carbs/fat/calories bars) → taps to Nutrition tab
-- Quick Metrics card (weight, sleep, water, energy) → taps to Log tab
+Database: `CrossTrackDB` — Version 6 — 16 tables
 
-### Tab 2: LOG (`LogPage.tsx`)
-The central logging hub. Two states:
-
-**Home screen (mode = null):** 9 cards in 3 categories:
-- **TRAINING:** CrossFit (Dumbbell, volt), HYROX (Timer, orange), Run/Cardio (Activity, green)
-- **BODY & NUTRITION:** Meal (UtensilsCrossed, teal), Weight (Scale, purple), Water (Droplets, blue)
-- **WELLNESS & RECOVERY:** Sleep (Moon, indigo), Energy (Zap, yellow), Recovery (RefreshCcw, teal)
-- Plus Quick Templates section at the bottom
-
-**Active modes:**
-- `workout` — form with WOD name, type (AMRAP/ForTime/EMOM/etc), score, RX/Scaled, PR flag, benchmark flag, notes
-- `meal` — food search from library, grams input, meal type selector, live macro preview
-- `weight/sleep/water/energy/recovery` — simple numeric input
-
-**Special behaviors:**
-- CrossFit tap → sets WOD type to AMRAP automatically
-- HYROX tap → sets WOD type to ForTime
-- Run/Cardio tap → sets WOD type to Other
-- Recovery saves to `dailyLog.notes` as "Recovery: X/5"
-
-### Tab 3: TRAIN (`TrainingPage.tsx`)
-- Monthly calendar (workout days highlighted in green)
-- Today's Program (from seeded 4-week program)
-- PR Board (workouts with prFlag = true)
-- Recent Workouts list (last 5)
-- "Log Workout" button → navigates to Log tab
-
-### Tab 4: EAT (`NutritionPage.tsx`)
-- Daily macro overview (bars for protein, carbs, fat, calories)
-- Meal sections by type: Breakfast, Post-WOD, Lunch, Snack, Dinner
-- Each section shows logged items with delete button
-- Empty sections show "Add Meal" + template shortcuts
-
-### Tab 5: MORE (`MorePage.tsx`)
-Sub-navigation menu with 3 items:
-- **Grocery** → GroceryPage (weekly shopping list, checkboxes)
-- **Progress** → ProgressPage (streak, charts, benchmarks)
-- **Settings** → SettingsPage (profile, macro targets, export/import)
-
----
-
-## 7. Database Schema (Dexie / IndexedDB)
-
-Database name: `CrossTrackDB`
-
-| Table | Key Fields | Purpose |
+| Table | Indexes | Purpose |
 |---|---|---|
-| dailyLogs | date | Weight, sleep, water, energy, notes per day |
-| workouts | date, workoutType, prFlag, isBenchmark | All logged workouts |
-| foodLibrary | name, category | Pre-seeded food database |
+| dailyLogs | date | Weight, sleep, water, energy per day |
+| workouts | date, workoutType, name, isBenchmark, prFlag | All logged workouts |
+| foodLibrary | name, category, isCustom | Pre-seeded food database (211 items) |
 | mealLogs | date, mealType, foodId | Individual food entries |
-| mealTemplates | name, mealType | Saved meal templates |
-| groceryItems | category, weekStartDate | Weekly grocery list |
+| mealTemplates | name, mealType | Saved meal templates (6 seeded) |
+| groceryItems | category, weekStartDate, isChecked | Weekly grocery list |
 | programDays | weekNumber, dayOfWeek | 4-week training program |
 | settings | — | User profile and targets |
-
-### Default User Settings (Aron)
-- Weight: 72kg
-- Goal: Recomp (Fat Loss + Muscle + Performance)
-- Training time: 06:00
-- Calorie target: 2100 kcal
-- Protein: 180g | Carbs: 216g | Fat: 58g
-- Water: 3000ml
-- Language: English (also supports zh-TW)
-
----
-
-## 8. Seed Data
-
-### Food Library (17 items pre-seeded)
-Proteins: Chicken Breast, Lean Beef, Eggs, Whey Protein, Greek Yogurt
-Carbs: Rolled Oats, White Rice, Sweet Potato, Banana, Apple, Rice Cake, Honey
-Vegetables: Broccoli, Spinach, Mixed Vegetables
-Fats: Olive Oil, Almonds
-
-### Meal Templates (6 templates)
-- My Breakfast (Greek Yogurt + Oats + Whey + Banana)
-- Post-WOD Shake (Whey + Rice Cakes + Honey)
-- Chicken + Rice Lunch
-- Afternoon Snack (Almonds + Apple)
-- Chicken Dinner
-- Beef Dinner
-
-### Training Program (4-week cycle)
-Phases: Base (Week 1) → Load (Week 2) → Intensity (Week 3) → Deload (Week 4)
-- Monday: Strength + Metcon (Back Squat + AMRAP)
-- Tuesday: Gymnastics + HIIT
-- Wednesday: Olympic Lifting + WOD (Clean & Jerk + 21-15-9)
-- Thursday: Engine Builder (30min cardio)
-- Friday: Heavy Day + Hero WOD (Deadlift + Murph Variant)
-- Saturday: Partner/Team WOD
-- Sunday: REST + Mobility
-
-### Grocery List (17 recurring items)
-Auto-generated weekly list covering all meal template ingredients.
+| movementPRs | movementName, category, date | Individual movement PRs |
+| benchmarkWods | name, category | Benchmark WOD catalog (16 seeded) |
+| timerPresets | name, mode | Timer presets |
+| cycleEntries | date | Cycle tracking |
+| bodyMeasurements | date, metric | Body measurements |
+| heartRateLogs | date | Heart rate logs |
+| photoLogs | date, workoutId | Photo logs |
+| achievements | type, unlockedAt | Achievement badges |
 
 ---
 
-## 9. i18n — Languages
+## 7. Key Interfaces (from types/index.ts)
 
-Supported: **English (en)** and **Traditional Chinese (zh-TW)**
-- Controlled via Settings page
-- All UI text uses `t('key')` from react-i18next
-- Translation files: `src/i18n/en.ts` and `src/i18n/zh-TW.ts`
+- `Workout` — id, date, workoutType (WodType), name, scoreDisplay, rxOrScaled, prFlag, isBenchmark, movements, loads, notes
+- `MovementPR` — movementName, category, prType, value, unit, previousBest, date
+- `FoodItem` — name, category, calories, protein, carbs, fat, fiber, servingSize
+- `MealLog` — date, mealType, foodId, foodName, grams, calories, protein, carbs, fat
+- `MealTemplate` — name, mealType, items (foodId, foodName, grams)
+- `DailyLog` — date, weight, sleep, water, energy, notes
+- `UserSettings` — name, weight, goal, trainingTime, calorieTarget, macros, waterTarget, language
+- `Achievement` — type, unlockedAt
+- `BodyMeasurement` — date, metric, value, unit
+- `HeartRateLog` — date, type (resting/zone), bpm, zone
+- `PhotoLog` — date, workoutId, blobRef
 
-Key translation namespaces:
-- `tabs.*` — Tab bar labels
-- `today.*` — Today page content
-- `log.*` — Log page labels (including crossfit, hyrox, runCardio, recovery, training, bodyNutrition, wellnessRecovery)
-- `training.*` — Training page
-- `meals.*` — Meal types
-- `nutrition.*` — Nutrition page
-- `progress.*` — Progress page
-- `grocery.*` — Grocery page
-- `settings.*` — Settings page
-- `phases.*` — Training phases (Base, Load, Intensity, Deload)
+WodType = 'AMRAP' | 'ForTime' | 'EMOM' | 'Chipper' | 'Strength' | 'StrengthMetcon' | 'Other'
+RxScaled = 'RX' | 'Scaled'
 
 ---
 
-## 10. Changes History
+## 8. Production vs Local Parity — CRITICAL GAP ANALYSIS (Session 3)
 
-### Session 1–N (earlier, before context tracking)
-- Initial app creation with full feature set
-- All 8 pages built
-- Database schema and seed data created
-- Design system established with volt green brand
+### Menu Structure: IDENTICAL
+Both production and local have the same 18-item More menu in 6 sections.
 
-### Recent Session (March 5, 2026)
-**TypeScript Fixes:**
-- `useStore.ts`: Removed unused `MealType` from type import
-- `TodayPage.tsx`: Removed unused `Dumbbell` from lucide-react import
+### ⚠️ MAJOR FINDING: Local is MISSING ~30+ files from production!
 
-**LogPage.tsx Redesign:**
-- Old layout: flat 6-card grid
-- New layout: 9 cards in 3 labeled categories
-- New icons added: `Timer` (HYROX), `Activity` (Run), `RefreshCcw` (Recovery)
-- Cards now use `min-h-[100px] flex flex-col items-center justify-center gap-2.5`
-- Icon size: 28px, strokeWidth: 1.8
-- Replaced Heart icon for Cycle (gender-specific) with Recovery card (universal)
-- Added `handleCardClick` function that pre-selects WOD type by sport
+The Vercel deployment GTeJwY1rw (current production) has significantly MORE code than the local copy. The local code appears to be an EARLIER version that was then heavily enhanced before deployment.
 
-**i18n Updates:**
-- Added to en.ts and zh-TW.ts: `crossfit`, `hyrox`, `runCardio`, `recovery`, `training`, `bodyNutrition`, `wellnessRecovery`
+#### Missing Root-Level Files/Folders
+| Item | Type | What It Is |
+|---|---|---|
+| `api/barcode-lookup.ts` | Serverless | Vercel serverless proxy for OpenFoodFacts barcode API |
+| `api/nutrition-search.ts` | Serverless | Vercel serverless proxy for USDA FoodData Central |
+| `check-imports.cjs` | Script | Build verification script |
+| `verify-store-usage.cjs` | Script | Store usage verification script |
+| `eslint.config.js` | Config | ESLint configuration |
+| `research/` | Folder | Research files |
+| `scripts/` | Folder | Utility scripts |
+| `.netlify/` | Folder | Netlify config (probably legacy) |
 
-**Deployment Incident (March 5, 2026):**
-- Netlify account hit credit limit → switched to Vercel
-- Accidentally deployed old/simplified version to production
-- Recovered by promoting deployment `GTeJwY1rw` back to production
-- ⚠️ LESSON: Always note the current good deployment ID before any deployment work
+#### Missing src/hooks/ (11 hooks — ENTIRE folder missing!)
+| Hook | Purpose |
+|---|---|
+| `useAchievement...` | Achievement detection/unlocking |
+| `useCountUp.ts` | Animated number counting |
+| `useCycleTracki...` | Cycle/period tracking |
+| `useHaptic.ts` | Haptic feedback for interactions |
+| `usePRDetection...` | Auto-detect PRs in workouts |
+| `useStreakCeleb...` | Streak celebration UI |
+| `useTimerAudio...` | Timer audio cues |
+| `useTimerEngine...` | Core timer logic |
+| `useTimerVoice...` | Voice announcements for timer |
+| `useUnsavedChan...` | Warn before leaving with unsaved data |
+| `useWorkoutForm...` | Workout form state management |
+
+#### Missing src/services/ (3 files — ENTIRE folder missing!)
+| Service | Purpose |
+|---|---|
+| `firebase.ts` | Firebase integration |
+| `gemini.ts` | Gemini AI integration (WOD scanner?) |
+| `nutritionApi.ts` | Client-side nutrition API service with IndexedDB caching |
+
+#### Missing src/components/ (~15+ components)
+Production has sub-folders and many more components:
+- **`log/` subfolder** — BarcodeScanner, MealLogger, CustomFoodCreator (meal logging UI)
+- **`sharecard/` subfolder** — Share card generation
+- `AchievementToast.tsx` — Toast for unlocked achievements
+- `ConfirmDialog.tsx` — Reusable confirmation dialog
+- `CycleTrainingC...tsx` — Cycle training component
+- `EmptyState.tsx` — Reusable empty state component
+- `ErrorRetry.tsx` — Error with retry button
+- `InstallPrompt.tsx` — PWA install prompt (local has InstallBanner.tsx)
+- `LoadingSpinner.tsx` — Loading indicator
+- `OnboardingTour.tsx` — First-time user tour
+- `PRToast.tsx` — PR notification toast
+- `ReviewPrompt.tsx` — App review prompt
+- `SaveCelebration.tsx` — Save celebration animation
+- `SaveToast.tsx` — Save confirmation toast
+- `SectionLabel.tsx` — Section label component
+- `SkeletonCard.tsx` — Loading skeleton
+- `SleepDetailCard.tsx` — Sleep tracking card
+- `SleepImportHandler.tsx` — Sleep data import
+- `UndoToast.tsx` — Undo action toast
+- `WeeklySummary.tsx` — Weekly summary component
+
+#### Missing src/test/ — ENTIRE folder missing
+
+#### Missing src/design-tokens.json — Design token file
+
+#### Page Implementation Differences
+- **AchievementsPage**: Production has 60 achievements with Bronze/Silver/Gold tiers + progress bars connected to real data. Local has 12 hardcoded badges with simpler UI.
+- **Other pages**: Likely have differences too — production versions use the hooks and components listed above.
+
+### What Local HAS That Production MAY NOT
+- `PlaceholderPage.tsx` (unused component)
+- `MacroBar.tsx` (vertical macro bar — may exist differently in production)
+- `Toast.tsx` (generic toast — production may use SaveToast/PRToast/UndoToast instead)
+- `reference/production.css` (CSS reference file)
+
+### Recovery Strategy
+**Option A: Extract all source from Vercel (Recommended)**
+1. Log into Vercel → Deployment GTeJwY1rw → Source tab
+2. Click each file → copy content → save locally
+3. This gives us the EXACT production source
+4. Then push to GitHub
+
+**Option B: Use Vercel CLI to download deployment**
+1. `npx vercel pull` — downloads project settings and env vars
+2. Won't give source code though — source must come from the Source tab
+
+**Option C: Rebuild locally using production as reference**
+1. Keep current local code
+2. Gradually add missing features by examining production behavior
+3. Risk: slow, may introduce bugs
+
+### ⚠️ DO NOT DEPLOY LOCAL CODE — it would OVERWRITE production with a simpler version!
 
 ---
 
-## 11. Known Issues & Pending Work
+## 9. Pending Work / Roadmap
 
-### Pending Improvements (not yet deployed)
-1. **Log page redesign** — done in local source code but the live production version (GTeJwY1rw) may not have all these changes yet. Need to verify by comparing local vs live.
-2. **GitHub connection** — GitHub repo exists but is empty (only .gitkeep). Source code is NOT pushed to GitHub yet. This means Vercel auto-deploy is not set up.
+### CRITICAL — Before Anything Else
+1. ⚠️ Extract FULL production source from Vercel Source tab (deployment GTeJwY1rw)
+2. Replace local files with production versions
+3. Push to GitHub (repo exists at https://github.com/Imteyaz087/crosstrack-app — currently EMPTY)
+4. Run `npm run build` to verify everything compiles
 
-### Future Feature Ideas (from Aron's vision)
-- AI Coach
-- Cloud Sync (user data backup)
-- Photo to Log
-- Heart Rate tracking
-- Achievements / badges
-- Body Measurements tracking
-- Weekly Planner
-- PR Wall (enhanced)
-- WOD Timer (built-in)
-- 1RM Calculator
-- My Benchmarks section
-- Movement PRs
-- Full HYROX-specific tracking
+### After Source Recovery
+1. Set up USDA_API_KEY env var in Vercel for nutrition search
+2. Test all serverless functions locally
+3. Visual polish pass on all pages
+4. i18n completeness check
+
+### Future
+1. iOS deployment via Capacitor wrapper
+2. Cloud sync backend
+3. App Store submission
+4. HYROX-specific tracking
 
 ---
 
-## 12. Critical Files Reference
+## 10. Critical Files Reference
 
 | File | What It Does | Touch Carefully |
 |---|---|---|
-| `src/index.css` | All design tokens | Yes — changes affect whole app |
-| `src/stores/useStore.ts` | All state + DB operations | Yes — very important |
-| `src/db/database.ts` | DB schema + all seed data | Yes — schema changes need migration |
-| `src/types/index.ts` | All TypeScript types | Yes — used everywhere |
+| `src/index.css` | All design tokens | Yes |
+| `src/stores/useStore.ts` | All state + DB operations | Yes |
+| `src/db/database.ts` | DB schema + all seed data | Yes |
+| `src/types/index.ts` | All TypeScript types | Yes |
 | `src/pages/LogPage.tsx` | Most complex page | Yes |
 | `.vercel/project.json` | Vercel project linking | Do not delete |
 
 ---
 
-## 13. Session Startup Checklist
-
-At the start of every new session, Claude should:
-1. Read this document first
-2. Check what the user wants to change
-3. Note current Vercel deployment ID (safe rollback point)
-4. Make changes locally → test build → then deploy
-5. Update this document with what changed
-
----
-
-*This document is the single source of truth for the TrackVolt project. Update it every session.*
+*This document is the single source of truth. Update it every session.*

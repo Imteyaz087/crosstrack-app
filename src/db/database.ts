@@ -1,7 +1,9 @@
 import Dexie, { type EntityTable } from 'dexie'
 import type {
   DailyLog, Workout, FoodItem, MealLog,
-  MealTemplate, GroceryItem, ProgramDay, UserSettings
+  MealTemplate, GroceryItem, ProgramDay, UserSettings,
+  MovementPR, BenchmarkWod, TimerPreset, CycleEntry,
+  BodyMeasurement, HeartRateLog, PhotoLog, Achievement, NutritionCache, WeeklyPlan
 } from '../types'
 
 class CrossTrackDB extends Dexie {
@@ -13,6 +15,16 @@ class CrossTrackDB extends Dexie {
   groceryItems!: EntityTable<GroceryItem, 'id'>
   programDays!: EntityTable<ProgramDay, 'id'>
   settings!: EntityTable<UserSettings, 'id'>
+  movementPRs!: EntityTable<MovementPR, 'id'>
+  benchmarkWods!: EntityTable<BenchmarkWod, 'id'>
+  timerPresets!: EntityTable<TimerPreset, 'id'>
+  cycleEntries!: EntityTable<CycleEntry, 'id'>
+  bodyMeasurements!: EntityTable<BodyMeasurement, 'id'>
+  heartRateLogs!: EntityTable<HeartRateLog, 'id'>
+  photoLogs!: EntityTable<PhotoLog, 'id'>
+  achievements!: EntityTable<Achievement, 'id'>
+  nutritionCache!: EntityTable<NutritionCache, 'id'>
+  weeklyPlans!: EntityTable<WeeklyPlan, 'id'>
 
   constructor() {
     super('CrossTrackDB')
@@ -26,37 +38,75 @@ class CrossTrackDB extends Dexie {
       programDays: '++id, weekNumber, dayOfWeek',
       settings: '++id'
     })
+    this.version(6).stores({
+      dailyLogs: '++id, date',
+      workouts: '++id, date, workoutType, name, isBenchmark, prFlag',
+      foodLibrary: '++id, name, category, isCustom',
+      mealLogs: '++id, date, mealType, foodId',
+      mealTemplates: '++id, name, mealType',
+      groceryItems: '++id, category, weekStartDate, isChecked',
+      programDays: '++id, weekNumber, dayOfWeek',
+      settings: '++id',
+      movementPRs: '++id, movementName, category, date',
+      benchmarkWods: '++id, name, category',
+      timerPresets: '++id, name, mode',
+      cycleEntries: '++id, date',
+      bodyMeasurements: '++id, date, metric',
+      heartRateLogs: '++id, date',
+      photoLogs: '++id, date, workoutId',
+      achievements: '++id, type, unlockedAt'
+    })
+    this.version(7).stores({
+      dailyLogs: '++id, date',
+      workouts: '++id, date, workoutType, name, isBenchmark, prFlag',
+      foodLibrary: '++id, name, category, isCustom',
+      mealLogs: '++id, date, mealType, foodId',
+      mealTemplates: '++id, name, mealType',
+      groceryItems: '++id, category, weekStartDate, isChecked',
+      programDays: '++id, weekNumber, dayOfWeek',
+      settings: '++id',
+      movementPRs: '++id, movementName, category, date',
+      benchmarkWods: '++id, name, category',
+      timerPresets: '++id, name, mode',
+      cycleEntries: '++id, date',
+      bodyMeasurements: '++id, date, metric',
+      heartRateLogs: '++id, date',
+      photoLogs: '++id, date, workoutId',
+      achievements: '++id, type, unlockedAt',
+      nutritionCache: '++id, cacheKey, expiresAt',
+      weeklyPlans: '++id, weekKey, dayIndex'
+    })
   }
 }
 
 export const db = new CrossTrackDB()
 
-// Seed initial food library
+import { defaultFoodLibrary } from '../data/foodLibrary'
+import { benchmarkWodsSeed } from '../data/benchmarkWods'
+
+// Seed initial food library from production data
 export async function seedFoodLibrary() {
   const count = await db.foodLibrary.count()
   if (count > 0) return
+  await db.foodLibrary.bulkAdd(defaultFoodLibrary)
+}
 
-  const foods: Omit<FoodItem, 'id'>[] = [
-    { name: 'Chicken Breast (cooked)', nameZh: '雞胸肉（熟）', category: 'Protein', caloriesPer100g: 165, proteinPer100g: 31, carbsPer100g: 0, fatPer100g: 3.6, fiberPer100g: 0, defaultServingG: 200, isCustom: false },
-    { name: 'Lean Beef (cooked)', nameZh: '瘦牛肉（熟）', category: 'Protein', caloriesPer100g: 250, proteinPer100g: 26, carbsPer100g: 0, fatPer100g: 15, fiberPer100g: 0, defaultServingG: 200, isCustom: false },
-    { name: 'Eggs (whole, boiled)', nameZh: '雞蛋（水煮）', category: 'Protein', caloriesPer100g: 155, proteinPer100g: 13, carbsPer100g: 1.1, fatPer100g: 11, fiberPer100g: 0, defaultServingG: 50, isCustom: false },
-    { name: 'Whey Protein (1 scoop)', nameZh: '乳清蛋白（1勺）', category: 'Protein', caloriesPer100g: 400, proteinPer100g: 80, carbsPer100g: 8, fatPer100g: 4, fiberPer100g: 0, defaultServingG: 30, isCustom: false },
-    { name: 'Greek Yogurt (plain)', nameZh: '希臘優格（原味）', category: 'Protein', caloriesPer100g: 59, proteinPer100g: 10, carbsPer100g: 3.6, fatPer100g: 0.7, fiberPer100g: 0, defaultServingG: 200, isCustom: false },
-    { name: 'Rolled Oats (dry)', nameZh: '燕麥片（乾）', category: 'Carbs', caloriesPer100g: 379, proteinPer100g: 13.2, carbsPer100g: 67.7, fatPer100g: 6.5, fiberPer100g: 10.1, defaultServingG: 80, isCustom: false },
-    { name: 'Cooked Rice (white)', nameZh: '白飯（熟）', category: 'Carbs', caloriesPer100g: 130, proteinPer100g: 2.7, carbsPer100g: 28, fatPer100g: 0.3, fiberPer100g: 0.4, defaultServingG: 150, isCustom: false },
-    { name: 'Sweet Potato (cooked)', nameZh: '地瓜（熟）', category: 'Carbs', caloriesPer100g: 90, proteinPer100g: 2, carbsPer100g: 20.7, fatPer100g: 0.1, fiberPer100g: 3.3, defaultServingG: 200, isCustom: false },
-    { name: 'Banana', nameZh: '香蕉', category: 'Carbs', caloriesPer100g: 89, proteinPer100g: 1.1, carbsPer100g: 22.8, fatPer100g: 0.3, fiberPer100g: 2.6, defaultServingG: 120, isCustom: false },
-    { name: 'Apple', nameZh: '蘋果', category: 'Carbs', caloriesPer100g: 52, proteinPer100g: 0.3, carbsPer100g: 13.8, fatPer100g: 0.2, fiberPer100g: 2.4, defaultServingG: 180, isCustom: false },
-    { name: 'Rice Cake', nameZh: '米餅', category: 'Carbs', caloriesPer100g: 387, proteinPer100g: 7.4, carbsPer100g: 82, fatPer100g: 2.8, fiberPer100g: 1.2, defaultServingG: 9, isCustom: false },
-    { name: 'Honey', nameZh: '蜂蜜', category: 'Carbs', caloriesPer100g: 304, proteinPer100g: 0.3, carbsPer100g: 82.4, fatPer100g: 0, fiberPer100g: 0.2, defaultServingG: 15, isCustom: false },
-    { name: 'Broccoli', nameZh: '花椰菜', category: 'Vegetables', caloriesPer100g: 34, proteinPer100g: 2.8, carbsPer100g: 7, fatPer100g: 0.4, fiberPer100g: 2.6, defaultServingG: 150, isCustom: false },
-    { name: 'Spinach', nameZh: '菠菜', category: 'Vegetables', caloriesPer100g: 23, proteinPer100g: 2.9, carbsPer100g: 3.6, fatPer100g: 0.4, fiberPer100g: 2.2, defaultServingG: 100, isCustom: false },
-    { name: 'Mixed Vegetables', nameZh: '綜合蔬菜', category: 'Vegetables', caloriesPer100g: 65, proteinPer100g: 2.6, carbsPer100g: 13, fatPer100g: 0.3, fiberPer100g: 4.1, defaultServingG: 150, isCustom: false },
-    { name: 'Olive Oil', nameZh: '橄欖油', category: 'Fats', caloriesPer100g: 884, proteinPer100g: 0, carbsPer100g: 0, fatPer100g: 100, fiberPer100g: 0, defaultServingG: 10, isCustom: false },
-    { name: 'Almonds', nameZh: '杏仁', category: 'Fats', caloriesPer100g: 579, proteinPer100g: 21.2, carbsPer100g: 21.7, fatPer100g: 49.9, fiberPer100g: 12.2, defaultServingG: 30, isCustom: false },
-  ]
-
-  await db.foodLibrary.bulkAdd(foods)
+// Seed benchmark WODs catalog from production data
+export async function seedBenchmarkWods() {
+  const count = await db.benchmarkWods.count()
+  if (count > 0) return
+  const records: Omit<BenchmarkWod, 'id'>[] = benchmarkWodsSeed
+    .filter((w: { category: string }) => w.category !== 'custom')
+    .map((w: { name: string; category: string; description: string; wodType: string; scoreUnit: string; rxStandard: string; scaledStandard?: string }) => ({
+    name: w.name,
+    category: w.category as 'girl' | 'hero' | 'open',
+    description: w.description,
+    wodType: w.wodType as import('../types').WodType,
+    scoreUnit: w.scoreUnit as import('../types').ScoreUnit,
+    rxStandard: w.rxStandard,
+    scaledStandard: w.scaledStandard,
+  }))
+  await db.benchmarkWods.bulkAdd(records)
 }
 
 // Seed meal templates from existing plan
@@ -205,6 +255,7 @@ export async function seedSettings() {
 // Initialize all seeds
 export async function initializeDB() {
   await seedFoodLibrary()
+  await seedBenchmarkWods()
   await seedMealTemplates()
   await seedProgram()
   await seedGroceryList()

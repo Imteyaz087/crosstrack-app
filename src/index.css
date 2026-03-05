@@ -34,6 +34,34 @@
   --blue:   #60a5fa;
   --indigo: #818cf8;
   --red:    #f87171;
+
+  /* === GLASS & DEPTH SYSTEM === */
+  --glass-bg: rgba(19, 19, 30, 0.6);
+  --glass-border: rgba(200, 255, 0, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --glass-blur: blur(20px);
+  --card-radius: 16px;
+  --card-padding: 16px;
+
+  /* === ELEVATION SYSTEM === */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --shadow-glow: 0 0 20px rgba(200, 255, 0, 0.15);
+
+  /* === TRANSITION SYSTEM === */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+
+  /* === SPACING SCALE (if not already present) === */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -41,6 +69,13 @@
 html {
   -webkit-tap-highlight-color: transparent;
   color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but keep functionality */
+::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
 }
 
 body {
@@ -63,10 +98,187 @@ input[type="number"] { -moz-appearance: textfield; }
 /* iOS PWA safe area */
 .safe-area-pb { padding-bottom: env(safe-area-inset-bottom, 0px); }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 0; }
-
 /* Volt accent utility */
 .text-volt   { color: var(--volt); }
 .bg-volt     { background-color: var(--volt); }
 .border-volt { border-color: var(--border-str); }
+
+/* === GLASS CARD BASE === */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--card-radius);
+  padding: var(--card-padding);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out);
+}
+
+.glass-card:active {
+  transform: scale(0.98);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Glow variant for highlighted cards (PRs, achievements) */
+.glass-card--glow {
+  border-color: rgba(200, 255, 0, 0.2);
+  box-shadow: var(--shadow-md), var(--shadow-glow);
+}
+
+/* === SMOOTH PAGE TRANSITIONS === */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: fadeSlideIn var(--duration-slow) var(--ease-out) both;
+}
+
+/* === TAP FEEDBACK === */
+.tap-target {
+  transition: transform var(--duration-fast) var(--ease-spring);
+  cursor: pointer;
+}
+
+.tap-target:active {
+  transform: scale(0.96);
+}
+
+/* === STAGGERED CARD ENTRANCE === */
+@keyframes cardSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-1 { animation: cardSlideUp var(--duration-slow) var(--ease-out) 50ms both; }
+.stagger-2 { animation: cardSlideUp var(--duration-slow) var(--ease-out) 120ms both; }
+.stagger-3 { animation: cardSlideUp var(--duration-slow) var(--ease-out) 190ms both; }
+.stagger-4 { animation: cardSlideUp var(--duration-slow) var(--ease-out) 260ms both; }
+.stagger-5 { animation: cardSlideUp var(--duration-slow) var(--ease-out) 330ms both; }
+.stagger-6 { animation: cardSlideUp var(--duration-slow) var(--ease-out) 400ms both; }
+.stagger-7 { animation: cardSlideUp var(--duration-slow) var(--ease-out) 470ms both; }
+.stagger-8 { animation: cardSlideUp var(--duration-slow) var(--ease-out) 540ms both; }
+.stagger-9 { animation: cardSlideUp var(--duration-slow) var(--ease-out) 610ms both; }
+
+/* === MACRO BAR FILL ANIMATION === */
+@keyframes barFill {
+  from { width: 0%; }
+}
+
+.animate-bar-fill {
+  animation: barFill 800ms var(--ease-out) 300ms both;
+}
+
+/* === PULSE GLOW (for active/live elements) === */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(200, 255, 0, 0.1); }
+  50% { box-shadow: 0 0 20px rgba(200, 255, 0, 0.3); }
+}
+
+.pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+/* === NUMBER COUNT-UP EFFECT === */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-value {
+  animation: fadeInUp var(--duration-normal) var(--ease-out) 200ms both;
+}
+
+/* === STREAK BADGE BOUNCE === */
+@keyframes badgeBounce {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.animate-badge {
+  animation: badgeBounce 500ms var(--ease-spring) 400ms both;
+}
+
+/* === TAB SWITCH TRANSITION === */
+@keyframes tabContentIn {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.tab-enter {
+  animation: tabContentIn var(--duration-normal) var(--ease-out) both;
+}
+
+/* === PROGRESS BAR SHIMMER === */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.progress-shimmer {
+  background-size: 200% 100%;
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2.5s ease-in-out infinite;
+}
+
+/* === TOAST ANIMATION === */
+@keyframes toastSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-toast {
+  animation: toastSlideUp var(--duration-normal) var(--ease-out) both;
+}
+
+/* === SKELETON LOADER === */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-raised) 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    var(--bg-raised) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--card-radius);
+}

@@ -1,0 +1,7 @@
+{
+  "wods": [
+    {"id": "fran", "name": "Fran", "type": "girl", "description": "21-15-9: Thrusters & Pull-ups", "movements": ["Thruster", "Pull-up"], "rxWeights": {"male": "95 lb", "female": "65 lb"}, "scaledWeights": {"male": "65 lb", "female": "45 lb"}, "scheme": "21-15-9", "scoreType": "time", "timeCapMinutes": 10, "eliteBenchmark": {"male": "2:30", "female": "3:00"}, "goodBenchmark": {"male": "4:00", "female": "5:00"}, "averageBenchmark": {"male": "6:00", "female": "7:00"}},
+    {"id": "grace", "name": "Grace", "type": "girl", "description": "30 Clean & Jerks for time", "movements": ["Clean and Jerk"], "rxWeights": {"male": "135 lb", "female": "95 lb"}, "scaledWeights": {"male": "95 lb", "female": "65 lb"}, "scheme": "30", "scoreType": "time", "timeCapMinutes": 10, "eliteBenchmark": {"male": "1:30", "female": "2:00"}, "goodBenchmark": {"male": "2:30", "female": "3:30"}, "averageBenchmark": {"male": "4:00", "female": "5:00"}},
+    {"id": "helen", "name": "Helen", "type": "girl", "description": "3 RFT: 400m Run, 21 KB Swings, 12 Pull-ups", "movements": ["Run", "Kettlebell Swing", "Pull-up"], "rxWeights": {"male": "53/35 lb", "female": "35/26 lb"}, "scaledWeights": {"male": "35 lb", "female": "26 lb"}, "scheme": "3 RFT", "scoreType": "time", "timeCapMinutes": 15, "eliteBenchmark": {"male": "7:00", "female": "8:30"}, "goodBenchmark": {"male": "9:00", "female": "11:00"}, "averageBenchmark": {"male": "12:00", "female": "14:00"}}
+  ]
+}
