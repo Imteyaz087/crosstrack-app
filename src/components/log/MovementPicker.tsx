@@ -43,7 +43,7 @@ export function MovementPicker({
   }, [])
 
   const filteredMovements = useMemo(() => {
-    let result = allMovements
+    let result = [...allMovements]
 
     // Category filter
     if (categoryFilter !== 'all') {
@@ -107,12 +107,12 @@ export function MovementPicker({
       </div>
 
       {/* Movement list */}
-      <div className="max-h-44 overflow-y-auto">
+      <div className="max-h-[24rem] overflow-y-auto">
         {filteredMovements.map(m => (
           <button
             key={m.id}
             onClick={() => onSelectMovement(m.name)}
-            className="w-full text-left px-4 py-2 text-xs border-b border-slate-700/30 last:border-0 active:bg-slate-600/50 transition-colors flex items-center gap-2"
+            className="w-full text-left px-4 py-2.5 text-xs border-b border-slate-700/30 last:border-0 active:bg-slate-600/50 transition-colors flex items-center gap-2"
           >
             <span className="text-ct-1 font-medium">{m.name}</span>
             {m.priority === 'high' && (

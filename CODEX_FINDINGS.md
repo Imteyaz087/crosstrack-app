@@ -14,3 +14,23 @@
 - Portability update (resolved locally): added `.env.example`, updated `.gitignore` to ignore real env files while keeping `.env.example` tracked, and documented the local env setup in `README.md`. This removes the previously confirmed portability-doc gap without exposing secrets.
 - iOS readiness update (resolved locally): Capacitor 8.1.0 is now installed, `capacitor.config.ts` is present, and the native `ios/` wrapper has been created inside `TrackVolt-App`. Remaining iOS work is no longer setup/bootstrap; it is now polish, native QA, icons/splash/signing, and later macOS/Xcode build steps.
 - Capacitor verification (confirmed): `npm run cap:sync` passed on Windows. Current web assets are synced into `ios/App/App/public`, and the generated iOS project files now live entirely inside `C:\ClaudeWork\Imu\TrackVolt-App\ios`.
+- CrossFit parity update (resolved locally): `src/data/movements.json` was far behind live. It is now synced from the current live `WorkoutLogger-BYhetOm3.js` bundle and contains 165 movements across `weightlifting`, `gymnastics`, `monostructural`, `kettlebell`, `dumbbell`, `bodyweight`, and `odd-objects`.
+- Movement picker update (resolved locally): `src/components/log/MovementPicker.tsx` now clones the dataset before sorting and uses a taller scroll region so the live-sized movement library is usable on mobile.
+- WOD timer parity update (resolved locally): `src/pages/TimerPage.tsx` now follows the live timer flow instead of the older simplified preset circle. Local now has the live-style mode launcher, quick preset add/edit/delete, config screens for AMRAP/EMOM/For Time/Tabata/Rest, 10-second get-ready countdown, voice/beep cues, work/rest transitions, progress dots, and restart state.
+- Verification: `npm run build` passed after the movement-library sync and `TimerPage.tsx` replacement. No deploy was performed.
+- Cross-agent implementation note (2026-03-06): for CrossFit parity, treat live `trackvolt.app` as the contract and patch in this order:
+  1. pull the current live lazy bundle for the exact surface being fixed,
+  2. match all visible labels, controls, states, and save flows first,
+  3. only keep local enhancements if they do not remove or hide any live feature,
+  4. prefer richer UX only after live parity is intact.
+- Current CrossFit parity status:
+  - `src/pages/TimerPage.tsx` is now live-style and should be treated as the local timer baseline.
+  - `src/data/movements.json` now reflects the live-scale movement library (165 items / 7 categories).
+  - `src/components/log/MovementPicker.tsx` was adjusted to support the larger live dataset.
+  - `src/components/log/WorkoutLogger.tsx` remains intentionally richer locally; do not simplify it. If refining it further, preserve all live controls first, then improve density/polish.
+- Recommended next parity method for any remaining CrossFit mismatch:
+  - compare live screen-by-screen with screenshots and bundle inspection,
+  - patch only the exact missing interaction or layout,
+  - run `npm run build`,
+  - record the delta in `CODEX_FINDINGS.md` and `CHANGELOG_TRACKVOLT.md`.
+- Product direction note: user wants the local app to be at least as capable as live, but cleaner and richer. The safe rule is `live parity first, tasteful enhancement second`.

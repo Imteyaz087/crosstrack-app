@@ -374,3 +374,34 @@
 **Next steps:**
 1. Run a full `npm run cap:sync` verification pass
 2. Then move to iOS polish items: splash/icon completeness, safe-area QA, and native plugin review
+
+## 2026-03-06 - Session 17: CrossFit Timer + Movement Library Live Sync
+
+**Why:** User reported that live CrossFit parity was still missing in the main WOD flow, especially the WOD Timer and the movement picker inside `WOD Only`.
+
+**What changed:**
+- Re-audited the live CrossFit bundles from `https://trackvolt.app`:
+  - `TimerPage-Dv8_lL0f.js`
+  - `WorkoutLogger-BYhetOm3.js`
+- Synced `src/data/movements.json` from the live `WorkoutLogger` bundle:
+  - local movement dataset grew from 11 items to 165 items
+  - categories now match the live app surface: weightlifting, gymnastics, monostructural, kettlebell, dumbbell, bodyweight, odd-objects
+- Updated `src/components/log/MovementPicker.tsx`:
+  - clone before sorting to avoid mutating the shared movement array
+  - increase list height so the full live-sized picker is usable on mobile
+- Replaced the older simplified `src/pages/TimerPage.tsx` with the live-style WOD timer experience using the existing local timer hooks:
+  - launcher cards for `AMRAP`, `EMOM`, `For Time`, `Tabata`, and `Rest Timer`
+  - quick preset add/edit/delete flow
+  - mode-specific config screens before start
+  - 10-second get-ready countdown
+  - voice + beep cues
+  - work/rest transitions, set/round progress dots, done state, restart state
+
+**Verification:**
+- `npm run build` passed
+
+**Deploy:** NOT deployed.
+
+**Next steps:**
+1. Manual local QA of the CrossFit `WOD Only` flow with the now-full movement dataset
+2. Compare any remaining CrossFit deltas against live screenshots before touching `WorkoutLogger.tsx` again

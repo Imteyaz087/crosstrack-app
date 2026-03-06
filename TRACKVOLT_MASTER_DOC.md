@@ -446,3 +446,28 @@ Production has sub-folders and many more components:
 - Verification:
   - `npm run cap:sync` passed on Windows
   - current web assets now sync into `ios/App/App/public`
+
+### 2026-03-06 CrossFit Timer and Movement Parity
+- Re-audited the live CrossFit surface using the current production bundles:
+  - `TimerPage-Dv8_lL0f.js`
+  - `WorkoutLogger-BYhetOm3.js`
+- Confirmed two real parity gaps behind live production:
+  - local `src/pages/TimerPage.tsx` was still the older simplified timer
+  - local `src/data/movements.json` only contained 11 movements while live used a much larger picker dataset
+- Synced the full live movement dataset into `src/data/movements.json`:
+  - 165 movements
+  - 7 categories: weightlifting, gymnastics, monostructural, kettlebell, dumbbell, bodyweight, odd-objects
+- Updated `src/components/log/MovementPicker.tsx` so the larger live dataset is usable:
+  - avoid in-place sorting of the shared array
+  - increase the picker list height to better match the live overlay
+- Replaced the older local `src/pages/TimerPage.tsx` UI with the live-style WOD timer flow, backed by the existing local timer hooks:
+  - launcher cards for `AMRAP`, `EMOM`, `For Time`, `Tabata`, and `Rest Timer`
+  - quick preset list with add, edit, and delete confirmation
+  - dedicated configuration screens for each timer mode before start
+  - 10-second get-ready countdown
+  - voice + beep cues through `useTimerVoice` and `useTimerAudio`
+  - work/rest transitions, multi-set handling, EMOM rounds, Tabata rounds, and progress dots
+  - live-style running, done, and restart states
+- Verification:
+  - `npm run build` passed after the sync
+  - no deploy performed

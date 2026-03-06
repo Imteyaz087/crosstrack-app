@@ -138,3 +138,9 @@ If production breaks:
 - Generated the native `ios/` wrapper locally inside `TrackVolt-App` so the workspace remains portable.
 - Added README commands for `npm run cap:sync`, `npm run cap:copy`, and later `npx cap open ios` on macOS.
 - Verified `npm run cap:sync` passes and updates `ios/App/App/public` from the current web build.
+
+## Session Note (2026-03-06, CrossFit Timer + Movement Sync)
+- Re-checked live CrossFit parity directly against `https://trackvolt.app/assets/TimerPage-Dv8_lL0f.js` and `https://trackvolt.app/assets/WorkoutLogger-BYhetOm3.js` before editing local source.
+- Local `src/data/movements.json` now matches the current live movement picker scale with 165 movements across 7 categories.
+- Local `src/pages/TimerPage.tsx` now uses the live-style WOD timer flow: launcher cards, preset CRUD, config screens, get-ready countdown, voice/beep cues, interval transitions, and progress dots.
+- `npm run build` passed after the parity patch. No deploy was performed.
