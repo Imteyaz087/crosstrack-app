@@ -63,25 +63,20 @@ function TileGrid({ tiles, onSelectMode }: {
             bg-gradient-to-br ${halo}
             backdrop-blur-sm
             border ${border}
-            rounded-2xl p-4 pt-5
-            flex flex-col items-center gap-3
+            rounded-2xl
+            flex flex-col items-center justify-center
+            aspect-square
             active:scale-[0.93] transition-all duration-200
-            min-h-[100px]
             shadow-lg ${glow}
             group
           `}
           style={{ animationDelay: `${i * 60}ms` }}
         >
-          {/* Icon halo glow */}
-          <div className={`
-            w-11 h-11 rounded-xl
-            bg-gradient-to-br ${halo}
-            flex items-center justify-center
-            transition-transform duration-200 group-active:scale-90
-          `}>
-            <Icon size={24} strokeWidth={1.8} className={`${iconColor} drop-shadow-sm`} />
+          {/* Centered icon */}
+          <div className="flex items-center justify-center mb-2 transition-transform duration-200 group-active:scale-90">
+            <Icon size={36} strokeWidth={1.6} className={`${iconColor} drop-shadow-sm`} />
           </div>
-          <span className={`text-xs font-semibold ${iconColor}`}>{label}</span>
+          <span className={`text-[11px] font-bold ${iconColor} text-center leading-tight`}>{label}</span>
         </button>
       ))}
     </div>
@@ -125,14 +120,14 @@ export function LogModeSelector({
       {templates.length > 0 && (
         <div>
           <p className="text-[11px] uppercase tracking-[0.12em] text-ct-2 font-bold mb-3">{t('log.quickTemplates')}</p>
-          <div className="bg-ct-surface/80 backdrop-blur-sm rounded-2xl border border-ct-border overflow-hidden">
+          <div className="bg-ct-surface/80 backdrop-blur-sm rounded-ct-lg border border-ct-border overflow-hidden">
             {templates.map((tmpl, i) => (
               <button
                 key={tmpl.id}
                 onClick={() => onAddFromTemplate(tmpl)}
                 className={`
                   w-full flex items-center justify-between py-3.5 px-4
-                  active:bg-slate-700/40 transition-colors
+                  active:bg-ct-elevated/40 transition-colors
                   min-h-[52px] group
                   ${i < templates.length - 1 ? 'border-b border-ct-border/50' : ''}
                 `}
