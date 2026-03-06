@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Search } from 'lucide-react'
+import { E } from '../../utils/emoji'
 import movementData from '../../data/movements.json'
 
 interface Movement {
@@ -15,13 +16,13 @@ interface Movement {
 const allMovements: Movement[] = movementData.movements as Movement[]
 
 const categoryLabels: Record<string, string> = {
-  weightlifting: '🏋️ Weightlifting',
-  gymnastics: '🤸 Gymnastics',
-  monostructural: '🏃 Mono/Cardio',
-  kettlebell: '🔔 Kettlebell',
-  dumbbell: '💪 Dumbbell',
-  bodyweight: '🧘 Bodyweight',
-  'odd-objects': '🪨 Odd Objects',
+  weightlifting: `${E.weightlifter} Weightlifting`,
+  gymnastics: `${E.gymnast} Gymnastics`,
+  monostructural: `${E.runner} Mono/Cardio`,
+  kettlebell: `${E.bell} Kettlebell`,
+  dumbbell: `${E.muscle} Dumbbell`,
+  bodyweight: `${E.yoga} Bodyweight`,
+  'odd-objects': `${E.rock} Odd Objects`,
 }
 
 interface MovementPickerProps {
@@ -43,7 +44,7 @@ export function MovementPicker({
   }, [])
 
   const filteredMovements = useMemo(() => {
-    let result = [...allMovements]
+    let result = allMovements
 
     // Category filter
     if (categoryFilter !== 'all') {
@@ -72,7 +73,7 @@ export function MovementPicker({
   }, [movementSearch, categoryFilter])
 
   return (
-    <div className="bg-ct-elevated/50 rounded-xl border border-slate-600/50 overflow-hidden">
+    <div className="bg-ct-elevated/50 rounded-xl border border-ct-border overflow-hidden">
       {/* Search */}
       <div className="relative">
         <Search size={14} className="absolute left-3 top-2.5 text-ct-2" />
@@ -82,13 +83,13 @@ export function MovementPicker({
           onChange={e => onMovementSearchChange(e.target.value)}
           placeholder="Search 180+ movements..."
           aria-label="Search movements"
-          className="w-full bg-transparent py-2.5 pl-9 pr-3 text-ct-1 text-xs focus:outline-none focus:ring-1 focus:ring-cyan-400/30 border-b border-slate-600/50"
+          className="w-full bg-transparent py-2.5 pl-9 pr-3 text-ct-1 text-xs focus:outline-none focus:ring-1 focus:ring-cyan-400/30 border-b border-ct-border"
           autoFocus
         />
       </div>
 
       {/* Category filters */}
-      <div className="flex gap-1 px-2 py-1.5 overflow-x-auto border-b border-slate-600/30">
+      <div className="flex gap-1 px-2 py-1.5 overflow-x-auto border-b border-ct-border">
         <button
           onClick={() => setCategoryFilter('all')}
           className={`px-2 py-1 rounded text-[11px] font-bold shrink-0 ${
@@ -107,12 +108,12 @@ export function MovementPicker({
       </div>
 
       {/* Movement list */}
-      <div className="max-h-[24rem] overflow-y-auto">
+      <div className="max-h-44 overflow-y-auto">
         {filteredMovements.map(m => (
           <button
             key={m.id}
             onClick={() => onSelectMovement(m.name)}
-            className="w-full text-left px-4 py-2.5 text-xs border-b border-slate-700/30 last:border-0 active:bg-slate-600/50 transition-colors flex items-center gap-2"
+            className="w-full text-left px-4 py-2 text-xs border-b border-ct-border last:border-0 active:bg-ct-elevated/50 transition-colors flex items-center gap-2"
           >
             <span className="text-ct-1 font-medium">{m.name}</span>
             {m.priority === 'high' && (
@@ -123,7 +124,7 @@ export function MovementPicker({
         {filteredMovements.length === 0 && movementSearch && (
           <button
             onClick={() => onSelectMovement(movementSearch)}
-            className="w-full text-left px-4 py-2 text-xs text-cyan-400 font-medium active:bg-slate-600/50 transition-colors"
+            className="w-full text-left px-4 py-2 text-xs text-cyan-400 font-medium active:bg-ct-elevated/50 transition-colors"
           >+ Add "{movementSearch}"</button>
         )}
       </div>

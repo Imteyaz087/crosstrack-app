@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { X, Shield, ChevronRight, Droplets, Heart } from 'lucide-react'
+import { E } from '../../utils/emoji'
 import { PHASE_COLORS, PHASE_TRAINING, SYMPTOM_OPTIONS } from '../../hooks/useCycleTracking'
 import type { CyclePhase, CycleMood, CycleEnergy, FlowLevel, CycleLog } from '../../types'
 
@@ -25,11 +26,11 @@ interface CycleLoggerProps {
 }
 
 const MOOD_OPTIONS: { value: CycleMood; emoji: string }[] = [
-  { value: 'great', emoji: '😊' },
-  { value: 'good', emoji: '😌' },
-  { value: 'okay', emoji: '😐' },
-  { value: 'low', emoji: '😔' },
-  { value: 'bad', emoji: '😤' },
+  { value: 'great', emoji: E.face_happy },
+  { value: 'good', emoji: E.face_chill },
+  { value: 'okay', emoji: E.face_neutral },
+  { value: 'low', emoji: E.face_sad },
+  { value: 'bad', emoji: E.face_angry },
 ]
 
 const ENERGY_OPTIONS: { value: CycleEnergy; color: string }[] = [
@@ -75,7 +76,7 @@ export function CycleLogger({
   }
 
   const phaseLabel = phaseColor?.label || 'Unknown'
-  const phaseEmoji = phaseColor?.emoji || '⚪'
+  const phaseEmoji = phaseColor?.emoji || E.white_circle
 
   // Flow level options using translation keys
   const FLOW_OPTIONS: { value: FlowLevel; labelKey: string }[] = [
@@ -123,12 +124,12 @@ export function CycleLogger({
         </div>
         <div className="flex gap-2">
           <button onClick={onOpenCalendar}
-            className="w-11 h-11 rounded-xl bg-ct-surface flex items-center justify-center text-ct-2 active:text-ct-1 active:bg-slate-700"
+            className="w-11 h-11 rounded-xl bg-ct-surface flex items-center justify-center text-ct-2 active:text-ct-1 active:bg-ct-elevated"
             aria-label={t('cycle.calendar')}>
             <ChevronRight size={20} />
           </button>
           <button onClick={onClose}
-            className="w-11 h-11 rounded-xl bg-ct-surface flex items-center justify-center text-ct-2 active:text-ct-1 active:bg-slate-700"
+            className="w-11 h-11 rounded-xl bg-ct-surface flex items-center justify-center text-ct-2 active:text-ct-1 active:bg-ct-elevated"
             aria-label={t('common.close')}>
             <X size={20} />
           </button>
@@ -164,7 +165,7 @@ export function CycleLogger({
           className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold transition-all min-h-[48px] ${
             periodActive
               ? 'bg-red-500/15 text-red-400 border border-red-400/30 shadow-sm'
-              : 'bg-slate-800/40 text-ct-2 border border-slate-700/30'
+              : 'bg-ct-surface text-ct-2 border border-ct-border'
           }`}
         >
           <Droplets size={16} /> {t('cycle.periodStarted')}
@@ -174,7 +175,7 @@ export function CycleLogger({
           className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold transition-all min-h-[48px] ${
             !periodActive
               ? 'bg-green-500/15 text-green-400 border border-green-400/30 shadow-sm'
-              : 'bg-slate-800/40 text-ct-2 border border-slate-700/30'
+              : 'bg-ct-surface text-ct-2 border border-ct-border'
           }`}
         >
           <Heart size={16} /> {t('cycle.noPeriod')}
@@ -339,7 +340,7 @@ export function CycleLogger({
 
               {trainingRec.injuryNote && (
                 <p className="text-[11px] text-orange-400 bg-orange-500/10 px-2 py-1.5 rounded-lg">
-                  ⚠️ {trainingRec.injuryNote}
+                  {E.warning} {trainingRec.injuryNote}
                 </p>
               )}
             </div>

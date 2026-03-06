@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ChevronLeft, Plus, Trash2, Trophy, Footprints } from 'lucide-react'
+import { E } from '../../utils/emoji'
 import type { CardioType, DistanceUnit } from '../../types'
 
 interface CardioLoggerProps {
@@ -19,12 +20,12 @@ interface CardioLoggerProps {
 }
 
 const CARDIO_TYPES: { id: CardioType; label: string; emoji: string }[] = [
-  { id: 'run', label: 'Run', emoji: '\ud83c\udfc3' },
-  { id: 'row', label: 'Row', emoji: '\ud83d\udea3' },
-  { id: 'bike', label: 'Bike', emoji: '\ud83d\udeb4' },
-  { id: 'ski', label: 'SkiErg', emoji: '\u26f7\ufe0f' },
-  { id: 'swim', label: 'Swim', emoji: '\ud83c\udfca' },
-  { id: 'hike', label: 'Hike', emoji: '\ud83e\uddb6' },
+  { id: 'run', label: 'Run', emoji: E.runner },
+  { id: 'row', label: 'Row', emoji: E.rower },
+  { id: 'bike', label: 'Bike', emoji: E.cyclist },
+  { id: 'ski', label: 'SkiErg', emoji: E.skier },
+  { id: 'swim', label: 'Swim', emoji: E.swimmer },
+  { id: 'hike', label: 'Hike', emoji: E.boot },
 ]
 
 const QUICK_DISTANCES: Record<string, number[]> = {
@@ -103,13 +104,11 @@ export function CardioLogger({ onSave, onClose }: CardioLoggerProps) {
       {/* Cardio Type Picker */}
       <div className="flex gap-2 overflow-x-auto pb-1">
         {CARDIO_TYPES.map(ct => (
-          <button
-            key={ct.id}
-            onClick={() => setCardioType(ct.id)}
+          <button key={ct.id} onClick={() => setCardioType(ct.id)}
             className={`shrink-0 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
               cardioType === ct.id
                 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-400/40'
-                : 'bg-slate-800 text-ct-2 border border-slate-700'
+                : 'bg-ct-surface text-ct-2 border border-ct-border'
             }`}>
             <span className="mr-1">{ct.emoji}</span> {ct.label}
           </button>
@@ -120,13 +119,9 @@ export function CardioLogger({ onSave, onClose }: CardioLoggerProps) {
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border overflow-hidden">
         <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-2">Distance</p>
         <div className="flex items-center gap-2 mb-3 overflow-hidden">
-          <input
-            type="text" inputMode="decimal" pattern="[0-9.]*"
-            value={distance}
-            onChange={e => setDistance(e.target.value.replace(/[^\d.]/g, ''))}
+          <input type="text" inputMode="decimal" pattern="[0-9.]*" value={distance} onChange={e => setDistance(e.target.value.replace(/[^\d.]/g, ''))}
             placeholder="0.00" aria-label="Distance"
-            className="min-w-0 flex-1 bg-ct-elevated rounded-xl py-3 px-2 text-ct-1 text-2xl font-bold text-center focus:outline-none focus:ring-1 focus:ring-emerald-400"
-          />
+            className="min-w-0 flex-1 bg-ct-elevated rounded-xl py-3 px-2 text-ct-1 text-2xl font-bold text-center focus:outline-none focus:ring-1 focus:ring-emerald-400" />
           <div className="flex gap-1">
             {(['km', 'mi', 'm'] as DistanceUnit[]).map(u => (
               <button key={u} onClick={() => setDistanceUnit(u)}
@@ -151,21 +146,13 @@ export function CardioLogger({ onSave, onClose }: CardioLoggerProps) {
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border overflow-hidden">
         <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-2">Time</p>
         <div className="flex items-center gap-2 overflow-hidden">
-          <input
-            type="text" inputMode="numeric" pattern="[0-9]*" maxLength={3}
-            value={durationMin}
-            onChange={e => setDurationMin(e.target.value.replace(/\D/g, ''))}
+          <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={3} value={durationMin} onChange={e => setDurationMin(e.target.value.replace(/\D/g, ''))}
             placeholder="MM" aria-label="Minutes"
-            className="min-w-0 flex-1 bg-ct-elevated rounded-xl py-3 px-2 text-ct-1 text-center text-2xl font-bold focus:outline-none focus:ring-1 focus:ring-emerald-400"
-          />
+            className="min-w-0 flex-1 bg-ct-elevated rounded-xl py-3 px-2 text-ct-1 text-center text-2xl font-bold focus:outline-none focus:ring-1 focus:ring-emerald-400" />
           <span className="text-2xl text-ct-2 font-bold shrink-0">:</span>
-          <input
-            type="text" inputMode="numeric" pattern="[0-9]*" maxLength={2}
-            value={durationSec}
-            onChange={e => setDurationSec(e.target.value.replace(/\D/g, ''))}
+          <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={2} value={durationSec} onChange={e => setDurationSec(e.target.value.replace(/\D/g, ''))}
             placeholder="SS" aria-label="Seconds"
-            className="min-w-0 flex-1 bg-ct-elevated rounded-xl py-3 px-2 text-ct-1 text-center text-2xl font-bold focus:outline-none focus:ring-1 focus:ring-emerald-400"
-          />
+            className="min-w-0 flex-1 bg-ct-elevated rounded-xl py-3 px-2 text-ct-1 text-center text-2xl font-bold focus:outline-none focus:ring-1 focus:ring-emerald-400" />
         </div>
         {/* Auto-calculated pace */}
         {pace && (
@@ -181,13 +168,9 @@ export function CardioLogger({ onSave, onClose }: CardioLoggerProps) {
         <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border overflow-hidden">
           <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-2">Elevation Gain (optional)</p>
           <div className="flex items-center gap-2 overflow-hidden">
-            <input
-              type="text" inputMode="numeric" pattern="[0-9]*"
-              value={elevation}
-              onChange={e => setElevation(e.target.value.replace(/\D/g, ''))}
+            <input type="text" inputMode="numeric" pattern="[0-9]*" value={elevation} onChange={e => setElevation(e.target.value.replace(/\D/g, ''))}
               placeholder="0" aria-label="Elevation gain"
-              className="min-w-0 flex-1 bg-ct-elevated rounded-xl py-2.5 px-2 text-ct-1 text-center focus:outline-none focus:ring-1 focus:ring-emerald-400"
-            />
+              className="min-w-0 flex-1 bg-ct-elevated rounded-xl py-2.5 px-2 text-ct-1 text-center focus:outline-none focus:ring-1 focus:ring-emerald-400" />
             <span className="text-sm text-ct-2 shrink-0">m</span>
           </div>
         </div>
@@ -195,25 +178,23 @@ export function CardioLogger({ onSave, onClose }: CardioLoggerProps) {
 
       {/* Splits (collapsible) */}
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
-        <button onClick={() => setShowSplits(!showSplits)} className="w-full flex items-center justify-between">
+        <button onClick={() => setShowSplits(!showSplits)}
+          className="w-full flex items-center justify-between">
           <p className="text-sm font-semibold text-ct-1">Splits</p>
-          <span className="text-xs text-ct-2">{showSplits ? 'Hide' : 'Optional \u2014 tap to add'}</span>
+          <span className="text-xs text-ct-2">{showSplits ? 'Hide' : 'Optional — tap to add'}</span>
         </button>
         {showSplits && (
           <div className="mt-3 space-y-2">
             {splits.map((split, idx) => (
               <div key={idx} className="flex items-center gap-2">
                 <span className="text-xs text-ct-2 w-5 text-center">{idx + 1}</span>
-                <input
-                  value={split}
-                  onChange={e => updateSplit(idx, e.target.value)}
-                  placeholder="e.g. 5:30"
-                  className="flex-1 bg-ct-elevated rounded-lg py-1.5 px-2 text-ct-1 text-sm text-center focus:outline-none focus:ring-1 focus:ring-emerald-400"
-                />
+                <input value={split} onChange={e => updateSplit(idx, e.target.value)}
+                  placeholder="e.g. 5:30" className="flex-1 bg-ct-elevated rounded-lg py-1.5 px-2 text-ct-1 text-sm text-center focus:outline-none focus:ring-1 focus:ring-emerald-400" />
                 <button onClick={() => removeSplit(idx)} className="text-ct-2 p-1" aria-label="Remove split"><Trash2 size={14} /></button>
               </div>
             ))}
-            <button onClick={addSplit} className="w-full flex items-center justify-center gap-1 py-2 text-xs text-emerald-400 font-medium">
+            <button onClick={addSplit}
+              className="w-full flex items-center justify-center gap-1 py-2 text-xs text-emerald-400 font-medium">
               <Plus size={14} /> Add Split
             </button>
           </div>
@@ -222,27 +203,20 @@ export function CardioLogger({ onSave, onClose }: CardioLoggerProps) {
 
       {/* PR Flag + Notes */}
       <div className="flex gap-3">
-        <button
-          onClick={() => setPrFlag(!prFlag)}
+        <button onClick={() => setPrFlag(!prFlag)}
           className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${
-            prFlag
-              ? 'bg-red-500/20 text-red-400 border border-red-400/40'
-              : 'bg-slate-800 text-ct-2 border border-slate-700'
+            prFlag ? 'bg-red-500/20 text-red-400 border border-red-400/40' : 'bg-ct-surface text-ct-2 border border-ct-border'
           }`}>
           <Trophy size={14} /> PR
         </button>
-        <input
-          value={notes}
-          onChange={e => setNotes(e.target.value)}
+        <input value={notes} onChange={e => setNotes(e.target.value)}
           placeholder="Notes (optional)"
-          className="flex-1 bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-ct-1 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400"
-        />
+          className="flex-1 bg-ct-surface border border-ct-border rounded-xl py-2.5 px-3 text-ct-1 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400" />
       </div>
 
-      {/* Save */}
+      {/* Save — sticky at bottom */}
       <div className="sticky-save">
-        <button
-          onClick={handleSave}
+        <button onClick={handleSave}
           disabled={!distance || (!durationMin && !durationSec)}
           className={`w-full py-4 rounded-xl font-bold text-base transition-all ${
             distance && (durationMin || durationSec)

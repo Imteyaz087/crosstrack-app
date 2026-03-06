@@ -5,6 +5,7 @@
 
 import { useState } from 'react'
 import { CheckCircle2, AlertTriangle, MapPin, StickyNote } from 'lucide-react'
+import { E } from '../../utils/emoji'
 import type { WodType, RxScaled } from '../../types'
 import type { EventTemplate, EventCategory } from '../../types/eventTypes'
 import { today } from '../../utils/macros'
@@ -163,7 +164,7 @@ export function EventScoreEntry({ template, customTitle, customWodType, customLi
 
       {/* Date */}
       <div>
-        <label className="text-[11px] uppercase tracking-wider text-ct-3 font-semibold">Date</label>
+        <label className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold">Date</label>
         <input
           type="date"
           value={date}
@@ -175,7 +176,7 @@ export function EventScoreEntry({ template, customTitle, customWodType, customLi
       {/* Score entry — depends on WOD type */}
       {isForTime && (
         <div className="space-y-3">
-          <label className="text-[11px] uppercase tracking-wider text-ct-3 font-semibold">Did you finish?</label>
+          <label className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold">Did you finish?</label>
           <div className="flex gap-2">
             <button
               onClick={() => setFinished(true)}
@@ -197,7 +198,7 @@ export function EventScoreEntry({ template, customTitle, customWodType, customLi
 
           {finished ? (
             <div>
-              <label className="text-[11px] uppercase tracking-wider text-ct-3 font-semibold">Final Time</label>
+              <label className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold">Final Time</label>
               <div className="flex gap-2 mt-1">
                 <div className="flex-1 relative">
                   <input
@@ -224,7 +225,7 @@ export function EventScoreEntry({ template, customTitle, customWodType, customLi
             </div>
           ) : (
             <div>
-              <label className="text-[11px] uppercase tracking-wider text-ct-3 font-semibold">Reps at cap</label>
+              <label className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold">Reps at cap</label>
               <input
                 type="number"
                 value={reps}
@@ -239,7 +240,7 @@ export function EventScoreEntry({ template, customTitle, customWodType, customLi
 
       {isAMRAP && (
         <div>
-          <label className="text-[11px] uppercase tracking-wider text-ct-3 font-semibold">Score (Rounds + Reps)</label>
+          <label className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold">Score (Rounds + Reps)</label>
           <div className="flex gap-2 mt-1">
             <div className="flex-1 relative">
               <input
@@ -268,7 +269,7 @@ export function EventScoreEntry({ template, customTitle, customWodType, customLi
 
       {!isForTime && !isAMRAP && (
         <div>
-          <label className="text-[11px] uppercase tracking-wider text-ct-3 font-semibold">Time (optional)</label>
+          <label className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold">Time (optional)</label>
           <div className="flex gap-2 mt-1">
             <div className="flex-1 relative">
               <input type="number" value={timeMin} onChange={(e) => setTimeMin(e.target.value)} placeholder="0"
@@ -286,7 +287,7 @@ export function EventScoreEntry({ template, customTitle, customWodType, customLi
 
       {/* RX / Scaled */}
       <div>
-        <label className="text-[11px] uppercase tracking-wider text-ct-3 font-semibold">Performance</label>
+        <label className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold">Performance</label>
         <div className="flex gap-2 mt-1">
           {(['RX', 'Scaled', 'Elite'] as RxScaled[]).map(opt => (
             <button
@@ -313,7 +314,7 @@ export function EventScoreEntry({ template, customTitle, customWodType, customLi
           prFlag ? 'bg-yellow-500/15 border border-yellow-400/30' : 'bg-ct-surface border border-ct-border'
         }`}
       >
-        <span className="text-lg">{prFlag ? '🏆' : '🏅'}</span>
+        <span className="text-lg">{prFlag ? E.trophy : E.medal}</span>
         <span className={`text-sm font-semibold ${prFlag ? 'text-yellow-400' : 'text-ct-2'}`}>
           {prFlag ? 'PR! New personal record' : 'Mark as PR?'}
         </span>
@@ -321,7 +322,7 @@ export function EventScoreEntry({ template, customTitle, customWodType, customLi
 
       {/* Location */}
       <div>
-        <label className="text-[11px] uppercase tracking-wider text-ct-3 font-semibold flex items-center gap-1">
+        <label className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold flex items-center gap-1">
           <MapPin size={12} /> Location (optional)
         </label>
         <input
@@ -335,7 +336,7 @@ export function EventScoreEntry({ template, customTitle, customWodType, customLi
 
       {/* Notes */}
       <div>
-        <label className="text-[11px] uppercase tracking-wider text-ct-3 font-semibold flex items-center gap-1">
+        <label className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold flex items-center gap-1">
           <StickyNote size={12} /> Notes (optional)
         </label>
         <textarea

@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Search, Star, Shield, Trophy, Zap, X } from 'lucide-react'
+import { E } from '../../utils/emoji'
 import benchmarkData from '../../data/benchmarkWods.json'
 
 export interface BenchmarkWod {
@@ -53,7 +54,7 @@ export function BenchmarkWodPicker({ searchValue, onSelect, onClose }: Benchmark
   }, [filter, localSearch])
 
   return (
-    <div className="bg-slate-800/95 rounded-ct-lg border border-cyan-400/20 overflow-hidden">
+    <div className="bg-ct-surface/95 rounded-ct-lg border border-cyan-400/20 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-ct-border">
         <p className="text-xs font-bold text-cyan-400 uppercase tracking-wider">Benchmark WODs</p>
@@ -75,17 +76,22 @@ export function BenchmarkWodPicker({ searchValue, onSelect, onClose }: Benchmark
 
       {/* Type filters */}
       <div className="flex gap-1.5 px-3 py-2 overflow-x-auto">
-        <button onClick={() => setFilter('all')} className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold shrink-0 ${
-          filter === 'all' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/40' : 'bg-ct-elevated text-ct-2'
-        }`}
+        <button
+          onClick={() => setFilter('all')}
+          className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold shrink-0 ${
+            filter === 'all' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/40' : 'bg-ct-elevated text-ct-2'
+          }`}
         >All ({wods.length})</button>
         {Object.entries(typeConfig).map(([key, cfg]) => {
           const count = wods.filter(w => w.type === key).length
           if (count === 0) return null
           return (
-            <button key={key} onClick={() => setFilter(key)} className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold shrink-0 ${
-              filter === key ? `${cfg.color} border` : 'bg-ct-elevated text-ct-2'
-            }`}
+            <button
+              key={key}
+              onClick={() => setFilter(key)}
+              className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold shrink-0 ${
+                filter === key ? `${cfg.color} border` : 'bg-ct-elevated text-ct-2'
+              }`}
             >{cfg.label} ({count})</button>
           )
         })}
@@ -103,7 +109,7 @@ export function BenchmarkWodPicker({ searchValue, onSelect, onClose }: Benchmark
             <button
               key={wod.id}
               onClick={() => onSelect(wod)}
-              className="w-full text-left px-3 py-2.5 border-b border-slate-700/30 last:border-0 active:bg-ct-elevated/50 transition-colors"
+              className="w-full text-left px-3 py-2.5 border-b border-ct-border last:border-0 active:bg-ct-elevated/50 transition-colors"
             >
               <div className="flex items-start gap-2">
                 <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${cfg.color}`}>
@@ -122,7 +128,7 @@ export function BenchmarkWodPicker({ searchValue, onSelect, onClose }: Benchmark
                       RX: {wod.rxWeights.male}
                     </span>
                     <span className="text-[11px] text-ct-2">
-                      {wod.scoreType === 'time' ? '⏱️ For Time' : wod.scoreType === 'rounds+reps' ? '🔄 AMRAP' : `📊 ${wod.scoreType}`}
+                      {wod.scoreType === 'time' ? `${E.timer} For Time` : wod.scoreType === 'rounds+reps' ? `${E.refresh} AMRAP` : `${E.chart} ${wod.scoreType}`}
                     </span>
                   </div>
                 </div>
@@ -156,7 +162,7 @@ export function BenchmarkSuggestions({ query, onSelect }: { query: string; onSel
           <button
             key={wod.id}
             onClick={() => onSelect(wod)}
-            className="w-full text-left px-3 py-2 border-b border-slate-700/30 last:border-0 active:bg-slate-600/50 flex items-center gap-2"
+            className="w-full text-left px-3 py-2 border-b border-ct-border last:border-0 active:bg-ct-elevated/50 flex items-center gap-2"
           >
             <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${cfg.color}`}>
               {cfg.label.slice(0, 1)}
