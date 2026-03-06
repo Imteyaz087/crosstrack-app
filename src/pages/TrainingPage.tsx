@@ -53,14 +53,14 @@ export function TrainingPage() {
             const hasWorkout = workoutDates.has(dateStr)
             const isToday = isDateToday(day)
             return (
-              <div key={dateStr} className={`min-h-[44px] flex items-center justify-center rounded-lg text-xs transition-colors ${
+              <button key={dateStr} aria-label={format(day, 'MMMM d, yyyy')} className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-xs transition-colors ${
                 isToday ? 'bg-cyan-500 text-slate-900 font-bold'
                 : hasWorkout ? 'bg-green-500/20 text-green-400 font-medium'
                 : isSunday ? 'bg-slate-700/30 text-ct-2'
                 : 'text-ct-2'
               }`}>
                 {day.getDate()}
-              </div>
+              </button>
             )
           })}
         </div>
