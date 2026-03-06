@@ -406,7 +406,7 @@ export function TodayPage() {
           score={readiness.score!}
           status={readiness.status!}
           recommendation={readiness.recommendation!}
-          factorsBreakdown={readiness.factorsBreakdown}
+          factorsBreakdown={readiness.factorsBreakdown ?? undefined}
           onLogNow={() => setActiveTab('log')}
         />
       ) : (

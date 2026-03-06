@@ -91,12 +91,15 @@ export function ReadinessCard({
   status,
   recommendation,
   factorsBreakdown,
+  onLogNow: _onLogNow,
 }: ReadinessCardProps) {
   const { t } = useTranslation()
   const [expanded, setExpanded] = useState(false)
   const animatedScore = useCountUp(score, 800)
+  void _onLogNow // reserved for future use
 
   const config = STATUS_CONFIG[status]
+  void config.icon // StatusIcon reserved for future use
 
   // Arc offset: full = hidden, 0 = full semicircle shown
   const arcOffset = ARC_CIRCUMFERENCE * (1 - score / 100)

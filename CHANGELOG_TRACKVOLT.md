@@ -647,3 +647,13 @@
   - test coverage is nearly absent
   - iOS/App Store blockers still remain outside the web build
 - Recommended order remains: stabilize engineering quality, clear launch blockers, then improve the Today decision layer and event/benchmark retention surfaces.
+
+## 2026-03-07
+- Added a new product note to `CODEX_FINDINGS.md` based on the user's Lose It inspiration and Taiwan/China nutrition-data priorities.
+- Main recommendation to Claude:
+  - yes to easier meal logging
+  - yes to official Taiwan nutrition data immediately
+  - yes to Apple Health / Health Connect import planning
+  - yes to weight/fat-loss goal projection
+  - yes to exercise search/create, but only as a hybrid-athlete exercise library rather than a generic calorie-burn module
+- Important nuance recorded: Taiwan data looks immediately actionable from official open data, while mainland China nutrition data likely needs a more careful/possibly licensed approach.

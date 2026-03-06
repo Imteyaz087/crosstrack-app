@@ -621,3 +621,13 @@ Production has sub-folders and many more components:
   2. Today-page decision quality
   3. event/benchmark retention depth
   4. share/motivation improvements
+
+## 2026-03-07 - Lose It inspired priorities
+- User highlighted Lose It as a useful benchmark for easier meal logging, health sync, and goal projection.
+- Recommended TrackVolt adaptations:
+  - make nutrition logging materially faster
+  - prioritize official Taiwan nutrition data now
+  - improve Simplified/Traditional Chinese food search and labels
+  - plan Apple Health / Health Connect imports
+  - add weight/fat-loss goal projection that protects athletic performance
+  - later add an exercise library with search/create/favorites inside the hybrid-athlete workflow

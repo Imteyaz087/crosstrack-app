@@ -1581,3 +1581,223 @@ The world-class version of TrackVolt is not `more pages`. It is a trusted daily 
 5. Deepen event/benchmark intelligence
 6. Strengthen share/motivation loop
 7. Only then expand into broader innovation bets
+
+## 2026-03-07 - Lose It inspiration: what TrackVolt should adopt
+
+### User-priority note
+The user explicitly highlighted Lose It as a strong inspiration source for TrackVolt, especially in four areas:
+1. easier food logging
+2. East Asian nutrition data (Taiwan Traditional Chinese + China Simplified Chinese)
+3. Apple Health / other health-data sync
+4. goal projection for fat loss over time
+
+### Recommendation summary
+Yes - TrackVolt should adopt several Lose It patterns, but adapted to the hybrid-athlete use case instead of becoming a calorie app clone.
+
+### 1) Exercise library: Should TrackVolt add gym / search exercise / create exercise?
+Recommendation: **yes, but not as a separate generic calorie-burn module.**
+
+Best TrackVolt version:
+- `My Exercises`
+- `Search Exercises`
+- `Create Exercise`
+- optional `Recent Exercises`
+
+Why:
+- useful for accessory/gym work not covered by benchmark/WOD flows
+- helps hybrid athletes log strength support work cleanly
+- custom exercise creation is especially important for local naming differences and specialty movements
+
+What NOT to copy from Lose It:
+- do not make this mainly about estimated calories burned
+- do not turn TrackVolt into a generic exercise-calorie tracker
+
+Best implementation path:
+- add an exercise library layer under `Train` / `Log`, not a new top-level app identity
+- likely files:
+  - `src/components/log/WorkoutLogger.tsx`
+  - `src/pages/TrainingPage.tsx`
+  - `src/stores/useStore.ts`
+  - `src/types/index.ts`
+- v1 should support:
+  - save custom exercise name
+  - category (strength / cardio / machine / accessory / mobility)
+  - default unit (kg, reps, distance, time)
+  - favorite / recent
+
+### 2) Meal logging must become easier
+This is the strongest valid inspiration from Lose It.
+
+Current local reality:
+- TrackVolt already has search, barcode scan, custom food creation, and meal logging UI in:
+  - `src/components/log/MealLogger.tsx`
+  - `src/components/log/BarcodeScanner.tsx`
+  - `src/components/log/CustomFoodCreator.tsx`
+  - `src/pages/NutritionPage.tsx`
+- The bigger problem is not absence of features; it is that the data trust and local-food flow are not strong enough yet.
+
+What TrackVolt should copy in pattern:
+- faster add-food flow
+- stronger favorites / recents / meal clone behavior
+- lower-friction search results
+- better day-level goal context
+- visible progress projection
+
+Immediate nutrition UX upgrades recommended:
+1. favorites-first food picker
+2. recent foods by meal type
+3. one-tap meal clone / yesterday clone
+4. local-brand search aliases in Traditional and Simplified Chinese
+5. macro-first quick add for packaged foods with no database match
+6. stronger barcode review flow for partial products
+
+### 3) Taiwan + China food database priority
+Recommendation: **yes, Taiwan data should be immediate. China data should be planned carefully and may require licensing.**
+
+Taiwan:
+- Strong immediate opportunity.
+- Official source exists: Taiwan `Nutrition Information Database` on government open data / TFDA-backed API path.
+- Source checked:
+  - `https://data.gov.tw/en/datasets/8543`
+- This is the best near-term move for local trust.
+
+Mainland China:
+- Important market/user need, but more complex.
+- I did not confirm a comparably easy official open nutrition API with the same clarity as Taiwan's open dataset.
+- Recommendation:
+  1. do Taiwan first with official government data
+  2. for mainland China, use a staged approach:
+     - simplified-Chinese search support immediately
+     - user-created/custom foods immediately
+     - label/barcode OCR review flow immediately
+     - licensed/authoritative nutrition dataset later if needed
+
+Important wording note:
+- Taiwan has TFDA/open-government nutrition data.
+- For mainland China, do not casually call it `FDA data`; treat it as a separate regulatory/data-source problem.
+
+Implementation path for East Asian nutrition support:
+- add multilingual aliases to food items (`nameZhTW`, `nameZhCN`, pinyin/alt names if useful)
+- make search match:
+  - Traditional Chinese
+  - Simplified Chinese
+  - English brand/common names
+- add source labels on foods:
+  - official Taiwan dataset
+  - barcode import
+  - user-created
+  - estimated/manual
+- likely files:
+  - `src/components/log/MealLogger.tsx`
+  - `src/components/log/CustomFoodCreator.tsx`
+  - `src/components/log/BarcodeScanner.tsx`
+  - `src/stores/useStore.ts`
+  - `src/types/index.ts`
+  - nutrition API/service layer
+
+### 4) Apple Health / other health sync
+Recommendation: **yes, this is one of the highest-value post-launch upgrades.**
+
+Why:
+- Apple Health already aggregates steps, workouts, sleep, and other health data from iPhone, Apple Watch, and compatible apps.
+- Health Connect plays the same role on Android.
+- TrackVolt should use these as import hubs instead of trying to connect to every device first.
+
+Sources checked:
+- Apple Health app overview and data aggregation:
+  - `https://support.apple.com/en-us/104997`
+  - `https://support.apple.com/en-us/108779`
+- Android Health Connect:
+  - `https://developer.android.com/health-and-fitness/health-connect/get-started`
+  - `https://developer.android.com/health-and-fitness/health-connect/features/steps`
+  - `https://developer.android.com/health-and-fitness/health-connect/features/exercise-routes`
+
+Recommended sync order:
+1. Apple Health import for iOS
+2. Health Connect import for Android
+3. steps
+4. workouts / exercise sessions
+5. sleep
+6. weight/body metrics
+7. optional heart-rate fields later
+
+Important product rule:
+- imported data should support TrackVolt decisions, not overwhelm the UI.
+- TrackVolt should enrich imported data with hybrid-athlete insight.
+
+### 5) Lose It style goal projection
+Recommendation: **yes, absolutely. This is high-value and low-cost.**
+
+This is one of the best ideas the user surfaced.
+
+TrackVolt should ask:
+- current weight
+- target weight or body-fat goal
+- desired pace (`slow / moderate / aggressive`)
+- deadline or time preference
+- training frequency
+
+Then TrackVolt should project:
+- weekly target change
+- estimated date to goal
+- suggested calorie range / macro targets
+- adjustment warnings if pace is too aggressive for current training load
+
+Why this fits TrackVolt better than Lose It:
+- TrackVolt can combine body goal + training load + recovery + performance protection.
+- That is a better athlete product than generic fat-loss projection.
+
+Implementation path:
+- onboarding / settings goal wizard
+- projection cards on Today / Goals / Progress
+- rolling weekly update from actual trend, not static target only
+- likely files:
+  - `src/pages/OnboardingPage.tsx`
+  - `src/pages/SettingsPage.tsx`
+  - `src/pages/TodayPage.tsx`
+  - `src/pages/ProgressPage.tsx`
+  - `src/stores/useStore.ts`
+
+### What should be immediate vs later
+Immediate / near-term:
+1. improve nutrition logging speed
+2. integrate official Taiwan nutrition data
+3. add better Traditional/Simplified Chinese food search aliases
+4. add one-tap meal clone / favorites / recents
+5. add goal projection for weight/fat-loss targets
+6. prepare Apple Health import plan
+
+Soon after launch:
+1. Apple Health import
+2. Health Connect import
+3. exercise library with search/create/favorites
+4. stronger barcode/OCR review flow
+
+Later:
+1. licensed or deeper mainland China nutrition dataset if required
+2. broader device ecosystem imports
+3. more advanced adaptive calorie/macro projection
+
+### Cost / buy vs build view
+No immediate paid service required for:
+- exercise library / custom exercise creation
+- goal projection
+- favorites / recents / meal clone
+- Taiwan official nutrition data integration
+- Apple Health import
+- Health Connect import
+
+Possible future spend:
+- mainland China nutrition dataset licensing if an official/open source is not sufficient
+- better OCR / vision service for food labels or meal scans at scale
+- broader commercial barcode/nutrition coverage if local government/open data is not enough
+
+### Bottom line
+The user's Lose It-inspired requests are directionally correct.
+The highest-value adaptations for TrackVolt are:
+1. much easier meal logging
+2. official Taiwan nutrition data immediately
+3. Simplified/Traditional Chinese food search quality
+4. Apple Health / Health Connect import
+5. weight/fat-loss goal projection
+6. later: custom exercise library inside TrackVolt's hybrid-athlete workflow
