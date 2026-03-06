@@ -27,7 +27,7 @@ export function OnboardingPage() {
 
   const steps = [
     // Step 0: Welcome
-    <div key="welcome" className="text-center space-y-8">
+    <div key="welcome" className="text-center space-y-8 stagger-children">
       <div className="w-24 h-24 mx-auto rounded-2xl flex items-center justify-center overflow-hidden" style={{background: '#161B22'}}>
         <svg viewBox="0 0 512 512" className="w-20 h-20">
           <defs>
@@ -46,30 +46,30 @@ export function OnboardingPage() {
       </div>
       <div className="flex gap-3 justify-center">
         <button onClick={() => { setLanguage('en'); i18n.changeLanguage('en') }}
-          className={`px-6 py-3 rounded-xl text-sm font-semibold transition-colors ${language === 'en' ? 'bg-cyan-500 text-slate-900' : 'bg-slate-800 text-ct-2 border border-slate-700'}`}>English</button>
+          className={`px-6 py-3 rounded-xl text-sm font-semibold transition-colors card-press ${language === 'en' ? 'bg-cyan-500 text-slate-900' : 'bg-ct-surface text-ct-2 border border-ct-border'}`}>English</button>
         <button onClick={() => { setLanguage('zh-TW'); i18n.changeLanguage('zh-TW') }}
-          className={`px-6 py-3 rounded-xl text-sm font-semibold transition-colors ${language === 'zh-TW' ? 'bg-cyan-500 text-slate-900' : 'bg-slate-800 text-ct-2 border border-slate-700'}`}>繁體中文</button>
+          className={`px-6 py-3 rounded-xl text-sm font-semibold transition-colors card-press ${language === 'zh-TW' ? 'bg-cyan-500 text-slate-900' : 'bg-ct-surface text-ct-2 border border-ct-border'}`}>{'\u7E41\u9AD4\u4E2D\u6587'}</button>
         <button onClick={() => { setLanguage('zh-CN'); i18n.changeLanguage('zh-CN') }}
-          className={`px-6 py-3 rounded-xl text-sm font-semibold transition-colors ${language === 'zh-CN' ? 'bg-cyan-500 text-slate-900' : 'bg-slate-800 text-ct-2 border border-slate-700'}`}>简体中文</button>
+          className={`px-6 py-3 rounded-xl text-sm font-semibold transition-colors card-press ${language === 'zh-CN' ? 'bg-cyan-500 text-slate-900' : 'bg-ct-surface text-ct-2 border border-ct-border'}`}>{'\u7B80\u4F53\u4E2D\u6587'}</button>
       </div>
     </div>,
 
     // Step 1: Name + age + gender
-    <div key="name" className="space-y-6">
+    <div key="name" className="space-y-6 stagger-children">
       <div>
         <h2 className="text-2xl font-bold text-ct-1">{t('onboarding.aboutYou')}</h2>
         <p className="text-sm text-ct-2 mt-1">{t('onboarding.whatName')}</p>
       </div>
       <input value={name} onChange={e => setName(e.target.value)} placeholder={t('onboarding.namePlaceholder')}
-        className="w-full bg-slate-800 border border-slate-700 rounded-xl py-4 px-4 text-ct-1 text-lg focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30" autoFocus />
+        className="w-full bg-ct-surface border border-ct-border rounded-xl py-4 px-4 text-ct-1 text-lg focus:outline-none focus:ring-1 focus:ring-cyan-400" autoFocus />
       <input value={age} onChange={e => setAge(e.target.value.replace(/\D/g, ''))} type="text" inputMode="numeric" pattern="[0-9]*" maxLength={3} placeholder={t('onboarding.agePlaceholder')}
-        className="w-full bg-slate-800 border border-slate-700 rounded-xl py-4 px-4 text-ct-1 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30" />
+        className="w-full bg-ct-surface border border-ct-border rounded-xl py-4 px-4 text-ct-1 focus:outline-none focus:ring-1 focus:ring-cyan-400" />
       <div>
         <p className="text-sm text-ct-2 mb-3">{t('onboarding.genderLabel')}</p>
         <div className="grid grid-cols-2 gap-2">
           {(['male', 'female', 'other', 'prefer_not_to_say'] as Gender[]).map(g => (
             <button key={g} onClick={() => setGender(g)}
-              className={`px-4 py-3 rounded-xl text-sm font-medium transition-colors ${gender === g ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/40' : 'bg-slate-800 text-ct-2 border border-slate-700'}`}>
+              className={`px-4 py-3 rounded-xl text-sm font-medium transition-colors card-press ${gender === g ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/40' : 'bg-ct-surface text-ct-2 border border-ct-border'}`}>
               {g === 'prefer_not_to_say' ? t('onboarding.ratherNotSay') : t(`onboarding.${g}`)}
             </button>
           ))}
@@ -78,7 +78,7 @@ export function OnboardingPage() {
     </div>,
 
     // Step 2: Body
-    <div key="body" className="space-y-6">
+    <div key="body" className="space-y-6 stagger-children">
       <div>
         <h2 className="text-2xl font-bold text-ct-1">{t('onboarding.yourBody')}</h2>
         <p className="text-sm text-ct-2 mt-1">{t('onboarding.bodyDesc')}</p>
@@ -87,21 +87,21 @@ export function OnboardingPage() {
         <div className="flex-1 space-y-2">
           <label className="text-xs text-ct-2 font-medium uppercase tracking-wider">{t('onboarding.weightKg')}</label>
           <input value={weight} onChange={e => setWeight(e.target.value.replace(/[^\d.]/g, ''))} type="text" inputMode="decimal" pattern="[0-9.]*" placeholder={t('onboarding.weightPlaceholder')}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl py-4 px-4 text-ct-1 text-2xl text-center focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30" />
+            className="w-full bg-ct-surface border border-ct-border rounded-xl py-4 px-4 text-ct-1 text-2xl text-center focus:outline-none focus:ring-1 focus:ring-cyan-400" />
         </div>
         <div className="flex-1 space-y-2">
           <label className="text-xs text-ct-2 font-medium uppercase tracking-wider">{t('onboarding.heightCm')}</label>
           <input value={height} onChange={e => setHeight(e.target.value.replace(/\D/g, ''))} type="text" inputMode="numeric" pattern="[0-9]*" placeholder={t('onboarding.heightPlaceholder')}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl py-4 px-4 text-ct-1 text-2xl text-center focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30" />
+            className="w-full bg-ct-surface border border-ct-border rounded-xl py-4 px-4 text-ct-1 text-2xl text-center focus:outline-none focus:ring-1 focus:ring-cyan-400" />
         </div>
       </div>
-      <div className="bg-slate-800/50 rounded-xl p-4 border border-ct-border">
+      <div className="bg-ct-surface/50 rounded-xl p-4 border border-ct-border">
         <p className="text-xs text-ct-2 text-center">{t('onboarding.autoCalcNote')}</p>
       </div>
     </div>,
 
     // Step 3: Experience + Goal
-    <div key="goals" className="space-y-6">
+    <div key="goals" className="space-y-6 stagger-children">
       <h2 className="text-2xl font-bold text-ct-1">{t('onboarding.yourTraining')}</h2>
       <div>
         <p className="text-sm text-ct-2 mb-3">{t('onboarding.experience')}</p>
@@ -113,7 +113,7 @@ export function OnboardingPage() {
             { v: 'elite' as ExperienceLevel, d: t('onboarding.exp7plus') },
           ]).map(({ v, d }) => (
             <button key={v} onClick={() => setExperience(v)}
-              className={`p-4 rounded-xl text-left transition-colors ${experience === v ? 'bg-cyan-500/20 border-cyan-400/40 border' : 'bg-slate-800 border border-slate-700'}`}>
+              className={`p-4 rounded-xl text-left transition-colors card-press ${experience === v ? 'bg-cyan-500/20 border-cyan-400/40 border' : 'bg-ct-surface border border-ct-border'}`}>
               <p className={`text-sm font-bold ${experience === v ? 'text-cyan-400' : 'text-ct-1'}`}>{t(`onboarding.${v}`)}</p>
               <p className="text-xs text-ct-2 mt-0.5">{d}</p>
             </button>
@@ -124,15 +124,15 @@ export function OnboardingPage() {
         <p className="text-sm text-ct-2 mb-3">{t('onboarding.primaryGoal')}</p>
         <div className="grid grid-cols-2 gap-2">
           {([
-            { v: 'fat_loss' as Goal, k: 'fatLoss', e: '🔥' },
-            { v: 'muscle_gain' as Goal, k: 'muscleGain', e: '💪' },
-            { v: 'performance' as Goal, k: 'performance', e: '⚡' },
-            { v: 'recomp' as Goal, k: 'recomp', e: '🔄' },
-            { v: 'endurance' as Goal, k: 'endurance', e: '🏃' },
-            { v: 'general_health' as Goal, k: 'generalHealth', e: '❤️' },
+            { v: 'fat_loss' as Goal, k: 'fatLoss', e: String.fromCodePoint(0x1F525) },
+            { v: 'muscle_gain' as Goal, k: 'muscleGain', e: String.fromCodePoint(0x1F4AA) },
+            { v: 'performance' as Goal, k: 'performance', e: String.fromCodePoint(0x26A1) },
+            { v: 'recomp' as Goal, k: 'recomp', e: String.fromCodePoint(0x1F504) },
+            { v: 'endurance' as Goal, k: 'endurance', e: String.fromCodePoint(0x1F3C3) },
+            { v: 'general_health' as Goal, k: 'generalHealth', e: String.fromCodePoint(0x2764, 0xFE0F) },
           ]).map(({ v, k, e }) => (
             <button key={v} onClick={() => setGoal(v)}
-              className={`p-4 rounded-xl text-left transition-colors ${goal === v ? 'bg-cyan-500/20 border-cyan-400/40 border' : 'bg-slate-800 border border-slate-700'}`}>
+              className={`p-4 rounded-xl text-left transition-colors card-press ${goal === v ? 'bg-cyan-500/20 border-cyan-400/40 border' : 'bg-ct-surface border border-ct-border'}`}>
               <span className="text-lg">{e}</span>
               <p className={`text-sm font-bold mt-1 ${goal === v ? 'text-cyan-400' : 'text-ct-1'}`}>{t(`onboarding.${k}`)}</p>
             </button>
@@ -142,7 +142,7 @@ export function OnboardingPage() {
     </div>,
 
     // Step 4: Training schedule
-    <div key="schedule" className="space-y-6">
+    <div key="schedule" className="space-y-6 stagger-children">
       <div>
         <h2 className="text-2xl font-bold text-ct-1">{t('onboarding.schedule')}</h2>
         <p className="text-sm text-ct-2 mt-1">{t('onboarding.howOften')}</p>
@@ -152,14 +152,14 @@ export function OnboardingPage() {
         <div className="flex gap-3 justify-center">
           {[3, 4, 5, 6].map(d => (
             <button key={d} onClick={() => setTrainingDays(d)}
-              className={`w-16 h-16 rounded-xl text-xl font-bold transition-colors ${trainingDays === d ? 'bg-cyan-500 text-slate-900' : 'bg-slate-800 text-ct-2 border border-slate-700'}`}>{d}</button>
+              className={`w-16 h-16 rounded-xl text-xl font-bold transition-colors card-press ${trainingDays === d ? 'bg-cyan-500 text-slate-900' : 'bg-ct-surface text-ct-2 border border-ct-border'}`}>{d}</button>
           ))}
         </div>
       </div>
       <div>
         <p className="text-sm text-ct-2 mb-3">{t('onboarding.preferredTime')}</p>
         <input type="time" value={trainingTime} onChange={e => setTrainingTime(e.target.value)}
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl py-4 px-4 text-ct-1 text-center text-lg focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30" />
+          className="w-full bg-ct-surface border border-ct-border rounded-xl py-4 px-4 text-ct-1 text-center text-lg focus:outline-none focus:ring-1 focus:ring-cyan-400" />
       </div>
     </div>,
   ]
@@ -192,12 +192,12 @@ export function OnboardingPage() {
   const canNext = step === 0 || (step === 1 && name.trim().length > 0) || step === 2 || step === 3 || step === 4
 
   return (
-    <div className="h-screen-safe bg-slate-950 flex flex-col overflow-hidden">
+    <div className="h-screen-safe bg-ct-bg flex flex-col overflow-hidden">
       {/* Header: safe-area top + progress dots */}
       <div className="shrink-0 pt-safe">
         <div className="flex gap-1.5 justify-center pt-4 pb-3 px-6">
           {steps.map((_, i) => (
-            <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-cyan-400' : i < step ? 'w-4 bg-cyan-400/40' : 'w-4 bg-slate-700'}`} />
+            <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-cyan-400' : i < step ? 'w-4 bg-cyan-400/40' : 'w-4 bg-ct-elevated'}`} />
           ))}
         </div>
       </div>
@@ -212,10 +212,10 @@ export function OnboardingPage() {
       </div>
 
       {/* Bottom nav with safe-area */}
-      <div className="shrink-0 px-6 pt-2 pb-4 pb-safe bg-slate-950">
+      <div className="shrink-0 px-6 pt-2 pb-4 pb-safe bg-ct-bg">
         <div className="flex gap-3 max-w-lg mx-auto">
           {step > 0 && (
-            <button onClick={goBack} className="flex-1 bg-slate-800 text-ct-2 py-4 rounded-xl font-medium flex items-center justify-center gap-1 active:bg-ct-elevated transition-colors">
+            <button onClick={goBack} className="flex-1 bg-ct-surface text-ct-2 py-4 rounded-xl font-medium flex items-center justify-center gap-1 active:bg-ct-elevated transition-colors">
               <ChevronLeft size={20} /> {t('common.back')}
             </button>
           )}

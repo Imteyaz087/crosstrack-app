@@ -1,26 +1,13 @@
-﻿import {
-  CalendarDays,
-  ChevronLeft,
-  ChevronRight,
-  Dumbbell,
-  Flame,
-  Minus,
-  Pencil,
-  Plus,
-  Search,
-  Target,
-  Trash2,
-  Trophy,
-  X,
-  type LucideIcon,
-} from 'lucide-react'
-import benchmarkData from '../../data/benchmarkWods.json'
-import type { RxScaled, WodType, Workout } from '../../types'
-import { BenchmarkSuggestions, BenchmarkWodPicker, type BenchmarkWod } from './BenchmarkWodPicker'
-import type { MovementEntry } from './constants'
+import { useState } from 'react'
+import { X, ChevronLeft, Trophy, Plus, Minus, Dumbbell, BookOpen, Flame, Zap, Target, Pencil, Trash2, Award, Camera } from 'lucide-react'
+import type { WodType, RxScaled, Workout } from '../../types'
 import { MovementPicker } from './MovementPicker'
+import { BenchmarkWodPicker, BenchmarkSuggestions } from './BenchmarkWodPicker'
+import type { BenchmarkWod } from './BenchmarkWodPicker'
+import type { MovementEntry } from './constants'
+import benchmarkData from '../../data/benchmarkWods.json'
 
-export interface WorkoutLoggerProps {
+interface WorkoutLoggerProps {
   t: (key: string) => string
   classFormat: 'full' | 'wod_only' | 'strength_only'
   workoutStep: number
@@ -54,950 +41,498 @@ export interface WorkoutLoggerProps {
   strengthPrevResults: Workout[]
   showBenchmarkPicker: boolean
   editingWorkoutId: number | null
-  strengthCurrentPR: { value: number | string; unit: string; prType: string } | null
+  strengthCurrentPR?: { value: number; unit: string; prType: string } | null
   onLoadWorkoutForEdit: (w: Workout) => void
   onDeleteWorkout: () => void
-  onClassFormatChange: (v: 'full' | 'wod_only' | 'strength_only') => void
-  onWorkoutStepChange: (v: number) => void
-  onWodTypeChange: (v: WodType) => void
-  onWodNameChange: (v: string) => void
-  onWodDescriptionChange: (v: string) => void
-  onRxScaledChange: (v: RxScaled) => void
-  onPrFlagChange: (v: boolean) => void
-  onIsBenchmarkChange: (v: boolean) => void
-  onWorkoutNotesChange: (v: string) => void
-  onWeightUnitChange: (v: 'kg' | 'lbs') => void
-  onStrengthMovementChange: (v: string) => void
-  onStrengthSchemeTypeChange: (v: 'programmed' | 'build') => void
-  onStrengthIntervalChange: (v: string) => void
-  onStrengthSetsChange: (v: string) => void
-  onStrengthRepSchemeChange: (v: string) => void
-  onStrengthStartWeightChange: (v: string) => void
-  onStrengthEndWeightChange: (v: string) => void
-  onStrengthPercentChange: (v: string) => void
-  onStrengthBuildTargetChange: (v: string) => void
-  onScoreMinChange: (v: string) => void
-  onScoreSecChange: (v: string) => void
-  onScoreRoundsChange: (v: string) => void
-  onScoreRepsChange: (v: string) => void
-  onTimeCapChange: (v: string) => void
+  onClassFormatChange: (format: 'full' | 'wod_only' | 'strength_only') => void
+  onWorkoutStepChange: (step: number) => void
+  onWodTypeChange: (type: WodType) => void
+  onWodNameChange: (value: string) => void
+  onWodDescriptionChange: (value: string) => void
+  onRxScaledChange: (value: RxScaled) => void
+  onPrFlagChange: (value: boolean) => void
+  onIsBenchmarkChange: (value: boolean) => void
+  onWorkoutNotesChange: (value: string) => void
+  onWeightUnitChange: (unit: 'kg' | 'lbs') => void
+  onStrengthMovementChange: (value: string) => void
+  onStrengthSchemeTypeChange: (type: 'programmed' | 'build') => void
+  onStrengthIntervalChange: (value: string) => void
+  onStrengthSetsChange: (value: string) => void
+  onStrengthRepSchemeChange: (value: string) => void
+  onStrengthStartWeightChange: (value: string) => void
+  onStrengthEndWeightChange: (value: string) => void
+  onStrengthPercentChange: (value: string) => void
+  onStrengthBuildTargetChange: (value: string) => void
+  onScoreMinChange: (value: string) => void
+  onScoreSecChange: (value: string) => void
+  onScoreRoundsChange: (value: string) => void
+  onScoreRepsChange: (value: string) => void
+  onTimeCapChange: (value: string) => void
   onAddMovement: (name: string) => void
   onUpdateMovement: (idx: number, field: keyof MovementEntry, value: string) => void
-  onRemoveMovement: (i: number) => void
-  onShowMovementPickerChange: (v: boolean) => void
-  onMovementSearchChange: (v: string) => void
-  onShowBenchmarkPickerChange: (v: boolean) => void
-  onSelectBenchmarkWod: (w: BenchmarkWod) => void
+  onRemoveMovement: (idx: number) => void
+  onShowMovementPickerChange: (value: boolean) => void
+  onMovementSearchChange: (value: string) => void
+  onShowBenchmarkPickerChange: (value: boolean) => void
+  onSelectBenchmarkWod: (wod: BenchmarkWod) => void
   onSaveWorkout: () => void
   onClose: () => void
-  onSwitchToEvents: () => void
-  onScanWod: () => void
+  onSwitchToEvents?: () => void
+  onScanWod?: () => void
+  onShareWod?: () => void
 }
 
-const WOD_TYPES: WodType[] = ['AMRAP', 'ForTime', 'EMOM', 'Tabata', 'Chipper', 'Other']
-const CLASS_FORMAT_OPTIONS: Array<{
-  value: 'full' | 'wod_only' | 'strength_only'
-  label: string
-  hint: string
-}> = [
-  { value: 'full', label: 'Full Class', hint: 'Strength + WOD' },
-  { value: 'wod_only', label: 'WOD Only', hint: 'Metcon only' },
-  { value: 'strength_only', label: 'Strength Only', hint: 'Lifting only' },
+// Quick-select benchmark IDs (most popular)
+const QUICK_SELECT_IDS = ['fran', 'cindy', 'grace', 'helen', 'murph', 'dt', 'annie', 'karen', 'diane', 'jackie', 'fight-gone-bad', 'filthy-fifty', 'nancy', 'angie', 'isabel']
+const allBenchmarks = benchmarkData.wods as BenchmarkWod[]
+
+const intervalPresets = [
+  { label: '90s', value: '90' },
+  { label: '2min', value: '120' },
+  { label: '3min', value: '180' },
+  { label: '4min', value: '240' },
 ]
-const BUILD_TARGETS = ['Heavy Single', 'Heavy 3', 'Heavy 5', '1RM', '3RM', '5RM']
-const STRENGTH_INTERVALS = [
-  { label: '1:00', value: '60' },
-  { label: '1:30', value: '90' },
-  { label: '2:00', value: '120' },
-  { label: '3:00', value: '180' },
-]
-const REP_SCHEMES = ['5-5-5-5-5', '5-3-3-1', '6-6-6-6-6', '3-3-2-2-1-1', '10-8-6-4-2']
-const QUICK_TIME_CAPS = ['12', '15', '18', '20']
-const QUICK_BENCHMARK_NAMES = [
-  'Fran',
-  'Cindy',
-  'Grace',
-  'Helen',
-  'Murph',
-  'DT',
-  'Annie',
-  'Karen',
-  'Diane',
-  'Jackie',
-  'Fight Gone Bad',
-  'Filthy Fifty',
-  'Nancy',
-  'Angie',
-]
-const QUICK_END_WEIGHTS = {
-  kg: ['40', '50', '60', '70', '80', '90', '100', '110', '120'],
-  lbs: ['95', '115', '135', '155', '185', '205', '225', '275', '315'],
-} as const
-const benchmarkWods = (benchmarkData as { wods: BenchmarkWod[] }).wods
-const quickBenchmarkWods = QUICK_BENCHMARK_NAMES
-  .map((name) => benchmarkWods.find((wod) => wod.name === name))
-  .filter((wod): wod is BenchmarkWod => Boolean(wod))
 
-function formatWodTypeLabel(type: WodType) {
-  return type === 'ForTime' ? 'For Time' : type
-}
+const repSchemePresets = ['6-6-6-6-6', '5-5-5-5-5', '3-3-3-2-2-1-1', '3-3-3-3-3', '2-2-2-2-2', '12-12-12-12']
 
-function formatBenchmarkTypeLabel(type: string) {
-  const map: Record<string, string> = {
-    girl: 'Girls',
-    hero: 'Heroes',
-    open: 'Open',
-    games: 'Games',
-    classic: 'Classic',
-  }
-
-  return map[type] || type
-}
-
-function formatBenchmarkScoreLabel(scoreType: string) {
-  const map: Record<string, string> = {
-    time: 'For Time',
-    'rounds+reps': 'Rounds + Reps',
-    reps: 'Max Reps',
-    load: 'Max Load',
-  }
-
-  return map[scoreType] || scoreType
-}
-
-function formatWorkoutType(type: WodType) {
-  return type === 'ForTime' ? 'ForTime' : type
-}
-
-function formatWorkoutSummary(workout: Workout) {
-  const meta = [workout.date, workout.scoreDisplay, workout.rxOrScaled].filter(Boolean)
-  return meta.join(' | ')
-}
-
-function digitsOnly(value: string) {
-  return value.replace(/\D/g, '')
-}
-
-function decimalOnly(value: string) {
-  const clean = value.replace(/[^\d.]/g, '')
-  const [whole, ...rest] = clean.split('.')
-  return rest.length > 0 ? `${whole}.${rest.join('')}` : whole
-}
-
-function adjustCounter(value: string, delta: number, minimum = 0) {
-  return String(Math.max(minimum, (parseInt(value, 10) || 0) + delta))
-}
-
-function SectionEyebrow({ icon: Icon, label, tone }: { icon: LucideIcon; label: string; tone: 'cyan' | 'violet' }) {
-  const classes = tone === 'violet'
-    ? 'bg-violet-500/10 text-violet-400 border-violet-400/25'
-    : 'bg-cyan-500/10 text-cyan-400 border-cyan-400/25'
-
-  return (
-    <div className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 ${classes}`}>
-      <Icon size={14} />
-      <span className="text-[11px] font-bold uppercase tracking-[0.16em]">{label}</span>
-    </div>
-  )
-}
-
-function PreviousResultsPanel({
-  label,
-  results,
-  onSelect,
-  accent,
-}: {
-  label: string
-  results: Workout[]
-  onSelect: (workout: Workout) => void
-  accent: 'cyan' | 'violet'
-}) {
+/** Previous results inline card */
+function PrevResultsCard({ results, label }: { results: Workout[]; label?: string }) {
   if (results.length === 0) return null
-
-  const iconColor = accent === 'violet' ? 'text-violet-400' : 'text-cyan-400'
-
   return (
-    <div className="rounded-xl border border-slate-600/20 bg-slate-700/30 p-3">
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-ct-2">{label}</p>
-      <div className="space-y-2">
-        {results.map((result) => (
-          <button
-            key={`${result.id}-${result.date}`}
-            onClick={() => onSelect(result)}
-            className="flex w-full items-center justify-between rounded-lg bg-slate-900/40 px-3 py-2 text-left"
-          >
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-ct-1">{result.name}</p>
-              <p className="truncate text-xs text-ct-2">{formatWorkoutSummary(result)}</p>
-            </div>
-            <Pencil size={14} className={`shrink-0 ${iconColor}`} />
-          </button>
-        ))}
+    <div className="bg-amber-500/5 rounded-xl p-3 border border-amber-500/15">
+      <div className="flex items-center gap-1.5 mb-2">
+        <Trophy size={12} className="text-amber-400" />
+        <p className="text-[11px] uppercase tracking-widest text-amber-400 font-semibold">
+          {label || 'Previous Results'}
+        </p>
       </div>
-    </div>
-  )
-}
-
-function UnitToggle({
-  value,
-  onChange,
-}: {
-  value: 'kg' | 'lbs'
-  onChange: (unit: 'kg' | 'lbs') => void
-}) {
-  return (
-    <div className="flex shrink-0 rounded-lg bg-slate-800/80 p-0.5">
-      {(['kg', 'lbs'] as const).map((unit) => (
-        <button
-          key={unit}
-          onClick={() => onChange(unit)}
-          className={`px-3 py-1.5 text-[11px] font-bold transition-all ${
-            value === unit ? 'rounded-md bg-cyan-500/20 text-cyan-400 shadow-sm' : 'text-ct-2'
-          }`}
-        >
-          {unit}
-        </button>
+      {results.map(w => (
+        <div key={w.id} className="flex items-center gap-3 py-1.5 border-b border-amber-500/10 last:border-0">
+          <span className="text-[11px] text-ct-2 w-20">{w.date}</span>
+          <span className="text-[11px] text-ct-1 font-semibold tabular-nums flex-1">{w.scoreDisplay || '—'}</span>
+          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+            w.rxOrScaled === 'RX' ? 'bg-green-500/20 text-green-400' :
+            w.rxOrScaled === 'Elite' ? 'bg-purple-500/20 text-purple-400' :
+            'bg-orange-500/20 text-orange-400'
+          }`}>{w.rxOrScaled}</span>
+          {w.prFlag && <span className="text-[9px] text-red-400 font-bold">PR</span>}
+        </div>
       ))}
     </div>
   )
 }
 
-function ClassFormatToggle({
-  value,
-  onChange,
-}: {
-  value: 'full' | 'wod_only' | 'strength_only'
-  onChange: (format: 'full' | 'wod_only' | 'strength_only') => void
-}) {
+/** Section header with icon */
+function SectionHeader({ icon: Icon, label, color }: { icon: typeof Dumbbell; label: string; color: string }) {
   return (
-    <div className="grid grid-cols-3 gap-1 rounded-2xl border border-slate-700/40 bg-slate-900/35 p-1">
-      {CLASS_FORMAT_OPTIONS.map((option) => {
-        const active = value === option.value
-
-        return (
-          <button
-            key={option.value}
-            onClick={() => onChange(option.value)}
-            className={`rounded-xl px-2 py-2.5 text-left transition-all ${
-              active
-                ? 'bg-slate-800/90 shadow-sm ring-1 ring-cyan-400/18'
-                : 'bg-transparent text-ct-2'
-            }`}
-          >
-            <p className={`text-[11px] font-bold ${active ? 'text-ct-1' : 'text-ct-2'}`}>{option.label}</p>
-            <p className={`mt-0.5 text-[10px] ${active ? 'text-cyan-400' : 'text-ct-2/80'}`}>{option.hint}</p>
-          </button>
-        )
-      })}
+    <div className="flex items-center gap-2 mb-1">
+      <div className={`w-6 h-6 rounded-lg flex items-center justify-center bg-${color}-500/10`}>
+        <Icon size={14} className={`text-${color}-400`} />
+      </div>
+      <p className={`text-[11px] uppercase tracking-widest text-${color}-400 font-bold`}>{label}</p>
     </div>
   )
 }
 
-function BenchmarkDetailCard({
-  benchmark,
-  rxScaled,
-  timeCap,
-}: {
-  benchmark: BenchmarkWod
-  rxScaled: RxScaled
-  timeCap: string
-}) {
-  const hasEliteTarget = Boolean(benchmark.eliteBenchmark?.male || benchmark.eliteBenchmark?.female)
-  const appliedTimeCap = timeCap || (benchmark.timeCapMinutes ? String(benchmark.timeCapMinutes) : '')
-  const selectedDivision = rxScaled === 'Scaled' ? 'Scaled' : 'RX'
-  const selectedWeights = rxScaled === 'Scaled' ? benchmark.scaledWeights : benchmark.rxWeights
-
-  return (
-    <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/6 px-3.5 py-3">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="rounded-full border border-cyan-400/20 bg-cyan-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-cyan-400">
-          {formatBenchmarkTypeLabel(benchmark.type)}
-        </span>
-        <span className="rounded-full border border-slate-600/30 bg-slate-800/70 px-2 py-1 text-[10px] font-semibold text-ct-2">
-          {formatBenchmarkScoreLabel(benchmark.scoreType)}
-        </span>
-        {appliedTimeCap && (
-          <span className="rounded-full border border-slate-600/30 bg-slate-800/70 px-2 py-1 text-[10px] font-semibold text-ct-2">
-            Cap {appliedTimeCap} min
-          </span>
-        )}
-      </div>
-
-      <p className="mt-3 text-sm font-semibold text-ct-1">{benchmark.scheme}</p>
-      <p className="mt-1 text-xs leading-relaxed text-ct-2">{benchmark.description}</p>
-
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {benchmark.movements.map((movement) => (
-          <span
-            key={movement}
-            className="rounded-full border border-slate-600/25 bg-slate-900/55 px-2.5 py-1 text-[11px] font-medium text-ct-2"
-          >
-            {movement}
-          </span>
-        ))}
-      </div>
-
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <div className={`rounded-xl border px-3 py-2.5 ${selectedDivision === 'RX' ? 'border-cyan-400/25 bg-cyan-500/10' : 'border-slate-600/25 bg-slate-900/45'}`}>
-          <p className={`text-[11px] font-bold uppercase tracking-widest ${selectedDivision === 'RX' ? 'text-cyan-400' : 'text-ct-2'}`}>RX</p>
-          <p className="mt-1 text-[11px] text-ct-2">M: {benchmark.rxWeights.male}</p>
-          <p className="text-[11px] text-ct-2">F: {benchmark.rxWeights.female}</p>
-        </div>
-        <div className={`rounded-xl border px-3 py-2.5 ${selectedDivision === 'Scaled' ? 'border-cyan-400/25 bg-cyan-500/10' : 'border-slate-600/25 bg-slate-900/45'}`}>
-          <p className={`text-[11px] font-bold uppercase tracking-widest ${selectedDivision === 'Scaled' ? 'text-cyan-400' : 'text-ct-2'}`}>Scaled</p>
-          <p className="mt-1 text-[11px] text-ct-2">M: {benchmark.scaledWeights.male}</p>
-          <p className="text-[11px] text-ct-2">F: {benchmark.scaledWeights.female}</p>
-        </div>
-      </div>
-
-      <div className="mt-3 flex flex-wrap items-center gap-2 rounded-xl border border-slate-600/20 bg-slate-900/40 px-3 py-2">
-        <span className="text-[11px] font-semibold uppercase tracking-widest text-ct-2">Selected</span>
-        <span className="text-xs font-bold text-ct-1">{selectedDivision}</span>
-        <span className="text-xs text-ct-2">M {selectedWeights.male}</span>
-        <span className="text-xs text-ct-2">F {selectedWeights.female}</span>
-      </div>
-
-      {hasEliteTarget && (
-        <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 px-1 text-[11px] text-ct-2">
-          <span className="font-semibold text-yellow-400">Elite target</span>
-          <span>M {benchmark.eliteBenchmark.male}</span>
-          <span>F {benchmark.eliteBenchmark.female}</span>
-        </div>
-      )}
-    </div>
-  )
-}
-
-function CounterField({
-  label,
-  value,
-  onChange,
-  accent = 'cyan',
-  placeholder = '0',
-}: {
-  label: string
-  value: string
-  onChange: (value: string) => void
-  accent?: 'cyan' | 'orange' | 'yellow'
-  placeholder?: string
-}) {
-  const plusTone = accent === 'orange'
-    ? 'bg-orange-500/10 border-orange-400/20 text-orange-400 active:bg-orange-500/20'
-    : accent === 'yellow'
-      ? 'bg-yellow-500/10 border-yellow-400/20 text-yellow-400 active:bg-yellow-500/20'
-      : 'bg-cyan-500/10 border-cyan-400/20 text-cyan-400 active:bg-cyan-500/20'
-
-  return (
-    <div className="flex-1 min-w-0">
-      <label className="mb-1.5 block text-center text-[11px] font-medium text-ct-2">{label}</label>
-      <div className="flex items-center gap-1">
-        <button
-          onClick={() => onChange(adjustCounter(value, -1))}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-slate-600/30 bg-ct-elevated/80 active:bg-slate-600"
-          aria-label={`Decrease ${label}`}
-        >
-          <Minus size={14} className="text-ct-2" />
-        </button>
-        <input
-          type="text"
-          inputMode="numeric"
-          pattern="[0-9]*"
-          value={value}
-          onChange={(e) => onChange(digitsOnly(e.target.value))}
-          placeholder={placeholder}
-          className="min-w-0 flex-1 rounded-lg border border-slate-600/30 bg-ct-elevated/80 py-2 text-center text-lg font-bold tabular-nums text-ct-1 focus:outline-none"
-        />
-        <button
-          onClick={() => onChange(adjustCounter(value, 1))}
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border ${plusTone}`}
-          aria-label={`Increase ${label}`}
-        >
-          <Plus size={14} />
-        </button>
-      </div>
-    </div>
-  )
-}
-
-export function WorkoutLogger(props: WorkoutLoggerProps) {
-  const {
-    t,
-    classFormat,
-    workoutStep,
-    wodType,
-    wodName,
-    wodDescription,
-    rxScaled,
-    prFlag,
-    isBenchmark,
-    workoutNotes,
-    weightUnit,
-    strengthMovement,
-    strengthSchemeType,
-    strengthInterval,
-    strengthSets,
-    strengthRepScheme,
-    strengthStartWeight,
-    strengthEndWeight,
-    strengthPercent,
-    strengthBuildTarget,
-    scoreMin,
-    scoreSec,
-    scoreRounds,
-    scoreReps,
-    timeCap,
-    movements,
-    showMovementPicker,
-    movementSearch,
-    workouts,
-    prevResults,
-    strengthPrevResults,
-    showBenchmarkPicker,
-    editingWorkoutId,
-    strengthCurrentPR,
-    onLoadWorkoutForEdit,
-    onDeleteWorkout,
-    onClassFormatChange,
-    onWorkoutStepChange,
-    onWodTypeChange,
-    onWodNameChange,
-    onWodDescriptionChange,
-    onRxScaledChange,
-    onPrFlagChange,
-    onIsBenchmarkChange,
-    onWorkoutNotesChange,
-    onWeightUnitChange,
-    onStrengthMovementChange,
-    onStrengthSchemeTypeChange,
-    onStrengthIntervalChange,
-    onStrengthSetsChange,
-    onStrengthRepSchemeChange,
-    onStrengthStartWeightChange,
-    onStrengthEndWeightChange,
-    onStrengthPercentChange,
-    onStrengthBuildTargetChange,
-    onScoreMinChange,
-    onScoreSecChange,
-    onScoreRoundsChange,
-    onScoreRepsChange,
-    onTimeCapChange,
-    onAddMovement,
-    onUpdateMovement,
-    onRemoveMovement,
-    onShowMovementPickerChange,
-    onMovementSearchChange,
-    onShowBenchmarkPickerChange,
-    onSelectBenchmarkWod,
-    onSaveWorkout,
-    onClose,
-    onSwitchToEvents,
-    onScanWod,
-  } = props
-
-  const recentWorkouts = workouts.slice(0, 5)
-  const showStrengthSection = classFormat === 'full' || classFormat === 'strength_only'
-  const showWodSection = classFormat === 'full' || classFormat === 'wod_only'
-  const saveLabel = editingWorkoutId ? 'Update Workout' : `${t('common.save')} Workout`
-  const activeTitle = editingWorkoutId
-    ? 'Edit Workout'
-    : classFormat === 'full'
-      ? 'Full Class'
-      : classFormat === 'wod_only'
-        ? 'WOD Only'
-        : 'Strength Only'
-  const matchedBenchmark = benchmarkWods.find((wod) => wod.name.toLowerCase() === wodName.trim().toLowerCase()) || null
-
-  const renderScoreInputs = () => {
-    if (wodType === 'AMRAP') {
-      return (
-        <div className="flex gap-2">
-          <CounterField label="Rounds" value={scoreRounds} onChange={onScoreRoundsChange} />
-          <CounterField label="+ Reps" value={scoreReps} onChange={onScoreRepsChange} />
-        </div>
-      )
-    }
-
-    if (wodType === 'ForTime' || wodType === 'Chipper') {
-      return (
-        <div className="flex items-center justify-center gap-2">
-          <div className="text-center">
-            <label className="mb-1.5 block text-[11px] font-medium text-ct-2">Min</label>
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              maxLength={3}
-              value={scoreMin}
-              onChange={(e) => onScoreMinChange(digitsOnly(e.target.value))}
-              className="w-[4.5rem] rounded-xl border border-slate-600/30 bg-ct-elevated/80 py-2.5 text-center text-xl font-bold tabular-nums text-ct-1 focus:outline-none"
-              placeholder="0"
-            />
-          </div>
-          <span className="mt-5 text-xl font-bold text-ct-2">:</span>
-          <div className="text-center">
-            <label className="mb-1.5 block text-[11px] font-medium text-ct-2">Sec</label>
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              maxLength={2}
-              value={scoreSec}
-              onChange={(e) => onScoreSecChange(digitsOnly(e.target.value))}
-              className="w-[4.5rem] rounded-xl border border-slate-600/30 bg-ct-elevated/80 py-2.5 text-center text-xl font-bold tabular-nums text-ct-1 focus:outline-none"
-              placeholder="00"
-            />
-          </div>
-        </div>
-      )
-    }
-
-    if (wodType === 'EMOM') {
-      return (
-        <div className="flex items-center justify-center gap-2">
-          <button
-            onClick={() => onScoreRoundsChange(adjustCounter(scoreRounds, -1))}
-            className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-600/30 bg-ct-elevated/80 active:bg-slate-600"
-            aria-label="Decrease rounds"
-          >
-            <Minus size={14} className="text-ct-2" />
-          </button>
-          <input
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            maxLength={3}
-            value={scoreRounds}
-            onChange={(e) => onScoreRoundsChange(digitsOnly(e.target.value))}
-            className="w-20 rounded-xl border border-slate-600/30 bg-ct-elevated/80 py-2.5 text-center text-xl font-bold tabular-nums text-ct-1 focus:outline-none"
-            placeholder="0"
-          />
-          <button
-            onClick={() => onScoreRoundsChange(adjustCounter(scoreRounds, 1))}
-            className="flex h-11 w-11 items-center justify-center rounded-xl border border-orange-400/20 bg-orange-500/10 text-orange-400 active:bg-orange-500/20"
-            aria-label="Increase rounds"
-          >
-            <Plus size={14} />
-          </button>
-          <span className="text-xs font-medium text-ct-2">rounds</span>
-        </div>
-      )
-    }
-
-    if (wodType === 'Tabata') {
-      return (
-        <div className="flex items-center justify-center gap-2">
-          <button
-            onClick={() => onScoreRepsChange(adjustCounter(scoreReps, -1))}
-            className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-600/30 bg-ct-elevated/80 active:bg-slate-600"
-            aria-label="Decrease reps"
-          >
-            <Minus size={14} className="text-ct-2" />
-          </button>
-          <input
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            maxLength={3}
-            value={scoreReps}
-            onChange={(e) => onScoreRepsChange(digitsOnly(e.target.value))}
-            className="w-20 rounded-xl border border-slate-600/30 bg-ct-elevated/80 py-2.5 text-center text-xl font-bold tabular-nums text-ct-1 focus:outline-none"
-            placeholder="0"
-          />
-          <button
-            onClick={() => onScoreRepsChange(adjustCounter(scoreReps, 1))}
-            className="flex h-11 w-11 items-center justify-center rounded-xl border border-yellow-400/20 bg-yellow-500/10 text-yellow-400 active:bg-yellow-500/20"
-            aria-label="Increase reps"
-          >
-            <Plus size={14} />
-          </button>
-          <span className="text-xs font-medium text-ct-2">lowest reps</span>
-        </div>
-      )
-    }
-
+/** Delete button with confirmation */
+function DeleteButton({ onDelete }: { onDelete: () => void }) {
+  const [confirming, setConfirming] = useState(false)
+  if (confirming) {
     return (
-      <input
-        type="text"
-        value={scoreRounds}
-        onChange={(e) => onScoreRoundsChange(e.target.value)}
-        placeholder="Score (e.g. 15:30, 12 rounds)"
-        className="w-full rounded-xl border border-slate-600/30 bg-ct-elevated/80 px-4 py-3 text-sm text-ct-1 focus:outline-none"
-      />
+      <div className="flex gap-2">
+        <button onClick={() => setConfirming(false)}
+          className="flex-1 py-3 rounded-xl text-sm font-bold bg-ct-surface text-ct-2 active:bg-ct-elevated">
+          Cancel
+        </button>
+        <button onClick={onDelete}
+          className="flex-1 py-3 rounded-xl text-sm font-bold bg-red-500/15 text-red-400 border border-red-400/30 active:bg-red-500/25 flex items-center justify-center gap-2">
+          <Trash2 size={14} /> Yes, Delete
+        </button>
+      </div>
     )
   }
+  return (
+    <button onClick={() => setConfirming(true)}
+      className="w-full py-3 rounded-xl text-sm font-bold text-red-400/70 active:bg-red-500/10 flex items-center justify-center gap-2">
+      <Trash2 size={14} /> Delete Workout
+    </button>
+  )
+}
 
+export function WorkoutLogger({
+  t,
+  classFormat,
+  workoutStep,
+  wodType,
+  wodName,
+  wodDescription,
+  rxScaled,
+  prFlag,
+  isBenchmark,
+  workoutNotes,
+  weightUnit,
+  strengthMovement,
+  strengthSchemeType,
+  strengthInterval,
+  strengthSets,
+  strengthRepScheme,
+  strengthStartWeight,
+  strengthEndWeight,
+  strengthPercent,
+  strengthBuildTarget,
+  scoreMin,
+  scoreSec,
+  scoreRounds,
+  scoreReps,
+  timeCap,
+  movements,
+  showMovementPicker,
+  movementSearch,
+  workouts,
+  prevResults,
+  strengthPrevResults,
+  showBenchmarkPicker,
+  editingWorkoutId,
+  strengthCurrentPR,
+  onLoadWorkoutForEdit,
+  onDeleteWorkout,
+  onClassFormatChange,
+  onWorkoutStepChange,
+  onWodTypeChange,
+  onWodNameChange,
+  onWodDescriptionChange,
+  onRxScaledChange,
+  onPrFlagChange,
+  onIsBenchmarkChange,
+  onWorkoutNotesChange,
+  onWeightUnitChange,
+  onStrengthMovementChange,
+  onStrengthSchemeTypeChange,
+  onStrengthIntervalChange,
+  onStrengthSetsChange,
+  onStrengthRepSchemeChange,
+  onStrengthStartWeightChange,
+  onStrengthEndWeightChange,
+  onStrengthPercentChange,
+  onStrengthBuildTargetChange,
+  onScoreMinChange,
+  onScoreSecChange,
+  onScoreRoundsChange,
+  onScoreRepsChange,
+  onTimeCapChange,
+  onAddMovement,
+  onUpdateMovement,
+  onRemoveMovement,
+  onShowMovementPickerChange,
+  onMovementSearchChange,
+  onShowBenchmarkPickerChange,
+  onSelectBenchmarkWod,
+  onSaveWorkout,
+  onClose,
+  onSwitchToEvents,
+  onScanWod,
+  // onShareWod — handled by LogPage via pendingShareData
+}: WorkoutLoggerProps) {
+  const hasStrength = classFormat === 'full' || classFormat === 'strength_only'
+  const hasWod = classFormat === 'full' || classFormat === 'wod_only'
+
+  // === STEP 1: Class Format Selection ===
   if (workoutStep === 1) {
     return (
-      <div className="space-y-3">
-        <div className="flex items-start justify-between gap-4">
+      <div className="space-y-4 w-full overflow-hidden">
+        {/* Header */}
+        <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-[2rem] font-bold leading-none text-ct-1">Log CrossFit</h1>
-            <p className="mt-1 text-sm text-ct-2">How was today's class?</p>
+            <h1 className="text-xl font-bold text-ct-1">{t('training.logWorkout')}</h1>
+            <p className="text-xs text-ct-2 mt-0.5">How was today's class?</p>
           </div>
-          <button
-            onClick={onClose}
-            className="flex h-16 w-16 items-center justify-center rounded-[22px] bg-slate-900/70 text-ct-2"
-            aria-label="Close"
-          >
-            <X size={22} />
+          <button onClick={onClose} className="w-11 h-11 rounded-xl bg-ct-surface flex items-center justify-center text-ct-2 active:text-ct-1 active:bg-ct-elevated" aria-label="Close">
+            <X size={20} />
           </button>
         </div>
 
-        <button
-          onClick={() => {
-            onClassFormatChange('full')
-            onWorkoutStepChange(2)
-          }}
-          className="flex min-h-[80px] items-center gap-4 rounded-[26px] border border-cyan-400/30 bg-gradient-to-r from-cyan-900/55 via-slate-950/95 to-blue-950/90 px-4 py-4 text-left"
-        >
-          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[22px] bg-cyan-500/18 text-cyan-300">
-            <Dumbbell size={28} />
+        {/* ── Hero: Full Class ── */}
+        <button onClick={() => { onClassFormatChange('full'); onWorkoutStepChange(2) }}
+          className="w-full relative overflow-hidden bg-gradient-to-br from-cyan-500/15 via-ct-surface to-ct-surface border border-cyan-400/30 rounded-2xl p-5 text-left active:scale-[0.97] transition-all duration-200 shadow-lg shadow-cyan-500/5 group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-cyan-400/8 to-transparent rounded-bl-full" />
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/25 to-cyan-400/10 border border-cyan-400/20 flex items-center justify-center transition-transform duration-200 group-active:scale-90">
+              <Dumbbell size={28} strokeWidth={1.8} className="text-cyan-400 drop-shadow-sm" />
+            </div>
+            <div className="flex-1">
+              <p className="text-lg font-bold text-ct-1 tracking-tight">Full Class</p>
+              <p className="text-[12px] text-ct-2 mt-0.5">Strength + WOD — most common</p>
+            </div>
+            <div className="w-8 h-8 rounded-full bg-cyan-400/10 flex items-center justify-center">
+              <ChevronLeft size={16} className="text-cyan-400/70 rotate-180" />
+            </div>
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-[1.05rem] font-bold text-ct-1">Full Class</p>
-            <p className="mt-1 text-sm text-ct-2">Strength + WOD - most common</p>
-          </div>
-          <ChevronRight size={18} className="shrink-0 text-ct-2" />
         </button>
 
-        <div className="grid grid-cols-2 gap-4">
-          <button
-            onClick={() => {
-              onClassFormatChange('wod_only')
-              onWorkoutStepChange(2)
-            }}
-            className="relative min-h-[136px] overflow-hidden rounded-[24px] border border-emerald-400/28 bg-gradient-to-br from-emerald-950/75 via-slate-950 to-cyan-950/75 p-0 text-left"
-          >
-            <div className="absolute left-0 top-0 flex h-[78px] w-[78px] items-center justify-center rounded-br-[22px] rounded-tl-[24px] bg-emerald-500/16 text-emerald-300">
-              <Flame size={26} />
+        {/* ── Grid: WOD Only + Strength Only ── */}
+        <div className="grid grid-cols-2 gap-3">
+          <button onClick={() => { onClassFormatChange('wod_only'); onWorkoutStepChange(2) }}
+            className="relative overflow-hidden bg-gradient-to-br from-green-500/12 to-ct-surface border border-green-400/25 rounded-2xl p-4 flex flex-col items-center justify-center aspect-[4/3] active:scale-[0.93] transition-all duration-200 shadow-lg shadow-green-500/5 group">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500/20 to-green-400/8 border border-green-400/15 flex items-center justify-center mb-2.5 transition-transform duration-200 group-active:scale-90">
+              <Flame size={26} strokeWidth={1.8} className="text-green-400 drop-shadow-sm" />
             </div>
-            <div className="flex h-full flex-col justify-end px-4 pb-4 pt-16">
-              <p className="text-[1.05rem] font-bold leading-tight text-ct-1">WOD Only</p>
-              <p className="mt-1 text-sm text-ct-2">Just the metcon</p>
-            </div>
+            <p className="text-sm font-bold text-ct-1 text-center">WOD Only</p>
+            <p className="text-[10px] text-ct-2 mt-0.5 text-center">Just the metcon</p>
           </button>
-
-          <button
-            onClick={() => {
-              onClassFormatChange('strength_only')
-              onWorkoutStepChange(2)
-            }}
-            className="relative min-h-[136px] overflow-hidden rounded-[24px] border border-violet-400/28 bg-gradient-to-br from-violet-950/65 via-slate-950 to-indigo-950/75 p-0 text-left"
-          >
-            <div className="absolute left-0 top-0 flex h-[78px] w-[78px] items-center justify-center rounded-br-[22px] rounded-tl-[24px] bg-violet-500/16 text-violet-300">
-              <Target size={24} />
+          <button onClick={() => { onClassFormatChange('strength_only'); onWorkoutStepChange(2) }}
+            className="relative overflow-hidden bg-gradient-to-br from-purple-500/12 to-ct-surface border border-purple-400/25 rounded-2xl p-4 flex flex-col items-center justify-center aspect-[4/3] active:scale-[0.93] transition-all duration-200 shadow-lg shadow-purple-500/5 group">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-400/8 border border-purple-400/15 flex items-center justify-center mb-2.5 transition-transform duration-200 group-active:scale-90">
+              <Target size={26} strokeWidth={1.8} className="text-purple-400 drop-shadow-sm" />
             </div>
-            <div className="flex h-full flex-col justify-end px-4 pb-4 pt-16">
-              <p className="text-[1.05rem] font-bold leading-tight text-ct-1">Strength Only</p>
-              <p className="mt-1 text-sm text-ct-2">Just lifting</p>
-            </div>
+            <p className="text-sm font-bold text-ct-1 text-center">Strength Only</p>
+            <p className="text-[10px] text-ct-2 mt-0.5 text-center">Just lifting</p>
           </button>
         </div>
 
-        <button
-          onClick={onSwitchToEvents}
-          className="flex items-center gap-4 rounded-[24px] border border-violet-400/26 bg-gradient-to-r from-violet-950/60 via-slate-950 to-blue-950/80 px-4 py-4 text-left"
-        >
-          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[22px] bg-violet-500/16 text-violet-300">
-            <CalendarDays size={26} />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-[1.05rem] font-bold text-ct-1">CrossFit Events</p>
-            <p className="mt-1 text-sm text-ct-2">Open - Hero WODs - Girls - scan or pick</p>
-          </div>
-          <ChevronRight size={18} className="shrink-0 text-ct-2" />
-        </button>
+        {/* ── Events — Open, Hero WODs, Girls Benchmarks ── */}
+        {onSwitchToEvents && (
+          <button onClick={onSwitchToEvents}
+            className="w-full relative overflow-hidden bg-gradient-to-r from-violet-500/12 via-indigo-500/8 to-cyan-500/8 border border-violet-400/25 rounded-2xl p-4 text-left active:scale-[0.97] transition-all duration-200 shadow-lg shadow-violet-500/5 group">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500/20 to-indigo-400/10 border border-violet-400/15 flex items-center justify-center transition-transform duration-200 group-active:scale-90">
+                <Award size={24} strokeWidth={1.8} className="text-violet-400 drop-shadow-sm" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-bold text-ct-1">CrossFit Events</p>
+                <p className="text-[11px] text-ct-2 mt-0.5">Open · Hero WODs · Girls — scan or pick</p>
+              </div>
+              <div className="w-8 h-8 rounded-full bg-violet-400/10 flex items-center justify-center">
+                <ChevronLeft size={14} className="text-violet-400/70 rotate-180" />
+              </div>
+            </div>
+          </button>
+        )}
 
-        {recentWorkouts.length > 0 && (
-          <div className="overflow-hidden rounded-[26px] border border-ct-border bg-gradient-to-b from-slate-950/85 to-slate-900/75">
-            <div className="px-1 pt-2">
-              <p className="px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-ct-2">
-                Recent Workouts - Tap To Edit
-              </p>
-            </div>
-            <div className="divide-y divide-white/6">
-              {recentWorkouts.map((workout) => (
-                <button
-                  key={`${workout.id}-${workout.date}`}
-                  onClick={() => onLoadWorkoutForEdit(workout)}
-                  className="flex w-full items-start justify-between px-4 py-3 text-left transition-colors hover:bg-white/[0.02]"
-                >
-                  <div className="min-w-0">
-                    <p className="truncate text-[1.05rem] font-bold leading-tight text-ct-1">{workout.name}</p>
-                    <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-ct-2">
-                      <span>{formatWorkoutType(workout.workoutType)}</span>
-                      {workout.scoreDisplay && <span>{workout.scoreDisplay}</span>}
-                      <span className="rounded-full bg-emerald-500/12 px-2 py-0.5 text-xs font-bold text-emerald-300">
-                        {workout.rxOrScaled}
-                      </span>
-                    </div>
+        {/* Recent workouts — tappable to edit */}
+        {workouts.length > 0 && (
+          <div className="bg-ct-surface rounded-ct-lg border border-ct-border overflow-hidden">
+            <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold px-4 pt-3 pb-2">Recent Workouts — tap to edit</p>
+            {workouts.slice(0, 4).map(w => (
+              <button key={w.id} onClick={() => onLoadWorkoutForEdit(w)}
+                className="w-full px-4 py-2.5 border-b border-ct-border last:border-0 text-left active:bg-ct-elevated/50 transition-colors">
+                <div className="flex justify-between items-center">
+                  <p className="text-sm text-ct-1 font-medium">{w.name}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] text-ct-2">{w.date}</span>
+                    <Pencil size={12} className="text-ct-2" />
                   </div>
-                  <div className="ml-3 flex shrink-0 items-center gap-3">
-                    <span className="text-sm text-ct-2">{workout.date}</span>
-                    <Pencil size={15} className="text-ct-2" />
-                  </div>
-                </button>
-              ))}
-            </div>
+                </div>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-[11px] text-ct-2">{w.workoutType}</span>
+                  <span className="text-[11px] text-ct-2 tabular-nums">{w.scoreDisplay || '—'}</span>
+                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+                    w.rxOrScaled === 'RX' ? 'bg-green-500/20 text-green-400' :
+                    w.rxOrScaled === 'Elite' ? 'bg-purple-500/20 text-purple-400' :
+                    'bg-orange-500/20 text-orange-400'
+                  }`}>{w.rxOrScaled}</span>
+                </div>
+              </button>
+            ))}
           </div>
         )}
       </div>
     )
   }
 
+  // === STEP 2: Details Form ===
   return (
     <div className="space-y-4 w-full overflow-hidden">
+      {/* Header — clean, modern */}
       <div className="flex items-center gap-2">
-        <button
-          onClick={() => onWorkoutStepChange(1)}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-ct-surface text-ct-2 active:bg-ct-elevated active:text-ct-1"
-          aria-label="Go back"
-        >
+        <button onClick={() => onWorkoutStepChange(1)} className="w-11 h-11 rounded-xl bg-ct-surface flex items-center justify-center text-ct-2 active:text-ct-1 active:bg-ct-elevated shrink-0" aria-label="Go back">
           <ChevronLeft size={20} />
         </button>
-        <div className="min-w-0 flex-1">
-          <h1 className="truncate text-[1.7rem] font-bold leading-none text-ct-1">{activeTitle}</h1>
-          {editingWorkoutId && (
-            <p className="mt-1 text-[11px] text-amber-400">Editing saved workout</p>
-          )}
+        <div className="flex-1 min-w-0">
+          <h1 className="text-lg font-bold text-ct-1 truncate">
+            {editingWorkoutId ? 'Edit Workout' : classFormat === 'full' ? 'Full Class' : classFormat === 'wod_only' ? 'WOD Only' : 'Strength Only'}
+          </h1>
+          {editingWorkoutId && <p className="text-[11px] text-amber-400">Editing saved workout</p>}
         </div>
-        <UnitToggle value={weightUnit} onChange={onWeightUnitChange} />
-        <button
-          onClick={onClose}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-ct-surface text-ct-2 active:bg-slate-700 active:text-ct-1"
-          aria-label="Close"
-        >
+        {/* kg/lbs toggle — pill style */}
+        <div className="flex bg-ct-surface rounded-lg p-0.5">
+          {(['kg', 'lbs'] as const).map(u => (
+            <button key={u} onClick={() => onWeightUnitChange(u)}
+              className={`px-3 py-1.5 rounded-md text-[11px] font-bold transition-all ${
+                weightUnit === u ? 'bg-cyan-500/20 text-cyan-400 shadow-sm' : 'text-ct-2'
+              }`}>{u}</button>
+          ))}
+        </div>
+        <button onClick={onClose} className="w-11 h-11 rounded-xl bg-ct-surface flex items-center justify-center text-ct-2 active:text-ct-1 active:bg-ct-elevated" aria-label="Close">
           <X size={20} />
         </button>
       </div>
 
-      <ClassFormatToggle value={classFormat} onChange={onClassFormatChange} />
+      {/* ====== STRENGTH SECTION ====== */}
+      {hasStrength && (
+        <div className="bg-gradient-to-b from-purple-500/5 to-ct-surface/40 rounded-ct-lg p-4 border border-purple-400/15 space-y-4">
+          <SectionHeader icon={Target} label="Strength" color="purple" />
 
-      {showStrengthSection && (
-        <div className="space-y-4 rounded-ct-lg border border-violet-400/15 bg-gradient-to-b from-violet-500/5 to-slate-800/40 p-4">
-          <SectionEyebrow icon={Dumbbell} label="Strength" tone="violet" />
+          {/* Movement name — larger, cleaner */}
+          <input type="text" value={strengthMovement} onChange={e => onStrengthMovementChange(e.target.value)}
+            placeholder="Movement (e.g. Back Squat)"
+            className="w-full bg-ct-elevated/60 rounded-xl py-3.5 px-4 text-ct-1 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-400/40 placeholder:text-ct-2 border border-ct-border/30" autoFocus />
 
-          <div>
-            <input
-              type="text"
-              value={strengthMovement}
-              onChange={(e) => onStrengthMovementChange(e.target.value)}
-              placeholder="Movement (e.g. Back Squat)"
-              className="w-full rounded-xl border border-slate-600/30 bg-ct-elevated/60 px-4 py-3.5 text-sm font-medium text-ct-1 placeholder:text-ct-2 focus:outline-none focus:ring-2 focus:ring-violet-400/40"
-            />
-            {strengthCurrentPR && (
-              <div className="mt-1.5 flex items-center gap-2 px-1">
-                <Trophy size={12} className="text-yellow-400" />
-                <span className="text-[11px] font-semibold text-yellow-400">
-                  PR: {strengthCurrentPR.value} {strengthCurrentPR.unit}
-                </span>
-                <span className="text-[11px] text-ct-2">({strengthCurrentPR.prType.toUpperCase()})</span>
-              </div>
-            )}
+          {/* Inline PR display */}
+          {strengthCurrentPR && (
+            <div className="flex items-center gap-2 mt-1.5 px-1">
+              <Trophy size={12} className="text-yellow-400" />
+              <span className="text-[11px] text-yellow-400 font-semibold">
+                PR: {strengthCurrentPR.value} {strengthCurrentPR.unit}
+              </span>
+              <span className="text-[11px] text-ct-2">({strengthCurrentPR.prType.toUpperCase()})</span>
+            </div>
+          )}
+
+          {/* Previous results for strength movement */}
+          <PrevResultsCard results={strengthPrevResults} label="Previous Strength" />
+
+          {/* Scheme type toggle — pill style */}
+          <div className="flex bg-ct-elevated/40 rounded-xl p-1">
+            <button onClick={() => onStrengthSchemeTypeChange('programmed')}
+              className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${
+                strengthSchemeType === 'programmed' ? 'bg-purple-500/20 text-purple-400 shadow-sm' : 'text-ct-2'
+              }`}>Programmed Sets</button>
+            <button onClick={() => onStrengthSchemeTypeChange('build')}
+              className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${
+                strengthSchemeType === 'build' ? 'bg-purple-500/20 text-purple-400 shadow-sm' : 'text-ct-2'
+              }`}>Build to Heavy</button>
           </div>
 
-          <PreviousResultsPanel
-            label="Previous Strength"
-            results={strengthPrevResults}
-            onSelect={onLoadWorkoutForEdit}
-            accent="violet"
-          />
-
-          <div className="flex rounded-xl bg-slate-700/40 p-1">
-            <button
-              onClick={() => onStrengthSchemeTypeChange('programmed')}
-              className={`flex-1 rounded-lg py-2.5 text-xs font-bold transition-all ${
-                strengthSchemeType === 'programmed' ? 'bg-violet-500/20 text-violet-400 shadow-sm' : 'text-ct-2'
-              }`}
-            >
-              Programmed Sets
-            </button>
-            <button
-              onClick={() => onStrengthSchemeTypeChange('build')}
-              className={`flex-1 rounded-lg py-2.5 text-xs font-bold transition-all ${
-                strengthSchemeType === 'build' ? 'bg-violet-500/20 text-violet-400 shadow-sm' : 'text-ct-2'
-              }`}
-            >
-              Build to Heavy
-            </button>
-          </div>
-
-          {strengthSchemeType === 'programmed' ? (
+          {/* Programmed: Interval x Sets + Rep Scheme */}
+          {strengthSchemeType === 'programmed' && (
             <div className="space-y-3">
-              <div className="flex items-end gap-2">
+              <div className="flex gap-2 items-end">
                 <div className="flex-1">
-                  <label className="mb-1.5 block text-[11px] font-medium text-ct-2">Every</label>
+                  <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">Every</label>
                   <div className="flex gap-1">
-                    {STRENGTH_INTERVALS.map((option) => (
-                      <button
-                        key={option.value}
-                        onClick={() => onStrengthIntervalChange(option.value)}
-                        className={`flex-1 rounded-lg px-2 py-2.5 text-[11px] font-bold transition-all ${
-                          strengthInterval === option.value
-                            ? 'border border-violet-400/30 bg-violet-500/20 text-violet-400'
-                            : 'border border-transparent bg-ct-elevated/50 text-ct-2'
-                        }`}
-                      >
-                        {option.label}
-                      </button>
+                    {intervalPresets.map(ip => (
+                      <button key={ip.value} onClick={() => onStrengthIntervalChange(ip.value)}
+                        className={`flex-1 py-2.5 rounded-lg text-[11px] font-bold transition-all ${
+                          strengthInterval === ip.value ? 'bg-purple-500/20 text-purple-400 border border-purple-400/30' : 'bg-ct-elevated/50 text-ct-2 border border-transparent'
+                        }`}>{ip.label}</button>
                     ))}
                   </div>
                 </div>
                 <div className="w-16">
-                  <label className="mb-1.5 block text-[11px] font-medium text-ct-2">Sets</label>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    maxLength={2}
-                    value={strengthSets}
-                    onChange={(e) => onStrengthSetsChange(digitsOnly(e.target.value))}
-                    className="w-full rounded-lg border border-slate-600/30 bg-ct-elevated/60 py-2.5 text-center text-sm font-bold text-ct-1 focus:outline-none focus:ring-1 focus:ring-violet-400/40"
-                  />
+                  <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">Sets</label>
+                  <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={2} value={strengthSets} onChange={e => onStrengthSetsChange(e.target.value.replace(/\D/g, ''))}
+                    className="w-full bg-ct-elevated/60 rounded-lg py-2.5 text-ct-1 text-sm font-bold text-center focus:outline-none focus:ring-1 focus:ring-purple-400/40 border border-ct-border/30" />
                 </div>
               </div>
-
               <div>
-                <label className="mb-1.5 block text-[11px] font-medium text-ct-2">Rep Scheme</label>
-                <div className="mb-2 flex gap-1 overflow-x-auto pb-1">
-                  {REP_SCHEMES.map((scheme) => (
-                    <button
-                      key={scheme}
-                      onClick={() => onStrengthRepSchemeChange(scheme)}
-                      className={`shrink-0 rounded-lg px-2.5 py-2 text-[11px] font-bold transition-all ${
-                        strengthRepScheme === scheme
-                          ? 'border border-violet-400/30 bg-violet-500/20 text-violet-400'
-                          : 'border border-transparent bg-ct-elevated/50 text-ct-2'
-                      }`}
-                    >
-                      {scheme}
-                    </button>
+                <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">Rep Scheme</label>
+                <div className="flex gap-1 overflow-x-auto pb-1 mb-2">
+                  {repSchemePresets.map(rs => (
+                    <button key={rs} onClick={() => onStrengthRepSchemeChange(rs)}
+                      className={`px-2.5 py-2 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
+                        strengthRepScheme === rs ? 'bg-purple-500/20 text-purple-400 border border-purple-400/30' : 'bg-ct-elevated/50 text-ct-2 border border-transparent'
+                      }`}>{rs}</button>
                   ))}
                 </div>
-                <input
-                  type="text"
-                  value={strengthRepScheme}
-                  onChange={(e) => onStrengthRepSchemeChange(e.target.value)}
+                <input type="text" value={strengthRepScheme} onChange={e => onStrengthRepSchemeChange(e.target.value)}
                   placeholder="e.g. 6-6-6-6-6 or 3-3-2-2-1-1"
-                  className="w-full rounded-lg border border-slate-600/30 bg-ct-elevated/60 px-3 py-2.5 text-center text-xs text-ct-1 placeholder:text-ct-2 focus:outline-none focus:ring-1 focus:ring-violet-400/40"
-                />
+                  className="w-full bg-ct-elevated/60 rounded-lg py-2.5 px-3 text-ct-1 text-xs text-center focus:outline-none focus:ring-1 focus:ring-purple-400/40 placeholder:text-ct-2 border border-ct-border/30" />
               </div>
             </div>
-          ) : (
+          )}
+
+          {/* Build to Heavy — multi-rep max */}
+          {strengthSchemeType === 'build' && (
             <div className="grid grid-cols-3 gap-1.5">
-              {BUILD_TARGETS.map((target) => (
-                <button
-                  key={target}
-                  onClick={() => onStrengthBuildTargetChange(target)}
-                  className={`rounded-xl py-3 text-[11px] font-bold transition-all ${
-                    strengthBuildTarget === target
-                      ? 'border border-violet-400/30 bg-violet-500/20 text-violet-400 shadow-sm'
-                      : 'border border-transparent bg-ct-elevated/50 text-ct-2'
-                  }`}
-                >
-                  {target}
-                </button>
+              {['Heavy Single', 'Heavy 3', 'Heavy 5', '1RM', '3RM', '5RM'].map(tgt => (
+                <button key={tgt} onClick={() => onStrengthBuildTargetChange(tgt)}
+                  className={`py-3 rounded-xl text-[11px] font-bold transition-all ${
+                    strengthBuildTarget === tgt ? 'bg-purple-500/20 text-purple-400 border border-purple-400/30 shadow-sm' : 'bg-ct-elevated/50 text-ct-2 border border-transparent'
+                  }`}>{tgt}</button>
               ))}
             </div>
           )}
 
-          <div className="rounded-xl bg-slate-700/30 p-3 space-y-3">
+          {/* Weight entry — prominent */}
+          <div className="bg-ct-elevated/30 rounded-xl p-3 space-y-3">
             <div className="flex items-end gap-3">
               <div className="flex-1">
-                <label className="mb-1.5 block text-[11px] font-medium text-ct-2">Start ({weightUnit})</label>
-                <input
-                  type="text"
-                  inputMode="decimal"
-                  pattern="[0-9.]*"
-                  value={strengthStartWeight}
-                  onChange={(e) => onStrengthStartWeightChange(decimalOnly(e.target.value))}
-                  placeholder="0"
-                  className="w-full rounded-xl border border-slate-600/30 bg-ct-elevated/80 py-3 text-center text-xl font-bold tabular-nums text-ct-1 focus:outline-none focus:ring-2 focus:ring-violet-400/30"
-                />
+                <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">Start ({weightUnit})</label>
+                <input type="text" inputMode="numeric" pattern="[0-9]*" value={strengthStartWeight} onChange={e => onStrengthStartWeightChange(e.target.value.replace(/\D/g, ''))}
+                  placeholder="0" className="w-full bg-ct-elevated/80 rounded-xl py-3 text-ct-1 text-xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-purple-400/30 tabular-nums border border-ct-border/30" />
               </div>
-              <div className="pb-3 text-lg font-bold text-ct-2">?</div>
+              <div className="pb-3">
+                <span className="text-ct-2 text-lg font-bold">→</span>
+              </div>
               <div className="flex-1">
-                <label className="mb-1.5 block text-[11px] font-medium text-ct-2">End ({weightUnit})</label>
-                <input
-                  type="text"
-                  inputMode="decimal"
-                  pattern="[0-9.]*"
-                  value={strengthEndWeight}
-                  onChange={(e) => onStrengthEndWeightChange(decimalOnly(e.target.value))}
-                  placeholder="0"
-                  className="w-full rounded-xl border border-slate-600/30 bg-ct-elevated/80 py-3 text-center text-xl font-bold tabular-nums text-ct-1 focus:outline-none focus:ring-2 focus:ring-violet-400/30"
-                />
+                <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">End ({weightUnit})</label>
+                <input type="text" inputMode="numeric" pattern="[0-9]*" value={strengthEndWeight} onChange={e => onStrengthEndWeightChange(e.target.value.replace(/\D/g, ''))}
+                  placeholder="0" className="w-full bg-ct-elevated/80 rounded-xl py-3 text-ct-1 text-xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-purple-400/30 tabular-nums border border-ct-border/30" />
               </div>
             </div>
 
+            {/* Quick weight buttons */}
             <div className="flex gap-1 overflow-x-auto pb-0.5">
-              {QUICK_END_WEIGHTS[weightUnit].map((weight) => (
-                <button
-                  key={weight}
-                  onClick={() => onStrengthEndWeightChange(weight)}
-                  className={`shrink-0 rounded-lg px-2.5 py-1.5 text-[11px] font-bold transition-all ${
-                    strengthEndWeight === weight
-                      ? 'border border-violet-400/30 bg-violet-500/20 text-violet-400'
-                      : 'border border-transparent bg-ct-elevated/50 text-ct-2'
-                  }`}
-                >
-                  {weight}
-                </button>
+              {(weightUnit === 'kg' ? [40, 50, 60, 70, 80, 90, 100, 110, 120] : [95, 115, 135, 155, 185, 205, 225, 275, 315]).map(w => (
+                <button key={w} onClick={() => onStrengthEndWeightChange(String(w))}
+                  className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
+                    strengthEndWeight === String(w) ? 'bg-purple-500/20 text-purple-400 border border-purple-400/30' : 'bg-ct-elevated/50 text-ct-2 border border-transparent'
+                  }`}>{w}</button>
               ))}
             </div>
           </div>
 
+          {/* @% of 1RM */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-ct-2">@</span>
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              maxLength={3}
-              value={strengthPercent}
-              onChange={(e) => onStrengthPercentChange(digitsOnly(e.target.value))}
-              placeholder="—"
-              className="w-16 rounded-lg border border-slate-600/30 bg-ct-elevated/60 py-2 text-center text-sm font-bold text-ct-1 focus:outline-none focus:ring-1 focus:ring-violet-400/40"
-            />
-            <span className="text-xs font-medium text-ct-2">% of 1RM</span>
+            <span className="text-xs text-ct-2 font-medium">@</span>
+            <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={3} value={strengthPercent} onChange={e => onStrengthPercentChange(e.target.value.replace(/\D/g, ''))}
+              placeholder="—" className="w-16 bg-ct-elevated/60 rounded-lg py-2 text-ct-1 text-sm font-bold text-center focus:outline-none focus:ring-1 focus:ring-purple-400/40 border border-ct-border/30" />
+            <span className="text-xs text-ct-2 font-medium">% of 1RM</span>
           </div>
         </div>
       )}
 
-      {showWodSection && (
-        <div className="space-y-4 rounded-ct-lg border border-cyan-400/15 bg-gradient-to-b from-cyan-500/5 to-slate-800/40 p-4">
-          <div className="flex items-center justify-between gap-2">
-            <SectionEyebrow icon={Flame} label="WOD" tone="cyan" />
+      {/* ====== WOD SECTION ====== */}
+      {hasWod && (
+        <div className="bg-gradient-to-b from-cyan-500/5 to-ct-surface/40 rounded-ct-lg p-4 border border-cyan-400/15 space-y-4">
+          <div className="flex items-center justify-between">
+            <SectionHeader icon={Flame} label="WOD" color="cyan" />
             <div className="flex items-center gap-2">
-              <button
-                onClick={onScanWod}
-                className="flex items-center gap-1.5 rounded-xl border border-violet-400/25 bg-violet-500/10 px-3 py-2 text-[11px] font-bold text-violet-400 transition-transform active:scale-95"
-              >
-                <Search size={12} />
-                Scan
-              </button>
+              {/* Scan WOD Button */}
+              {onScanWod && (
+                <button
+                  onClick={onScanWod}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold bg-violet-500/10 text-violet-400 border border-violet-400/25 card-press"
+                >
+                  <Camera size={12} />
+                  Scan
+                </button>
+              )}
+              {/* Benchmark WOD Library Button */}
               <button
                 onClick={() => onShowBenchmarkPickerChange(!showBenchmarkPicker)}
-                className="flex items-center gap-1.5 rounded-xl border border-cyan-400/25 bg-cyan-500/10 px-3 py-2 text-[11px] font-bold text-cyan-400 transition-transform active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-400/25 card-press"
               >
-                <Plus size={12} />
+                <BookOpen size={12} />
                 All
               </button>
             </div>
           </div>
 
-          <div className="-mx-1 overflow-x-auto px-1 scrollbar-hide">
+          {/* Quick Select — popular benchmarks */}
+          <div className="overflow-x-auto -mx-1 px-1 scrollbar-hide">
             <div className="flex gap-1.5 pb-1" style={{ minWidth: 'max-content' }}>
-              {quickBenchmarkWods.map((wod) => {
-                const selected = wodName.toLowerCase() === wod.name.toLowerCase()
+              {QUICK_SELECT_IDS.map(id => {
+                const wod = allBenchmarks.find(w => w.id === id)
+                if (!wod) return null
+                const isActive = wodName.toLowerCase() === wod.name.toLowerCase()
                 return (
-                  <button
-                    key={wod.id}
+                  <button key={id}
                     onClick={() => onSelectBenchmarkWod(wod)}
-                    className={`min-h-[36px] whitespace-nowrap rounded-xl px-3 py-2 text-[11px] font-bold transition-all ${
-                      selected
-                        ? 'border border-cyan-400/30 bg-cyan-500/20 text-cyan-400 shadow-sm'
-                        : 'border border-transparent bg-ct-elevated/50 text-ct-2 active:scale-95'
+                    className={`px-3 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-all min-h-[36px] ${
+                      isActive
+                        ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/30 shadow-sm'
+                        : 'bg-ct-elevated/50 text-ct-2 border border-transparent active:scale-95'
                     }`}
                   >
                     {wod.name}
@@ -1007,6 +542,7 @@ export function WorkoutLogger(props: WorkoutLoggerProps) {
             </div>
           </div>
 
+          {/* Benchmark WOD Picker */}
           {showBenchmarkPicker && (
             <BenchmarkWodPicker
               searchValue={wodName}
@@ -1015,137 +551,162 @@ export function WorkoutLogger(props: WorkoutLoggerProps) {
             />
           )}
 
-          {matchedBenchmark && (
-            <BenchmarkDetailCard benchmark={matchedBenchmark} rxScaled={rxScaled} timeCap={timeCap} />
-          )}
-
+          {/* WOD type selector — cleaner pill grid */}
           <div className="flex flex-wrap gap-1.5">
-            {WOD_TYPES.map((type) => (
-              <button
-                key={type}
-                onClick={() => onWodTypeChange(type)}
-                className={`rounded-xl px-3.5 py-2.5 text-xs font-semibold transition-all ${
-                  wodType === type
-                    ? 'border border-cyan-400/30 bg-cyan-500/20 text-cyan-400 shadow-sm'
-                    : 'border border-transparent bg-ct-elevated/50 text-ct-2'
-                }`}
-              >
-                {formatWodTypeLabel(type)}
-              </button>
+            {(['AMRAP', 'ForTime', 'EMOM', 'Tabata', 'Chipper', 'Other'] as WodType[]).map(wt => (
+              <button key={wt} onClick={() => onWodTypeChange(wt)}
+                className={`px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                  wodType === wt ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/30 shadow-sm' : 'bg-ct-elevated/50 text-ct-2 border border-transparent'
+                }`}>{wt === 'ForTime' ? 'For Time' : wt}</button>
             ))}
           </div>
 
+          {/* WOD Name + Inline Benchmark Suggestions */}
           <div className="relative">
-            <input
-              type="text"
-              value={wodName}
-              onChange={(e) => onWodNameChange(e.target.value)}
+            <input type="text" value={wodName} onChange={e => onWodNameChange(e.target.value)}
               placeholder="WOD Name (e.g. Fran, Nate, or custom)"
-              className="w-full rounded-xl border border-slate-600/30 bg-ct-elevated/60 px-4 py-3.5 text-sm font-medium text-ct-1 placeholder:text-ct-2 focus:outline-none focus:ring-2 focus:ring-cyan-400/40"
-            />
+              className="w-full bg-ct-elevated/60 rounded-xl py-3.5 px-4 text-ct-1 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-cyan-400/40 placeholder:text-ct-2 border border-ct-border/30" />
+            {/* Inline benchmark suggestions as you type */}
             {wodName.length >= 2 && !showBenchmarkPicker && (
-              <BenchmarkSuggestions query={wodName} onSelect={onSelectBenchmarkWod} />
+              <BenchmarkSuggestions
+                query={wodName}
+                onSelect={onSelectBenchmarkWod}
+              />
             )}
           </div>
 
-          <textarea
-            value={wodDescription}
-            onChange={(e) => onWodDescriptionChange(e.target.value)}
+          <textarea value={wodDescription} onChange={e => onWodDescriptionChange(e.target.value)}
             placeholder="e.g. 21-15-9 Thrusters & Pull-ups"
-            className="h-16 w-full resize-none rounded-xl border border-slate-600/30 bg-ct-elevated/60 px-4 py-3 text-xs text-ct-1 placeholder:text-ct-2 focus:outline-none focus:ring-1 focus:ring-cyan-400/40"
-          />
+            className="w-full bg-ct-elevated/60 rounded-xl py-3 px-4 text-ct-1 text-xs focus:outline-none h-16 resize-none focus:ring-1 focus:ring-cyan-400/40 placeholder:text-ct-2 border border-ct-border/30" />
 
-          <PreviousResultsPanel
-            label="Previous WOD Results"
-            results={prevResults}
-            onSelect={onLoadWorkoutForEdit}
-            accent="cyan"
-          />
+          {/* Previous Results — auto-loaded when WOD name matches */}
+          <PrevResultsCard results={prevResults} label="Previous WOD Results" />
 
-          <div className="space-y-2 rounded-xl bg-slate-700/30 px-3 py-2.5">
+          {/* Time Cap */}
+          <div className="bg-ct-elevated/30 rounded-xl px-3 py-2.5 space-y-2">
             <div className="flex items-center gap-2">
-              <label className="whitespace-nowrap text-[11px] font-medium text-ct-2">Time Cap</label>
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                maxLength={3}
-                value={timeCap}
-                onChange={(e) => onTimeCapChange(digitsOnly(e.target.value))}
-                placeholder="—"
-                className="w-14 rounded-lg border border-slate-600/30 bg-ct-elevated/80 py-1.5 text-center text-sm font-bold text-ct-1 focus:outline-none"
-              />
+              <label className="text-[11px] text-ct-2 font-medium whitespace-nowrap">Time Cap</label>
+              <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={3} value={timeCap} onChange={e => onTimeCapChange(e.target.value.replace(/\D/g, ''))}
+                placeholder="—" className="w-14 bg-ct-elevated/80 rounded-lg py-1.5 text-ct-1 text-sm font-bold text-center focus:outline-none border border-ct-border/30" />
               <span className="text-[11px] text-ct-2">min</span>
-              <div className="ml-auto flex gap-1">
-                {QUICK_TIME_CAPS.map((cap) => (
-                  <button
-                    key={cap}
-                    onClick={() => onTimeCapChange(cap)}
-                    className={`rounded-lg px-2.5 py-1.5 text-[11px] font-bold transition-all ${
-                      timeCap === cap ? 'bg-cyan-500/20 text-cyan-400' : 'text-ct-2'
-                    }`}
-                  >
-                    {cap}
-                  </button>
+              <div className="flex gap-1 ml-auto">
+                {[12, 15, 18, 20].map(tc => (
+                  <button key={tc} onClick={() => onTimeCapChange(String(tc))}
+                    className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
+                      timeCap === String(tc) ? 'bg-cyan-500/20 text-cyan-400' : 'text-ct-2'
+                    }`}>{tc}</button>
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="rounded-xl bg-slate-700/30 p-3">
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-ct-2">Score</p>
-            {renderScoreInputs()}
+          {/* Smart Score Entry — elevated card */}
+          <div className="bg-ct-elevated/30 rounded-xl p-3">
+            <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold mb-3">Score</p>
+
+            {/* AMRAP: Rounds + Reps */}
+            {wodType === 'AMRAP' && (
+              <div className="flex gap-2">
+                <div className="flex-1 min-w-0">
+                  <label className="text-[11px] text-ct-2 block mb-1.5 font-medium text-center">Rounds</label>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => onScoreRoundsChange(String(Math.max(0, (parseInt(scoreRounds) || 0) - 1)))}
+                      className="w-11 h-11 shrink-0 bg-ct-elevated/80 rounded-lg flex items-center justify-center active:bg-ct-elevated border border-ct-border/30"><Minus size={14} className="text-ct-2" /></button>
+                    <input type="text" inputMode="numeric" pattern="[0-9]*" value={scoreRounds} onChange={e => onScoreRoundsChange(e.target.value.replace(/\D/g, ''))}
+                      className="min-w-0 flex-1 bg-ct-elevated/80 rounded-lg py-2 text-ct-1 text-lg font-bold text-center focus:outline-none tabular-nums border border-ct-border/30" placeholder="0" />
+                    <button onClick={() => onScoreRoundsChange(String((parseInt(scoreRounds) || 0) + 1))}
+                      className="w-11 h-11 shrink-0 bg-cyan-500/10 rounded-lg flex items-center justify-center active:bg-cyan-500/20 border border-cyan-400/20"><Plus size={14} className="text-cyan-400" /></button>
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <label className="text-[11px] text-ct-2 block mb-1.5 font-medium text-center">+ Reps</label>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => onScoreRepsChange(String(Math.max(0, (parseInt(scoreReps) || 0) - 1)))}
+                      className="w-11 h-11 shrink-0 bg-ct-elevated/80 rounded-lg flex items-center justify-center active:bg-ct-elevated border border-ct-border/30"><Minus size={14} className="text-ct-2" /></button>
+                    <input type="text" inputMode="numeric" pattern="[0-9]*" value={scoreReps} onChange={e => onScoreRepsChange(e.target.value.replace(/\D/g, ''))}
+                      className="min-w-0 flex-1 bg-ct-elevated/80 rounded-lg py-2 text-ct-1 text-lg font-bold text-center focus:outline-none tabular-nums border border-ct-border/30" placeholder="0" />
+                    <button onClick={() => onScoreRepsChange(String((parseInt(scoreReps) || 0) + 1))}
+                      className="w-11 h-11 shrink-0 bg-cyan-500/10 rounded-lg flex items-center justify-center active:bg-cyan-500/20 border border-cyan-400/20"><Plus size={14} className="text-cyan-400" /></button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ForTime / Chipper: MM:SS */}
+            {(wodType === 'ForTime' || wodType === 'Chipper') && (
+              <div className="flex items-center justify-center gap-2">
+                <div className="text-center">
+                  <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">Min</label>
+                  <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={3} value={scoreMin} onChange={e => onScoreMinChange(e.target.value.replace(/\D/g, ''))}
+                    className="w-18 bg-ct-elevated/80 rounded-xl py-2.5 text-ct-1 text-xl font-bold text-center focus:outline-none tabular-nums border border-ct-border/30" placeholder="0" style={{ width: '4.5rem' }} />
+                </div>
+                <span className="text-xl text-ct-2 font-bold mt-5">:</span>
+                <div className="text-center">
+                  <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">Sec</label>
+                  <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={2} value={scoreSec} onChange={e => onScoreSecChange(e.target.value.replace(/\D/g, ''))}
+                    className="w-18 bg-ct-elevated/80 rounded-xl py-2.5 text-ct-1 text-xl font-bold text-center focus:outline-none tabular-nums border border-ct-border/30" placeholder="00" style={{ width: '4.5rem' }} />
+                </div>
+              </div>
+            )}
+
+            {/* EMOM: Rounds */}
+            {wodType === 'EMOM' && (
+              <div className="flex items-center gap-2 justify-center">
+                <button onClick={() => onScoreRoundsChange(String(Math.max(0, (parseInt(scoreRounds) || 0) - 1)))}
+                  className="w-11 h-11 shrink-0 bg-ct-elevated/80 rounded-xl flex items-center justify-center active:bg-ct-elevated border border-ct-border/30"><Minus size={14} className="text-ct-2" /></button>
+                <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={3} value={scoreRounds} onChange={e => onScoreRoundsChange(e.target.value.replace(/\D/g, ''))}
+                  className="w-20 bg-ct-elevated/80 rounded-xl py-2.5 text-ct-1 text-xl font-bold text-center focus:outline-none tabular-nums border border-ct-border/30" placeholder="0" />
+                <button onClick={() => onScoreRoundsChange(String((parseInt(scoreRounds) || 0) + 1))}
+                  className="w-11 h-11 shrink-0 bg-orange-500/10 rounded-xl flex items-center justify-center active:bg-orange-500/20 border border-orange-400/20"><Plus size={14} className="text-orange-400" /></button>
+                <span className="text-xs text-ct-2 font-medium">rounds</span>
+              </div>
+            )}
+
+            {/* Tabata: Lowest reps */}
+            {wodType === 'Tabata' && (
+              <div className="flex items-center gap-2 justify-center">
+                <button onClick={() => onScoreRepsChange(String(Math.max(0, (parseInt(scoreReps) || 0) - 1)))}
+                  className="w-11 h-11 shrink-0 bg-ct-elevated/80 rounded-xl flex items-center justify-center active:bg-ct-elevated border border-ct-border/30"><Minus size={14} className="text-ct-2" /></button>
+                <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={3} value={scoreReps} onChange={e => onScoreRepsChange(e.target.value.replace(/\D/g, ''))}
+                  className="w-20 bg-ct-elevated/80 rounded-xl py-2.5 text-ct-1 text-xl font-bold text-center focus:outline-none tabular-nums border border-ct-border/30" placeholder="0" />
+                <button onClick={() => onScoreRepsChange(String((parseInt(scoreReps) || 0) + 1))}
+                  className="w-11 h-11 shrink-0 bg-yellow-500/10 rounded-xl flex items-center justify-center active:bg-yellow-500/20 border border-yellow-400/20"><Plus size={14} className="text-yellow-400" /></button>
+                <span className="text-xs text-ct-2 font-medium">lowest reps</span>
+              </div>
+            )}
+
+            {/* Other: Freeform */}
+            {wodType === 'Other' && (
+              <input type="text" value={scoreRounds} onChange={e => onScoreRoundsChange(e.target.value)}
+                placeholder="Score (e.g. 15:30, 12 rounds)"
+                className="w-full bg-ct-elevated/80 rounded-xl py-3 px-4 text-ct-1 text-sm focus:outline-none border border-ct-border/30" />
+            )}
           </div>
 
+          {/* WOD Movements */}
           <div>
-            <div className="mb-2 flex items-center justify-between">
-              <p className="text-[11px] font-semibold uppercase tracking-widest text-ct-2">Movements</p>
-              <button
-                onClick={() => onShowMovementPickerChange(!showMovementPicker)}
-                className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold text-cyan-400 active:bg-cyan-500/10"
-              >
-                <Plus size={12} />
-                Add
-              </button>
+            <div className="flex justify-between items-center mb-2">
+              <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">Movements</p>
+              <button onClick={() => onShowMovementPickerChange(!showMovementPicker)}
+                className="text-xs text-cyan-400 font-semibold flex items-center gap-1 px-2 py-1 rounded-lg active:bg-cyan-500/10"><Plus size={12} /> Add</button>
             </div>
 
-            {movements.map((movement, index) => (
-              <div
-                key={`${movement.name}-${index}`}
-                className="mb-2 space-y-2 rounded-xl border border-slate-600/20 bg-slate-700/30 p-3"
-              >
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-ct-1">{movement.name}</p>
-                  <button
-                    onClick={() => onRemoveMovement(index)}
-                    className="flex h-7 w-7 items-center justify-center rounded-lg text-ct-2 active:bg-red-500/10 active:text-red-400"
-                    aria-label="Remove movement"
-                  >
-                    <Trash2 size={14} />
-                  </button>
+            {movements.map((m, idx) => (
+              <div key={idx} className="bg-ct-elevated/30 rounded-xl p-3 mb-2 space-y-2 border border-ct-border/20">
+                <div className="flex justify-between items-center">
+                  <p className="text-sm font-semibold text-ct-1">{m.name}</p>
+                  <button onClick={() => onRemoveMovement(idx)} className="w-7 h-7 rounded-lg flex items-center justify-center text-ct-2 active:text-red-400 active:bg-red-500/10" aria-label="Remove movement"><X size={14} /></button>
                 </div>
                 <div className="flex gap-2">
                   <div className="flex-1">
-                    <label className="mb-0.5 block text-[11px] font-medium text-ct-2">Weight ({weightUnit})</label>
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      pattern="[0-9.]*"
-                      value={movement.weight}
-                      onChange={(e) => onUpdateMovement(index, 'weight', decimalOnly(e.target.value))}
-                      placeholder="0"
-                      className="w-full rounded-lg border border-slate-600/30 bg-ct-elevated/80 px-2 py-2 text-center text-xs text-ct-1 focus:outline-none"
-                    />
+                    <label className="text-[11px] text-ct-2 block mb-0.5 font-medium">Weight ({weightUnit})</label>
+                    <input type="text" inputMode="numeric" pattern="[0-9]*" value={m.weight} onChange={e => onUpdateMovement(idx, 'weight', e.target.value.replace(/\D/g, ''))}
+                      placeholder="0" className="w-full bg-ct-elevated/80 rounded-lg py-2 px-2 text-ct-1 text-xs text-center focus:outline-none tabular-nums border border-ct-border/30" />
                   </div>
                   <div className="flex-1">
-                    <label className="mb-0.5 block text-[11px] font-medium text-ct-2">Reps / Scheme</label>
-                    <input
-                      type="text"
-                      value={movement.detail}
-                      onChange={(e) => onUpdateMovement(index, 'detail', e.target.value)}
-                      placeholder="21-15-9"
-                      className="w-full rounded-lg border border-slate-600/30 bg-ct-elevated/80 px-2 py-2 text-center text-xs text-ct-1 focus:outline-none"
-                    />
+                    <label className="text-[11px] text-ct-2 block mb-0.5 font-medium">Reps / Scheme</label>
+                    <input type="text" value={m.detail} onChange={e => onUpdateMovement(idx, 'detail', e.target.value)}
+                      placeholder="21-15-9" className="w-full bg-ct-elevated/80 rounded-lg py-2 px-2 text-ct-1 text-xs text-center focus:outline-none border border-ct-border/30" />
                   </div>
                 </div>
               </div>
@@ -1160,83 +721,53 @@ export function WorkoutLogger(props: WorkoutLoggerProps) {
             )}
 
             {movements.length === 0 && !showMovementPicker && (
-              <p className="py-2 text-center text-xs text-ct-2">Tap "Add" to log movements &amp; weights</p>
+              <p className="text-xs text-ct-2 text-center py-2">Tap "Add" to log movements & weights</p>
             )}
           </div>
         </div>
       )}
 
-      <div className="flex rounded-xl bg-slate-800/40 p-1">
-        {(['Scaled', 'RX', 'Elite'] as RxScaled[]).map((level) => (
-          <button
-            key={level}
-            onClick={() => onRxScaledChange(level)}
-            className={`flex-1 rounded-lg py-3 text-sm font-bold transition-all ${
-              rxScaled === level
-                ? level === 'RX'
-                  ? 'bg-green-500/15 text-green-400 shadow-sm'
-                  : level === 'Elite'
-                    ? 'bg-purple-500/15 text-purple-400 shadow-sm'
-                    : 'bg-orange-500/15 text-orange-400 shadow-sm'
+      {/* Scaled / RX / Elite — pill toggle style */}
+      <div className="flex bg-ct-surface rounded-xl p-1">
+        {(['Scaled', 'RX', 'Elite'] as RxScaled[]).map(rx => (
+          <button key={rx} onClick={() => onRxScaledChange(rx)}
+            className={`flex-1 py-3 rounded-lg text-sm font-bold transition-all ${
+              rxScaled === rx
+                ? rx === 'RX' ? 'bg-green-500/15 text-green-400 shadow-sm'
+                  : rx === 'Elite' ? 'bg-purple-500/15 text-purple-400 shadow-sm'
+                  : 'bg-orange-500/15 text-orange-400 shadow-sm'
                 : 'text-ct-2'
-            }`}
-          >
-            {level}
-          </button>
+            }`}>{rx}</button>
         ))}
       </div>
 
-      <div className={`grid gap-3 ${showWodSection ? 'grid-cols-2' : 'grid-cols-1'}`}>
-        <button
-          onClick={() => onPrFlagChange(!prFlag)}
-          className={`flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold transition-all ${
-            prFlag
-              ? 'border border-red-400/30 bg-red-500/15 text-red-400 shadow-sm'
-              : 'border border-slate-700/30 bg-slate-800/40 text-ct-2'
-          }`}
-        >
-          <Trophy size={16} />
-          PR!
-        </button>
-        {showWodSection && (
-          <button
-            onClick={() => onIsBenchmarkChange(!isBenchmark)}
-            className={`flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold transition-all ${
-              isBenchmark
-                ? 'border border-cyan-400/30 bg-cyan-500/15 text-cyan-400 shadow-sm'
-                : 'border border-slate-700/30 bg-slate-800/40 text-ct-2'
-            }`}
-          >
-            <Target size={16} />
-            Benchmark
-          </button>
-        )}
+      {/* PR + Benchmark — icon buttons */}
+      <div className="flex gap-3">
+        <button onClick={() => onPrFlagChange(!prFlag)}
+          className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold transition-all ${
+            prFlag ? 'bg-red-500/15 text-red-400 border border-red-400/30 shadow-sm' : 'bg-ct-surface text-ct-2 border border-ct-border'
+          }`}><Trophy size={16} /> PR!</button>
+        <button onClick={() => onIsBenchmarkChange(!isBenchmark)}
+          className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold transition-all ${
+            isBenchmark ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-400/30 shadow-sm' : 'bg-ct-surface text-ct-2 border border-ct-border'
+          }`}><Zap size={16} /> Benchmark</button>
       </div>
 
-      <textarea
-        value={workoutNotes}
-        onChange={(e) => onWorkoutNotesChange(e.target.value)}
+      {/* Notes */}
+      <textarea value={workoutNotes} onChange={e => onWorkoutNotesChange(e.target.value)}
         placeholder="Notes (optional)..."
-        className="h-16 w-full resize-none rounded-xl border border-slate-700/30 bg-slate-800/40 px-4 py-3 text-sm text-ct-1 placeholder:text-ct-2 focus:outline-none"
-      />
+        className="w-full bg-ct-surface border border-ct-border rounded-xl py-3 px-4 text-ct-1 text-sm focus:outline-none h-16 resize-none placeholder:text-ct-2" />
 
-      <div className="sticky-save space-y-2 pb-4">
-        <button
-          onClick={onSaveWorkout}
-          className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 py-4 text-base font-bold text-slate-900 shadow-lg shadow-cyan-500/25"
-        >
-          {saveLabel}
+      {/* Save + Delete buttons */}
+      <div className="sticky-save space-y-2">
+        <button onClick={onSaveWorkout}
+          className="w-full bg-gradient-to-r from-cyan-500 to-cyan-400 text-slate-900 font-bold py-4 rounded-xl btn-press text-base shadow-lg shadow-cyan-500/25">
+          {editingWorkoutId ? 'Update Workout' : 'Save Workout'}
         </button>
         {editingWorkoutId && (
-          <button
-            onClick={onDeleteWorkout}
-            className="w-full rounded-xl border border-red-400/20 bg-red-500/10 py-3 text-sm font-bold text-red-300"
-          >
-            Delete Workout
-          </button>
+          <DeleteButton onDelete={onDeleteWorkout} />
         )}
       </div>
     </div>
   )
 }
-

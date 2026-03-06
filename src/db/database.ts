@@ -125,9 +125,29 @@ db.on('ready', async () => {
 })
 
 // ===== SEED: Food Library (200+ foods) =====
+// Bump this version whenever the seed list is updated.
+// On app start, if localStorage version differs, non-custom foods are
+// cleared and re-seeded so every user gets the latest library.
+const FOOD_SEED_VERSION = 2 // v1 = original ~32, v2 = expanded 211
+
 export async function seedFoodLibrary() {
+  const currentVersion = Number(localStorage.getItem('tv_food_seed_v') || '0')
   const count = await db.foodLibrary.count()
-  if (count > 0) return
+
+  if (count > 0 && currentVersion >= FOOD_SEED_VERSION) return
+
+  // Preserve any custom foods the user created
+  const customFoods = count > 0
+    ? await db.foodLibrary.filter(f => f.isCustom === true).toArray()
+    : []
+
+  // Clear stale seed data (keeps schema, removes rows)
+  await db.foodLibrary.clear()
+
+  // Re-add custom foods first
+  if (customFoods.length > 0) {
+    await db.foodLibrary.bulkAdd(customFoods)
+  }
   const foods: Omit<FoodItem, 'id'>[] = [
     // ===== EXISTING PROTEINS (Keep exactly as-is) =====
     { name: 'Chicken Breast (cooked)', nameZh: '雞胸肉（熟）', category: 'Protein', caloriesPer100g: 165, proteinPer100g: 31, carbsPer100g: 0, fatPer100g: 3.6, fiberPer100g: 0, defaultServingG: 150, isCustom: false },
@@ -391,6 +411,9 @@ export async function seedFoodLibrary() {
     { name: 'Fried Rice', nameZh: '炒飯', category: 'Asian Foods', caloriesPer100g: 148, proteinPer100g: 5, carbsPer100g: 20, fatPer100g: 5.5, fiberPer100g: 0.3, defaultServingG: 200, isCustom: false },
   ]
   await db.foodLibrary.bulkAdd(foods)
+
+  // Stamp version so we don't re-seed unnecessarily
+  localStorage.setItem('tv_food_seed_v', String(FOOD_SEED_VERSION))
 }
 
 // ===== SEED: Benchmark WODs =====
