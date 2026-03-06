@@ -212,8 +212,8 @@ export function TodayPage() {
         />
       )}
 
-      {/* Header — greeting + streak */}
-      <div className="flex justify-between items-start">
+      {/* Header — greeting + streak with ambient gradient backdrop */}
+      <div className="flex justify-between items-start ambient-header">
         <div>
           <div className="flex items-center gap-1.5 mb-1">
             <GreetingIcon size={16} className="text-yellow-400" />
@@ -251,7 +251,7 @@ export function TodayPage() {
 
       {/* #6 ENHANCED TODAY'S WORKOUT — hero card */}
       <button
-        className="w-full text-left bg-gradient-to-br from-ct-surface-high to-ct-surface rounded-ct-lg p-4 border border-ct-border card-press"
+        className="w-full text-left glass-card rounded-ct-lg p-4 card-press"
         onClick={() => setActiveTab(todayWorkout ? 'train' : 'log')}
         aria-label={todayWorkout ? `Today's workout: ${todayWorkout.name}` : 'Log a workout'}
       >
@@ -335,7 +335,7 @@ export function TodayPage() {
           </div>
           <div className="h-1.5 bg-ct-elevated rounded-full overflow-hidden">
             <div
-              className="h-full rounded-full animate-bar-fill"
+              className="h-full rounded-full animate-bar-fill bar-glow"
               style={{ background: 'linear-gradient(90deg, #22d3ee, #a855f7)', width: `${Math.min(100, (weeklyStats.done / weeklyStats.target) * 100)}%` }}
             />
           </div>
@@ -422,7 +422,7 @@ export function TodayPage() {
           {/* Recovery bar */}
           <div className="h-1.5 bg-ct-elevated rounded-full overflow-hidden mt-2">
             <div
-              className={`h-full rounded-full animate-bar-fill ${
+              className={`h-full rounded-full animate-bar-fill bar-glow ${
                 recoveryScore >= 70 ? 'bg-gradient-to-r from-green-500 to-green-400' :
                 recoveryScore >= 40 ? 'bg-gradient-to-r from-yellow-500 to-yellow-400' :
                 'bg-gradient-to-r from-red-500 to-red-400'
@@ -446,7 +446,7 @@ export function TodayPage() {
 
       {/* NUTRITION — compact macro overview */}
       <button
-        className="w-full text-left bg-ct-surface rounded-ct-lg p-4 border border-ct-border card-press"
+        className="w-full text-left bg-ct-surface rounded-ct-lg p-4 border border-ct-border surface-highlight card-press"
         onClick={() => setActiveTab('eat')}
         aria-label={`Nutrition: ${Math.round(calCurrent)} of ${calTarget} calories`}
       >
@@ -473,7 +473,7 @@ export function TodayPage() {
           <button
             key={i}
             onClick={() => setActiveTab('log')}
-            className="bg-ct-surface rounded-ct-lg p-3 border border-ct-border text-center card-press min-h-[64px]"
+            className="bg-ct-surface rounded-ct-lg p-3 border border-ct-border surface-highlight text-center card-press min-h-[64px]"
             aria-label={`${[t('today.weight'), t('today.sleep'), t('today.water'), t('today.energy')][i]}: ${value || '—'}`}
           >
             <MetricIcon size={16} className={`mx-auto mb-1 ${color}`} />
