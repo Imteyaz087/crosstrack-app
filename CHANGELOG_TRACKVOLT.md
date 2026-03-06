@@ -657,3 +657,7 @@
   - yes to weight/fat-loss goal projection
   - yes to exercise search/create, but only as a hybrid-athlete exercise library rather than a generic calorie-burn module
 - Important nuance recorded: Taiwan data looks immediately actionable from official open data, while mainland China nutrition data likely needs a more careful/possibly licensed approach.
+
+## 2026-03-07
+- Added a concrete `must do now / should do next / later` implementation board for the Lose It-inspired priorities.
+- The board maps nutrition speed, Taiwan data, goal projection, Apple Health sync, exercise library, and later China-data work to exact TrackVolt files so Claude can decide sequencing without re-auditing the codebase.

@@ -1801,3 +1801,149 @@ The highest-value adaptations for TrackVolt are:
 4. Apple Health / Health Connect import
 5. weight/fat-loss goal projection
 6. later: custom exercise library inside TrackVolt's hybrid-athlete workflow
+
+## 2026-03-07 - Lose It inspired implementation board
+
+### Must do now
+1. Faster nutrition logging
+- files:
+  - `src/pages/NutritionPage.tsx`
+  - `src/components/log/MealLogger.tsx`
+  - `src/components/log/BarcodeScanner.tsx`
+  - `src/components/log/CustomFoodCreator.tsx`
+  - `src/stores/useStore.ts`
+  - `src/types/index.ts`
+- scope:
+  - favorites / recents / meal clone / yesterday clone
+  - faster search results
+  - macro-first quick add when DB match fails
+
+2. Official Taiwan nutrition data + better Chinese search
+- files:
+  - `src/components/log/MealLogger.tsx`
+  - `src/components/log/BarcodeScanner.tsx`
+  - `src/components/log/CustomFoodCreator.tsx`
+  - `src/services/nutritionApi.ts`
+  - `api/nutrition-search.ts`
+  - `src/stores/useStore.ts`
+  - `src/types/index.ts`
+- likely new files:
+  - `src/services/taiwanNutrition.ts`
+  - `scripts/import-taiwan-foods.*`
+- scope:
+  - TFDA/open-data import
+  - Traditional + Simplified Chinese aliases
+  - food source labels (`official_tw`, `barcode`, `custom`, `estimated`)
+
+3. Weight / fat-loss goal projection
+- files:
+  - `src/pages/OnboardingPage.tsx`
+  - `src/pages/SettingsPage.tsx`
+  - `src/pages/TodayPage.tsx`
+  - `src/pages/ProgressPage.tsx`
+  - `src/stores/useStore.ts`
+  - `src/types/index.ts`
+- scope:
+  - target pace
+  - estimated goal date
+  - weekly projection
+  - athlete-safe warnings for aggressive cuts
+
+### Should do next
+4. Apple Health import (iOS)
+- files:
+  - `capacitor.config.ts`
+  - `ios/` native project
+  - `src/components/SleepImportHandler.tsx`
+  - `src/pages/SettingsPage.tsx`
+  - `src/pages/TodayPage.tsx`
+  - `src/stores/useStore.ts`
+  - `src/types/index.ts`
+- likely new files:
+  - `src/services/appleHealth.ts`
+  - `src/hooks/useHealthImport.ts`
+- scope:
+  - steps
+  - workouts
+  - sleep
+  - weight/body metrics
+
+5. Health Connect import (Android-ready design even before Android wrapper)
+- files:
+  - `src/pages/SettingsPage.tsx`
+  - `src/pages/TodayPage.tsx`
+  - `src/stores/useStore.ts`
+  - `src/types/index.ts`
+- likely new files:
+  - `src/services/healthConnect.ts`
+- scope:
+  - same import model as Apple Health
+  - shared data normalization layer
+
+6. Exercise library (`My Exercises / Search / Create`)
+- files:
+  - `src/components/log/WorkoutLogger.tsx`
+  - `src/pages/TrainingPage.tsx`
+  - `src/pages/LogPage.tsx`
+  - `src/stores/useStore.ts`
+  - `src/types/index.ts`
+- likely new files:
+  - `src/components/log/ExerciseLibrary.tsx`
+  - `src/components/log/CustomExerciseCreator.tsx`
+- scope:
+  - favorite exercises
+  - custom exercise creation
+  - category + default unit
+  - recent exercises
+
+7. Better barcode / OCR review flow for East Asian packaging
+- files:
+  - `src/components/log/BarcodeScanner.tsx`
+  - `src/services/nutritionApi.ts`
+  - `api/barcode-lookup.ts`
+  - `src/types/index.ts`
+- likely new files:
+  - `src/services/labelOcr.ts`
+- scope:
+  - Traditional/Simplified Chinese label review
+  - stronger fallback when product data is partial
+
+### Later
+8. Mainland China authoritative nutrition dataset
+- files:
+  - `src/services/nutritionApi.ts`
+  - `api/nutrition-search.ts`
+  - `src/stores/useStore.ts`
+  - `src/types/index.ts`
+- likely new files:
+  - `src/services/chinaNutrition.ts`
+- scope:
+  - only after source/licensing clarity
+
+9. Adaptive calorie / macro updates from actual trend
+- files:
+  - `src/pages/TodayPage.tsx`
+  - `src/pages/ProgressPage.tsx`
+  - `src/pages/SettingsPage.tsx`
+  - `src/stores/useStore.ts`
+  - `src/types/index.ts`
+- scope:
+  - weekly adjustment loop
+  - actual-vs-projected trend
+
+10. Rich cross-domain goal dashboard
+- files:
+  - `src/pages/TodayPage.tsx`
+  - `src/pages/ProgressPage.tsx`
+  - `src/pages/TrainingPage.tsx`
+  - `src/stores/useStore.ts`
+- scope:
+  - combine body goals, training load, recovery, and nutrition
+
+### Recommended order
+1. nutrition speed
+2. Taiwan food data
+3. goal projection
+4. Apple Health design + import
+5. exercise library
+6. deeper OCR / China data / adaptive coaching
