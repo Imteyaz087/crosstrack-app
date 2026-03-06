@@ -1,8 +1,14 @@
 import { Component, type ReactNode, type ErrorInfo } from 'react'
 import { RefreshCw, AlertTriangle } from 'lucide-react'
 
-interface Props { children: ReactNode }
-interface State { hasError: boolean; error: Error | null }
+interface Props {
+  children: ReactNode
+}
+
+interface State {
+  hasError: boolean
+  error: Error | null
+}
 
 export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
@@ -20,8 +26,13 @@ export class ErrorBoundary extends Component<Props, State> {
     }
   }
 
-  handleReload = () => { window.location.reload() }
-  handleReset = () => { this.setState({ hasError: false, error: null }) }
+  handleReload = () => {
+    window.location.reload()
+  }
+
+  handleReset = () => {
+    this.setState({ hasError: false, error: null })
+  }
 
   render() {
     if (this.state.hasError) {
@@ -44,10 +55,12 @@ export class ErrorBoundary extends Component<Props, State> {
               </div>
             )}
             <div className="flex gap-3">
-              <button onClick={this.handleReset} className="flex-1 bg-slate-800 border border-slate-700 text-ct-2 font-semibold py-3 rounded-xl text-sm min-h-[48px]">
+              <button onClick={this.handleReset}
+                className="flex-1 bg-slate-800 border border-slate-700 text-ct-2 font-semibold py-3 rounded-xl text-sm min-h-[48px]">
                 Try Again
               </button>
-              <button onClick={this.handleReload} className="flex-1 bg-cyan-500 text-slate-900 font-bold py-3 rounded-xl text-sm min-h-[48px] flex items-center justify-center gap-2">
+              <button onClick={this.handleReload}
+                className="flex-1 bg-cyan-500 text-slate-900 font-bold py-3 rounded-xl text-sm min-h-[48px] flex items-center justify-center gap-2">
                 <RefreshCw size={16} /> Reload App
               </button>
             </div>
@@ -55,6 +68,7 @@ export class ErrorBoundary extends Component<Props, State> {
         </div>
       )
     }
+
     return this.props.children
   }
 }

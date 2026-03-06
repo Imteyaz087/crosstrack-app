@@ -130,3 +130,247 @@
 ---
 
 *Update this file after each session with date, what changed, why, and deploy status.*
+
+## 2026-03-06 - Session 5: Workspace Lock + Handoff Package + Parity Baseline
+
+**Why:** Establish a repeatable memory-first workflow, avoid zero-start sessions, and ensure a safe source-code handoff.
+
+**What was done:**
+- Locked active source folder to `C:\ClaudeWork\Imu\TrackVolt-App`
+- Verified framework/build stack from code: React 19 + TypeScript + Vite + PWA plugin
+- Read required memory files first (`AGENTS.md`, `TRACKVOLT_MASTER_DOC.md`, `CHANGELOG_TRACKVOLT.md`)
+- Generated handoff ZIP: `C:\ClaudeWork\Imu\TrackVolt-App.zip`
+- Verified ZIP content excludes `node_modules`, `.git`, and `dist`
+- Replaced `README.md` with exact install/dev/build/deploy commands and safety gates
+- Pulled live production HTML + manifest from `https://trackvolt.app` to baseline visible production capabilities
+
+**Deploy:** NOT deployed.
+
+**Next steps:**
+1. If you want GitHub handoff instead of ZIP, run authenticated push from this folder
+2. Run a focused parity sweep page-by-page against live UI before any build/deploy action
+3. Continue feature work only after you provide `CONFIRM BUILD`
+
+## 2026-03-06 - Session 6 CrossFit Local Parity Fix
+- Patched `src/components/log/WorkoutLogger.tsx` to expose the richer local/live CrossFit workflow already supported by `LogPage` and `useWorkoutForm`
+- Added step-based entry flow: Full Class, WOD Only, Strength Only
+- Added visible shortcuts for `CrossFit Events` and `Scan WOD`
+- Added benchmark picker/suggestions, previous-result edit shortcuts, richer score input modes, strength build/programmed controls, and movement picker UI
+- `npm run build` passed after the patch
+- No deploy performed
+
+## 2026-03-06 - Session 7: CrossFit Entry Screen Matched To Live Layout
+
+**Why:** User provided the live CrossFit entry screen and asked for the same feature layout locally.
+
+**What changed:**
+- Updated `src/components/log/WorkoutLogger.tsx` step-one layout to match the live CrossFit launcher more closely
+- Reworked first screen to use:
+  - full-width `Full Class` card
+  - two half-width cards for `WOD Only` and `Strength Only`
+  - full-width `CrossFit Events` card
+  - recent workouts list styled for tap-to-edit
+- Kept deeper logging flow intact (benchmark picker, strength details, movement picker, WOD save flow)
+
+**Verification:**
+- `npm run build` passed
+
+**Deploy:** NOT deployed.
+
+## 2026-03-06 - Session 8: No-Code Verification Refresh
+
+**Why:** User re-established the TrackVolt coworker instructions and asked to continue from the same project location without starting feature implementation.
+
+**What was verified:**
+- Active project root remains `C:\ClaudeWork\Imu\TrackVolt-App`
+- Framework/build stack remains React 19 + TypeScript + Vite 7 + PWA
+- README still contains install/dev/build/deploy-safe commands
+- Git handoff remote is still configured
+- ZIP handoff package still exists
+- Live production metadata still advertises the same core feature set
+
+**Deploy:** NOT deployed.
+
+**Code changes:** None in this verification pass.
+
+## 2026-03-06 - Session 9: Deep CrossFit Form Parity Refresh
+
+**Why:** User asked for the local CrossFit internals to match the current live app instead of only matching the launcher screen.
+
+**What changed:**
+- Compared local `LogPage.tsx` against the live `LogPage-0NaviZgC.js`, `WorkoutLogger-BYhetOm3.js`, and `CardioLogger-CfeceYK0.js` bundles from `https://trackvolt.app`
+- Confirmed local `CardioLogger.tsx` already matches the current live Run / Cardio flow, so no Run patch was needed in this pass
+- Rebuilt local `src/components/log/WorkoutLogger.tsx` step-two UI toward live production:
+  - header-level `kg / lbs` toggle
+  - gradient Strength and WOD sections
+  - quick benchmark chips plus full benchmark picker
+  - quick time-cap chips
+  - steppers for AMRAP / EMOM / Tabata score entry
+  - richer programmed/build strength controls
+  - quick weight chips and production-style PR / Benchmark toggles
+  - production-style movements editor, notes area, and save layout
+- `npm run build` passed after the update
+
+**Deploy:** NOT deployed.
+
+**Next steps:**
+1. Manual local QA on CrossFit create/edit flows against live production
+2. Repeat the same live-chunk comparison workflow for any remaining parity gaps on other pages
+
+## 2026-03-06 - Session 10: WOD Only / Full Class Detail Upgrade
+
+**Why:** User asked for the main CrossFit logger, especially `WOD Only` and the whole-workout path, to carry more of the live app detail and feel stronger than the previous parity pass.
+
+**What changed:**
+- Re-checked the current live `WorkoutLogger-BYhetOm3.js` bundle from `https://trackvolt.app`
+- Updated `src/components/log/WorkoutLogger.tsx` again to deepen the WOD experience:
+  - added an in-flow scope switch for `Full Class`, `WOD Only`, and `Strength Only`
+  - expanded the quick benchmark rail to cover the wider live-style benchmark set
+  - added an inline benchmark detail card with scheme, movement list, score type, cap, RX / Scaled standards, and elite target
+  - increased the step-two workout title emphasis so the active logger state is clearer on mobile
+- `npm run build` passed after the patch
+
+**Deploy:** NOT deployed.
+
+**Next steps:**
+1. Manual local device QA on `WOD Only` and `Full Class`
+2. If the user wants, continue polishing the benchmark picker and movement-entry ergonomics
+
+## 2026-03-06 - Session 11: Strict Local-vs-Live Parity Audit
+
+**Why:** User asked to proceed with a strict local-vs-live audit focused on production parity, iOS readiness, and portability inside `C:\ClaudeWork\Imu\`.
+
+**What was verified:**
+- Compared local `App.tsx`, `MorePage.tsx`, and `LogPage.tsx` structure against the current live bundles from `https://trackvolt.app`
+- Confirmed current source-level shell parity for top-level tabs, More subpage routing, and LogPage lazy logger wiring
+- Confirmed a local packaging parity gap:
+  - `vite.config.ts` / local manifest reference `/icon-192.png`, `/icon-512.png`, and `/screenshots/*.png`
+  - local `public/` / `dist/` currently ship `AppIcon-192x192.png` / `AppIcon-512x512.png` and no `screenshots/` directory
+  - live production serves the manifest asset paths successfully, so local is behind here
+- Confirmed no Capacitor setup exists yet (`@capacitor/*` absent, no `capacitor.config.*`, no `ios/` folder)
+- Confirmed no absolute path leaks outside `C:\ClaudeWork\Imu\` in source/config/docs during this audit
+- Logged shared issues to `CODEX_FINDINGS.md`
+
+**Deploy:** NOT deployed.
+
+**Next steps:**
+1. Fix local PWA asset parity non-destructively by adding the live manifest asset filenames and screenshots paths locally
+2. Add a safe `.env.example` / setup note for portability without exposing secrets
+3. After parity is clean, begin Capacitor integration for iOS readiness
+
+## 2026-03-06 - Session 12: PWA Packaging Parity Fix
+
+**Why:** The strict parity audit found that local packaging was behind live production even though page wiring was aligned. The manifest referenced live asset paths that did not exist locally.
+
+**What changed:**
+- Added local copies of the live manifest icon paths:
+  - `public/icon-192.png`
+  - `public/icon-512.png`
+  - `public/icon-512-maskable.png`
+- Added `public/screenshots/` and pulled in the live screenshot set:
+  - `today-dashboard.png`
+  - `workout-log.png`
+  - `nutrition-macros.png`
+  - `progress-prs.png`
+  - `cycle-training.png`
+  - `achievements.png`
+  - `offline-first.png`
+- Rebuilt and verified local `dist/` now contains the exact manifest asset paths referenced by `dist/manifest.webmanifest`
+
+**Verification:**
+- `npm run build` passed
+- `dist/` now contains `icon-192.png`, `icon-512.png`, `icon-512-maskable.png`, and `dist/screenshots/*`
+
+**Deploy:** NOT deployed.
+
+**Next steps:**
+1. Add `.env.example` / secret setup notes for portability
+2. Start Capacitor integration for iOS readiness after portability docs are in place
+
+## 2026-03-06 - Session 13: Shared Audit Rule Update
+
+**Why:** User asked to make `LIVE_APP_AUDIT.md` a required coordination file because Claude Cowork is saving the full live parity audit there.
+
+**What changed:**
+- Updated `AGENTS.md` startup rules so future sessions must read:
+  - `AGENTS.md`
+  - `TRACKVOLT_MASTER_DOC.md`
+  - `CHANGELOG_TRACKVOLT.md`
+  - `CODEX_SYNC.md`
+  - `LIVE_APP_AUDIT.md`
+- Recorded the new coordination rule in `TRACKVOLT_MASTER_DOC.md`
+
+**Deploy:** NOT deployed.
+
+**Next steps:**
+1. Follow the new startup rule on every session before editing
+2. Keep writing shared parity findings to `CODEX_FINDINGS.md`
+
+## 2026-03-06 - Session 14: Today and Log Parity Audit
+
+**Why:** User asked what to do next to match the live app, then approved the next parity pass on the main `Today` and `Log` entry screens.
+
+**What was verified:**
+- Pulled the current live bundles from `https://trackvolt.app`:
+  - `index-Cny5lKgo.js`
+  - `TodayPage-DNaUIE2-.js`
+  - `LogPage-0NaviZgC.js`
+- Confirmed local `src/pages/TodayPage.tsx` matches the live dashboard structure and behavior entry points
+- Confirmed local `src/pages/LogPage.tsx` and `src/components/log/LogModeSelector.tsx` match the live logger launcher structure and lazy logger wiring
+- Confirmed no new local code gap was found in these two screens during this pass
+
+**Files updated:**
+- `CODEX_FINDINGS.md`
+- `TRACKVOLT_MASTER_DOC.md`
+
+**Deploy:** NOT deployed.
+
+**Next steps:**
+1. Add `.env.example` and portable secret setup notes
+2. After portability docs are in place, start Capacitor integration for iOS readiness
+
+## 2026-03-06 - Session 15: Portable Env Setup
+
+**Why:** The parity audits found a portability gap: the project could be copied to a new laptop, but there was no safe env template or setup note for Firebase and USDA-backed features.
+
+**What changed:**
+- Added `.env.example` with the confirmed env variable names used by the codebase
+- Updated `.gitignore` to ignore real env files while keeping `.env.example` committed
+- Updated `README.md` with the local portable env setup flow and notes for Firebase / USDA usage
+- Recorded the resolution in `CODEX_FINDINGS.md`
+
+**Deploy:** NOT deployed.
+
+**Next steps:**
+1. Start Capacitor integration for iOS readiness
+2. Keep production parity checks focused on remaining non-entry screens only if new gaps appear
+
+## 2026-03-06 - Session 16: Capacitor iOS Bootstrap
+
+**Why:** After closing the portability-doc gap, the next planned step was to prepare the project for iOS release readiness without touching production deploy.
+
+**What changed:**
+- Installed:
+  - `@capacitor/core@8.1.0`
+  - `@capacitor/ios@8.1.0`
+  - `@capacitor/cli@8.1.0`
+- Added `capacitor.config.ts` with:
+  - `appId: app.trackvolt`
+  - `appName: TrackVolt`
+  - `webDir: dist`
+- Added package scripts:
+  - `cap:sync`
+  - `cap:copy`
+- Generated the native `ios/` wrapper inside the project root
+- Updated `README.md` with the Capacitor/iOS workflow and macOS follow-up note
+- Recorded the status in `CODEX_FINDINGS.md`
+
+**Verification:**
+- `npm run cap:sync` passed
+- Web build copied successfully into `ios/App/App/public`
+
+**Deploy:** NOT deployed.
+
+**Next steps:**
+1. Run a full `npm run cap:sync` verification pass
+2. Then move to iOS polish items: splash/icon completeness, safe-area QA, and native plugin review

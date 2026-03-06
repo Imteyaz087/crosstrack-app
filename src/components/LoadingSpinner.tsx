@@ -1,10 +1,11 @@
-interface Props { text?: string }
+interface Props {
+  text?: string
+}
 
 export function LoadingSpinner({ text = 'Loading...' }: Props) {
   return (
     <div className="flex flex-col items-center justify-center py-20 gap-4 animate-fade-in">
-      <div className="w-16 h-16 rounded-2xl flex items-center justify-center animate-logo-breathe"
-        style={{background: '#161B22'}}>
+      <div className="w-16 h-16 rounded-2xl flex items-center justify-center animate-logo-breathe" style={{background: '#161B22'}}>
         <svg viewBox="0 0 512 512" className="w-12 h-12">
           <defs>
             <linearGradient id="lsg" x1="0%" y1="0%" x2="0%" y2="100%">

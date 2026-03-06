@@ -16,24 +16,6 @@ export type Goal = 'fat_loss' | 'muscle_gain' | 'performance' | 'recomp' | 'gene
 export type TimerMode = 'amrap' | 'emom' | 'fortime' | 'tabata' | 'rest' | 'custom'
 export type SorenessLevel = 0 | 1 | 2 | 3 | 4 | 5
 
-// Legacy settings (DB compatibility)
-export interface UserSettings {
-  id?: number
-  displayName: string
-  weightKg: number
-  goal: string
-  trainingTime: string
-  language: 'en' | 'zh-TW' | 'zh-CN'
-  units: 'metric' | 'imperial'
-  proteinTarget: number
-  carbsTarget: number
-  fatTarget: number
-  calorieTarget: number
-  waterTarget: number
-  age?: number
-  trainingDaysPerWeek?: number
-}
-
 // ============ User Profile (set during onboarding) ============
 export interface UserProfile {
   id?: number
@@ -153,7 +135,7 @@ export interface MovementPR {
   date: string
   notes?: string
   previousBest?: number
-  createdAt?: string
+  createdAt: string
 }
 
 // ============ Benchmark WODs ============
@@ -279,15 +261,6 @@ export interface CycleSettings {
   updatedAt: string
 }
 
-export interface CycleEntry {
-  id?: number
-  date: string
-  phase?: string
-  intensity?: number
-  notes?: string
-  createdAt?: string
-}
-
 export interface CycleLog {
   id?: number
   date: string           // ISO date
@@ -312,37 +285,7 @@ export interface WeeklyPlan {
   type: WodType
   description: string
   completed: boolean
-  createdAt?: string
-}
-
-// ============ Body, Heart Rate, Photo, DB Achievement ============
-export interface BodyMeasurement {
-  id?: number
-  date: string
-  metric: string
-  value: number
-  unit?: string
-}
-
-export interface HeartRateLog {
-  id?: number
-  date: string
-  type: 'resting' | 'zone'
-  bpm?: number
-  zone?: string
-}
-
-export interface PhotoLog {
-  id?: number
-  date: string
-  workoutId?: number
-  blobRef?: string
-}
-
-export interface Achievement {
-  id?: number
-  type: string
-  unlockedAt: string
+  createdAt: string
 }
 
 // ============ Nutrition API Cache ============

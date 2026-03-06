@@ -30,10 +30,11 @@ See TRACKVOLT_MASTER_DOC.md Section 8 for full gap analysis.
 - **Deployments:** https://vercel.com/imteyazmdkaish-1195s-projects/crosstrack/deployments
 
 ## Session Startup Protocol
-1. Read ONLY these 3 files first: AGENTS.md, TRACKVOLT_MASTER_DOC.md, CHANGELOG_TRACKVOLT.md
-2. If you need to explore many files, delegate via subagent and write summaries back into TRACKVOLT_MASTER_DOC.md
-3. Keep the main conversation short; do heavy exploration via subagent workflow
-4. Note current Vercel deployment ID before any deployment work
+1. Read ONLY these 3 memory files first: AGENTS.md, TRACKVOLT_MASTER_DOC.md, CHANGELOG_TRACKVOLT.md
+2. Before making changes, also read `CODEX_SYNC.md` and `LIVE_APP_AUDIT.md` for cross-agent coordination and the latest full live-app audit
+3. If you need to explore many files, delegate via subagent and write summaries back into TRACKVOLT_MASTER_DOC.md
+4. Keep the main conversation short; do heavy exploration via subagent workflow
+5. Note current Vercel deployment ID before any deployment work
 
 ## Rules for Any AI Agent Working Here
 
@@ -46,10 +47,11 @@ See TRACKVOLT_MASTER_DOC.md Section 8 for full gap analysis.
 
 ### ALWAYS DO:
 1. ✅ Read memory files before any work
-2. ✅ Test with `npm run build` before considering deployment
-3. ✅ Stop and tell the user — do NOT deploy automatically
-4. ✅ Remember: TypeScript strict mode is ON — unused imports = build failure
-5. ✅ Update CHANGELOG_TRACKVOLT.md after each session
+2. ✅ Read `CODEX_SYNC.md` and `LIVE_APP_AUDIT.md` before making changes when cross-agent work is active
+3. ✅ Test with `npm run build` before considering deployment
+4. ✅ Stop and tell the user — do NOT deploy automatically
+5. ✅ Remember: TypeScript strict mode is ON — unused imports = build failure
+6. ✅ Update CHANGELOG_TRACKVOLT.md after each session
 
 ### HOW TO SAFELY MAKE CHANGES:
 1. Edit local source files
@@ -90,3 +92,49 @@ If production breaks:
 
 ---
 *Last updated: March 5, 2026 — Session 2*
+
+## Session Note (2026-03-06)
+- Confirmed working source root: `C:\ClaudeWork\Imu\TrackVolt-App`
+- Do parity checks against live `https://trackvolt.app` before any deploy discussion
+- Source handoff artifact available: `C:\ClaudeWork\Imu\TrackVolt-App.zip`
+
+## Session Note (2026-03-06, Verification Pass)
+- Workspace root remains `C:\ClaudeWork\Imu\TrackVolt-App`
+- Do not start feature implementation from this prompt alone; wait for explicit `CONFIRM BUILD`
+- Current handoff options remain valid: GitHub remote configured and ZIP package present at `C:\ClaudeWork\Imu\TrackVolt-App.zip`
+
+## Session Note (2026-03-06, Build Parity Pass)
+- Live `CardioLogger` currently matches local; avoid redundant Run rewrites unless live behavior changes.
+- For future CrossFit parity work, compare directly against the live lazy chunks (`LogPage-*`, `WorkoutLogger-*`) before editing local source.
+
+## Session Note (2026-03-06, WOD Detail Pass)
+- Re-checked live `https://trackvolt.app/assets/WorkoutLogger-BYhetOm3.js` before editing the local CrossFit logger.
+- Local `WorkoutLogger.tsx` now goes beyond the prior parity pass with a step-two scope toggle, a larger workout header, a wider benchmark chip rail, and an inline benchmark detail card for WOD logging.
+- `npm run build` passed after the update. No deploy was performed.
+
+## Session Note (2026-03-06, Parity Audit)
+- Confirmed current live shell parity by comparing local `App.tsx`, `MorePage.tsx`, and `LogPage.tsx` structure against live bundles `index-Cny5lKgo.js`, `MorePage-ClAdLFQh.js`, and `LogPage-0NaviZgC.js`.
+- Confirmed local PWA asset mismatch: manifest expects `/icon-192.png`, `/icon-512.png`, and `/screenshots/*.png`, but local `public/` / `dist/` do not expose those live paths yet.
+- Confirmed no Capacitor setup exists yet (`@capacitor/*`, `capacitor.config.*`, `ios/` all absent).
+- Shared findings recorded in `CODEX_FINDINGS.md`.
+
+## Session Note (2026-03-06, PWA Asset Parity Fix)
+- Added the live manifest asset paths locally: `icon-192.png`, `icon-512.png`, `icon-512-maskable.png`, and the full `public/screenshots/` set.
+- Rebuilt the app and confirmed `dist/manifest.webmanifest` now points to files that actually exist in local `dist/`.
+- Remaining next steps after this pass: `.env.example` portability doc and Capacitor setup.
+
+## Session Note (2026-03-06, Audit Coordination Rule)
+- `LIVE_APP_AUDIT.md` is now a required pre-change read alongside `CODEX_SYNC.md`.
+- Reason: Claude Cowork is maintaining the latest full live-app audit there, and both agents need to start from the same parity reference.
+
+## Session Note (2026-03-06, Portability Env Setup)
+- Added `.env.example` so the workspace can be copied to a new laptop with a safe local-env template already included.
+- Updated `.gitignore` to ignore filled env files while keeping `.env.example` tracked.
+- Added README setup notes for Firebase (`VITE_FIREBASE_*`) and USDA (`USDA_API_KEY`) without exposing any real secret values.
+
+## Session Note (2026-03-06, Capacitor Bootstrap)
+- Installed `@capacitor/core`, `@capacitor/cli`, and `@capacitor/ios` at `8.1.0`.
+- Added `capacitor.config.ts` with `appId: app.trackvolt`, `appName: TrackVolt`, and `webDir: dist`.
+- Generated the native `ios/` wrapper locally inside `TrackVolt-App` so the workspace remains portable.
+- Added README commands for `npm run cap:sync`, `npm run cap:copy`, and later `npx cap open ios` on macOS.
+- Verified `npm run cap:sync` passes and updates `ios/App/App/public` from the current web build.

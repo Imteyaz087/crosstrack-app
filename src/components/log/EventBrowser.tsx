@@ -6,7 +6,7 @@
 import { useState } from 'react'
 import { Search, Trophy, Flame, Star, Plus } from 'lucide-react'
 import { EVENT_TEMPLATES, getTemplatesByCategory, searchTemplates } from '../../data/eventTemplates'
-import type { EventTemplate, EventCategory } from '../../data/eventTemplates'
+import type { EventTemplate, EventCategory } from '../../types/eventTypes'
 
 interface EventBrowserProps {
   onSelectEvent: (event: EventTemplate) => void
@@ -31,13 +31,7 @@ const WOD_TYPE_BADGE: Record<string, string> = {
   ForTime: 'bg-emerald-500/20 text-emerald-400',
   AMRAP: 'bg-cyan-500/20 text-cyan-400',
   EMOM: 'bg-violet-500/20 text-violet-400',
-  Tabata: 'bg-rose-500/20 text-rose-400',
   Chipper: 'bg-orange-500/20 text-orange-400',
-  Strength: 'bg-amber-500/20 text-amber-400',
-  StrengthMetcon: 'bg-amber-500/20 text-amber-400',
-  HYROX: 'bg-orange-500/20 text-orange-400',
-  Running: 'bg-emerald-500/20 text-emerald-400',
-  Cardio: 'bg-emerald-500/20 text-emerald-400',
   Other: 'bg-slate-500/20 text-slate-400',
 }
 
@@ -116,7 +110,7 @@ export function EventBrowser({ onSelectEvent, onCreateCustom }: EventBrowserProp
                   <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${CATEGORY_COLORS[event.category]}`}>
                     {event.category}
                   </span>
-                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${(event.wodType && WOD_TYPE_BADGE[event.wodType as keyof typeof WOD_TYPE_BADGE]) || WOD_TYPE_BADGE.Other}`}>
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${WOD_TYPE_BADGE[event.wodType] || WOD_TYPE_BADGE.Other}`}>
                     {event.wodType === 'ForTime' ? 'For Time' : event.wodType}
                   </span>
                 </div>

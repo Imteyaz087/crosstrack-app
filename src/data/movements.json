@@ -1,15 +1,4967 @@
 {
   "movements": [
-    {"id": "back-squat", "name": "Back Squat", "category": "weightlifting", "equipment": ["barbell"], "trackingType": "load", "searchTags": ["squat"], "priority": "high"},
-    {"id": "deadlift", "name": "Deadlift", "category": "weightlifting", "equipment": ["barbell"], "trackingType": "load", "searchTags": ["pull"], "priority": "high"},
-    {"id": "clean", "name": "Clean", "category": "weightlifting", "equipment": ["barbell"], "trackingType": "load", "searchTags": ["oly"], "priority": "high"},
-    {"id": "snatch", "name": "Snatch", "category": "weightlifting", "equipment": ["barbell"], "trackingType": "load", "searchTags": ["oly"], "priority": "high"},
-    {"id": "pull-up", "name": "Pull-up", "category": "gymnastics", "equipment": ["pull-up bar"], "trackingType": "reps", "searchTags": ["pull"], "priority": "high"},
-    {"id": "push-up", "name": "Push-up", "category": "gymnastics", "equipment": [], "trackingType": "reps", "searchTags": ["push"], "priority": "high"},
-    {"id": "thruster", "name": "Thruster", "category": "weightlifting", "equipment": ["barbell"], "trackingType": "load", "searchTags": ["squat"], "priority": "medium"},
-    {"id": "wall-ball", "name": "Wall Ball", "category": "gymnastics", "equipment": ["wall ball"], "trackingType": "reps", "searchTags": ["throwing"], "priority": "medium"},
-    {"id": "burpee", "name": "Burpee", "category": "gymnastics", "equipment": [], "trackingType": "reps", "searchTags": ["cardio"], "priority": "high"},
-    {"id": "double-under", "name": "Double Under", "category": "gymnastics", "equipment": ["jump rope"], "trackingType": "reps", "searchTags": ["jump"], "priority": "medium"},
-    {"id": "row", "name": "Row", "category": "monostructural", "equipment": ["rower"], "trackingType": "time", "searchTags": ["cardio"], "priority": "high"}
+    {
+      "id": "back-squat",
+      "name": "Back Squat",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "squat rack"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 102,
+        "female": 70
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings",
+        "core"
+      ],
+      "scalingOptions": [
+        "front squat",
+        "goblet squat",
+        "air squat"
+      ],
+      "searchTags": [
+        "squat",
+        "back squat",
+        "bs",
+        "legs",
+        "strength"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "front-squat",
+      "name": "Front Squat",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "squat rack"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 85,
+        "female": 60
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "core"
+      ],
+      "scalingOptions": [
+        "goblet squat",
+        "air squat",
+        "back squat"
+      ],
+      "searchTags": [
+        "squat",
+        "front squat",
+        "fs",
+        "legs"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "overhead-squat",
+      "name": "Overhead Squat (OHS)",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "squat rack"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 65,
+        "female": 45
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "shoulders",
+        "core"
+      ],
+      "scalingOptions": [
+        "pvc overhead squat",
+        "goblet squat",
+        "air squat"
+      ],
+      "searchTags": [
+        "squat",
+        "overhead squat",
+        "ohs",
+        "mobility"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "pause-back-squat",
+      "name": "Pause Back Squat",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "squat rack"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 85,
+        "female": 60
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings",
+        "core"
+      ],
+      "scalingOptions": [
+        "back squat",
+        "goblet squat",
+        "air squat"
+      ],
+      "searchTags": [
+        "squat",
+        "pause squat",
+        "strength",
+        "tempo"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "pause-front-squat",
+      "name": "Pause Front Squat",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "squat rack"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 70,
+        "female": 50
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "core"
+      ],
+      "scalingOptions": [
+        "front squat",
+        "goblet squat",
+        "air squat"
+      ],
+      "searchTags": [
+        "squat",
+        "pause squat",
+        "strength"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "deadlift",
+      "name": "Deadlift",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 140,
+        "female": 95
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "core"
+      ],
+      "scalingOptions": [
+        "trap bar deadlift",
+        "dumbbell deadlift",
+        "kettlebell deadlift"
+      ],
+      "searchTags": [
+        "deadlift",
+        "dl",
+        "pull",
+        "strength"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "sumo-deadlift",
+      "name": "Sumo Deadlift",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 145,
+        "female": 100
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings",
+        "back"
+      ],
+      "scalingOptions": [
+        "deadlift",
+        "trap bar deadlift"
+      ],
+      "searchTags": [
+        "deadlift",
+        "sumo",
+        "pull",
+        "legs"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "power-clean",
+      "name": "Power Clean",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 90,
+        "female": 60
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "hang power clean",
+        "dumbbell power clean",
+        "kettlebell clean"
+      ],
+      "searchTags": [
+        "clean",
+        "power clean",
+        "pc",
+        "olympic",
+        "explosive"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "hang-power-clean",
+      "name": "Hang Power Clean",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 85,
+        "female": 57
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "power clean",
+        "dumbbell hang clean",
+        "kettlebell clean"
+      ],
+      "searchTags": [
+        "clean",
+        "hang clean",
+        "hpc",
+        "olympic"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "squat-clean",
+      "name": "Squat Clean",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 100,
+        "female": 65
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "power clean",
+        "hang power clean"
+      ],
+      "searchTags": [
+        "clean",
+        "squat clean",
+        "sc",
+        "olympic",
+        "full"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "muscle-clean",
+      "name": "Muscle Clean",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 60,
+        "female": 40
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "shoulders",
+        "arms"
+      ],
+      "scalingOptions": [
+        "power clean",
+        "hang power clean"
+      ],
+      "searchTags": [
+        "clean",
+        "muscle clean",
+        "rowing"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "hip-power-clean",
+      "name": "Hip Power Clean",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 85,
+        "female": 55
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "power clean",
+        "hang power clean"
+      ],
+      "searchTags": [
+        "clean",
+        "hip clean",
+        "position"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "clean-high-pull",
+      "name": "Clean High Pull",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 105,
+        "female": 70
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders",
+        "traps"
+      ],
+      "scalingOptions": [
+        "snatch high pull",
+        "power clean"
+      ],
+      "searchTags": [
+        "pull",
+        "clean",
+        "high pull",
+        "chp"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "power-snatch",
+      "name": "Power Snatch",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 70,
+        "female": 48
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "hang power snatch",
+        "dumbbell snatch"
+      ],
+      "searchTags": [
+        "snatch",
+        "power snatch",
+        "ps",
+        "olympic",
+        "explosive"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "hang-power-snatch",
+      "name": "Hang Power Snatch",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 65,
+        "female": 43
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "power snatch",
+        "dumbbell hang snatch"
+      ],
+      "searchTags": [
+        "snatch",
+        "hang snatch",
+        "hps",
+        "olympic"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "squat-snatch",
+      "name": "Squat Snatch",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 80,
+        "female": 55
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "power snatch",
+        "hang power snatch"
+      ],
+      "searchTags": [
+        "snatch",
+        "squat snatch",
+        "ss",
+        "olympic",
+        "full"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "muscle-snatch",
+      "name": "Muscle Snatch",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 50,
+        "female": 33
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "shoulders",
+        "arms"
+      ],
+      "scalingOptions": [
+        "power snatch",
+        "snatch"
+      ],
+      "searchTags": [
+        "snatch",
+        "muscle snatch",
+        "rowing"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "snatch-pull",
+      "name": "Snatch Pull",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 120,
+        "female": 80
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders",
+        "traps"
+      ],
+      "scalingOptions": [
+        "clean high pull",
+        "snatch"
+      ],
+      "searchTags": [
+        "pull",
+        "snatch",
+        "snatch pull"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "below-knee-snatch",
+      "name": "Below-the-Knee Snatch",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 75,
+        "female": 50
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "snatch",
+        "power snatch"
+      ],
+      "searchTags": [
+        "snatch",
+        "below knee",
+        "position"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "3-position-snatch",
+      "name": "3-Position Snatch",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 60,
+        "female": 40
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "snatch",
+        "power snatch"
+      ],
+      "searchTags": [
+        "snatch",
+        "3-position",
+        "complex"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "push-jerk",
+      "name": "Push Jerk",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 120,
+        "female": 80
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "shoulders",
+        "triceps"
+      ],
+      "scalingOptions": [
+        "push press",
+        "shoulder press",
+        "dumbbell push press"
+      ],
+      "searchTags": [
+        "jerk",
+        "push jerk",
+        "pj",
+        "olympic"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "push-press",
+      "name": "Push Press",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 90,
+        "female": 60
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "shoulders",
+        "triceps"
+      ],
+      "scalingOptions": [
+        "shoulder press",
+        "dumbbell push press",
+        "push jerk"
+      ],
+      "searchTags": [
+        "press",
+        "push press",
+        "pp",
+        "overhead"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "shoulder-press",
+      "name": "Shoulder Press (Strict Press)",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 70,
+        "female": 47
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "triceps",
+        "core"
+      ],
+      "scalingOptions": [
+        "dumbbell shoulder press",
+        "kettlebell press",
+        "push press"
+      ],
+      "searchTags": [
+        "press",
+        "shoulder press",
+        "sp",
+        "strict",
+        "overhead"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "bench-press",
+      "name": "Bench Press",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "bench"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 100,
+        "female": 60
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "shoulders",
+        "triceps"
+      ],
+      "scalingOptions": [
+        "dumbbell bench press",
+        "push-up"
+      ],
+      "searchTags": [
+        "press",
+        "bench press",
+        "bp",
+        "chest"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "pendlay-row",
+      "name": "Pendlay Row",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 100,
+        "female": 65
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "shoulders",
+        "arms"
+      ],
+      "scalingOptions": [
+        "bent over barbell row",
+        "dumbbell row"
+      ],
+      "searchTags": [
+        "row",
+        "pendlay",
+        "back"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "clean-and-jerk",
+      "name": "Clean & Jerk",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 110,
+        "female": 75
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders",
+        "triceps"
+      ],
+      "scalingOptions": [
+        "power clean",
+        "push jerk"
+      ],
+      "searchTags": [
+        "clean",
+        "jerk",
+        "clean and jerk",
+        "cnj",
+        "olympic"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "thruster",
+      "name": "Thruster",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 70,
+        "female": 48
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "shoulders",
+        "triceps"
+      ],
+      "scalingOptions": [
+        "dumbbell thruster",
+        "kettlebell thruster",
+        "push press"
+      ],
+      "searchTags": [
+        "thruster",
+        "squat press",
+        "complex"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "barbell-good-morning",
+      "name": "Barbell Good Morning",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 80,
+        "female": 50
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "hamstrings",
+        "glutes",
+        "back"
+      ],
+      "scalingOptions": [
+        "pvc good morning"
+      ],
+      "searchTags": [
+        "good morning",
+        "hamstring",
+        "back"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "barbell-lunge",
+      "name": "Barbell Lunge",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 70,
+        "female": 47
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "walking lunge",
+        "dumbbell lunge"
+      ],
+      "searchTags": [
+        "lunge",
+        "barbell lunge",
+        "legs"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "walking-lunge",
+      "name": "Walking Lunge",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 65,
+        "female": 43
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "barbell lunge",
+        "dumbbell lunge",
+        "bodyweight lunge"
+      ],
+      "searchTags": [
+        "lunge",
+        "walking",
+        "legs"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "pull-up",
+      "name": "Pull-Up",
+      "category": "gymnastics",
+      "equipment": [
+        "pull-up bar"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "arms",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "scap pull-up",
+        "assisted pull-up",
+        "resistance band pull-up"
+      ],
+      "searchTags": [
+        "pull-up",
+        "pu",
+        "upper body"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "strict-pull-up",
+      "name": "Strict Pull-Up",
+      "category": "gymnastics",
+      "equipment": [
+        "pull-up bar"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 6
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "arms",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "pull-up",
+        "assisted pull-up",
+        "scap pull-up"
+      ],
+      "searchTags": [
+        "pull-up",
+        "strict",
+        "upper body"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "kipping-pull-up",
+      "name": "Kipping Pull-Up",
+      "category": "gymnastics",
+      "equipment": [
+        "pull-up bar"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 20,
+        "female": 12
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "arms",
+        "shoulders",
+        "core"
+      ],
+      "scalingOptions": [
+        "pull-up",
+        "ring pull-up"
+      ],
+      "searchTags": [
+        "pull-up",
+        "kipping",
+        "gymnastic"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "c2b-pull-up",
+      "name": "Chest-to-Bar Pull-Up (C2B)",
+      "category": "gymnastics",
+      "equipment": [
+        "pull-up bar"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 7
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "arms",
+        "shoulders",
+        "chest"
+      ],
+      "scalingOptions": [
+        "pull-up",
+        "kipping pull-up"
+      ],
+      "searchTags": [
+        "pull-up",
+        "chest to bar",
+        "c2b",
+        "gymnastic"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "chin-up",
+      "name": "Chin-Up",
+      "category": "gymnastics",
+      "equipment": [
+        "pull-up bar"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "arms",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "pull-up",
+        "assisted chin-up"
+      ],
+      "searchTags": [
+        "chin-up",
+        "upper body"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "ring-dip",
+      "name": "Ring Dip",
+      "category": "gymnastics",
+      "equipment": [
+        "rings"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 6
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "shoulders",
+        "triceps",
+        "core"
+      ],
+      "scalingOptions": [
+        "dip",
+        "box dip",
+        "band assisted ring dip"
+      ],
+      "searchTags": [
+        "dip",
+        "ring dip",
+        "upper body"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "ring-row",
+      "name": "Ring Row",
+      "category": "gymnastics",
+      "equipment": [
+        "rings"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 10
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "arms",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "barbell row",
+        "dumbbell row",
+        "inverted row"
+      ],
+      "searchTags": [
+        "row",
+        "ring row",
+        "upper body"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "bar-muscle-up",
+      "name": "Bar Muscle-Up (BMU)",
+      "category": "gymnastics",
+      "equipment": [
+        "pull-up bar"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 10,
+        "female": 5
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "chest",
+        "shoulders",
+        "arms"
+      ],
+      "scalingOptions": [
+        "pull-up",
+        "dip",
+        "ring muscle-up"
+      ],
+      "searchTags": [
+        "muscle-up",
+        "bmu",
+        "gymnastic"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "toes-to-bar",
+      "name": "Toes-to-Bar (T2B)",
+      "category": "gymnastics",
+      "equipment": [
+        "pull-up bar"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 20,
+        "female": 15
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "abs",
+        "hip flexors",
+        "core"
+      ],
+      "scalingOptions": [
+        "knees to elbows",
+        "knee tucks",
+        "V-ups"
+      ],
+      "searchTags": [
+        "toes to bar",
+        "t2b",
+        "core"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "strict-toes-to-bar",
+      "name": "Strict Toes-to-Bar",
+      "category": "gymnastics",
+      "equipment": [
+        "pull-up bar"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 10
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "abs",
+        "hip flexors",
+        "core"
+      ],
+      "scalingOptions": [
+        "toes to bar",
+        "knee tucks"
+      ],
+      "searchTags": [
+        "toes to bar",
+        "strict",
+        "core"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "handstand-push-up",
+      "name": "Handstand Push-Up (HSPU)",
+      "category": "gymnastics",
+      "equipment": [
+        "wall"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 10
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "triceps",
+        "chest",
+        "core"
+      ],
+      "scalingOptions": [
+        "pike push-up",
+        "deficit hspu",
+        "wall walk"
+      ],
+      "searchTags": [
+        "handstand",
+        "hspu",
+        "shoulders"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "strict-hspu",
+      "name": "Strict HSPU",
+      "category": "gymnastics",
+      "equipment": [
+        "wall"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 7
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "triceps",
+        "core"
+      ],
+      "scalingOptions": [
+        "hspu",
+        "pike push-up"
+      ],
+      "searchTags": [
+        "handstand",
+        "strict hspu",
+        "shoulders"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "wall-walk",
+      "name": "Wall Walk",
+      "category": "gymnastics",
+      "equipment": [
+        "wall"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 10,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "chest",
+        "triceps",
+        "core"
+      ],
+      "scalingOptions": [
+        "hspu",
+        "pike push-up"
+      ],
+      "searchTags": [
+        "wall walk",
+        "handstand",
+        "shoulders"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "rope-climb",
+      "name": "Rope Climb",
+      "category": "gymnastics",
+      "equipment": [
+        "rope"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 5,
+        "female": 3
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "arms",
+        "core",
+        "legs"
+      ],
+      "scalingOptions": [
+        "rope climb legless",
+        "assisted rope climb"
+      ],
+      "searchTags": [
+        "rope",
+        "climb",
+        "full body"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "l-sit-hold",
+      "name": "L-Sit Hold (Parallettes)",
+      "category": "gymnastics",
+      "equipment": [
+        "parallettes",
+        "rings"
+      ],
+      "trackingType": "time",
+      "defaultUnit": "seconds",
+      "commonRx": {
+        "male": 45,
+        "female": 30
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "shoulders",
+        "arms",
+        "core"
+      ],
+      "scalingOptions": [
+        "hollow hold"
+      ],
+      "searchTags": [
+        "l-sit",
+        "hold",
+        "core",
+        "gymnastics"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "hollow-hold",
+      "name": "Hollow Hold",
+      "category": "gymnastics",
+      "equipment": [],
+      "trackingType": "time",
+      "defaultUnit": "seconds",
+      "commonRx": {
+        "male": 60,
+        "female": 45
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "core",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "plank"
+      ],
+      "searchTags": [
+        "hollow",
+        "hold",
+        "core"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "hollow-rock",
+      "name": "Hollow Rock",
+      "category": "gymnastics",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 30,
+        "female": 20
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "core",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "hollow hold"
+      ],
+      "searchTags": [
+        "hollow",
+        "rock",
+        "core"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "shoulder-dislocate",
+      "name": "Kneeling Shoulder Dislocates",
+      "category": "gymnastics",
+      "equipment": [
+        "pvc pipe"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 12
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "shoulder pass through"
+      ],
+      "searchTags": [
+        "shoulder",
+        "dislocate",
+        "mobility"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "scap-pull-up",
+      "name": "Scap Pull-Up",
+      "category": "gymnastics",
+      "equipment": [
+        "pull-up bar"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 10,
+        "female": 8
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "shoulders",
+        "back"
+      ],
+      "scalingOptions": [
+        "pull-up"
+      ],
+      "searchTags": [
+        "scap",
+        "pull-up",
+        "shoulders"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "pull-over",
+      "name": "Pull-Over",
+      "category": "gymnastics",
+      "equipment": [
+        "pull-up bar"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 8
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "shoulders",
+        "back",
+        "chest"
+      ],
+      "scalingOptions": [
+        "lat pull over"
+      ],
+      "searchTags": [
+        "pull-over",
+        "chest",
+        "shoulders"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "superman-rock",
+      "name": "Superman Rock",
+      "category": "gymnastics",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 20,
+        "female": 15
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "back",
+        "glutes"
+      ],
+      "scalingOptions": [
+        "superman hold"
+      ],
+      "searchTags": [
+        "superman",
+        "rock",
+        "back"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "running-200m",
+      "name": "Running (200m)",
+      "category": "monostructural",
+      "equipment": [],
+      "trackingType": "time",
+      "defaultUnit": "seconds",
+      "commonRx": {
+        "male": 35,
+        "female": 42
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "quads",
+        "hamstrings",
+        "glutes"
+      ],
+      "scalingOptions": [
+        "running 400m",
+        "assault bike"
+      ],
+      "searchTags": [
+        "run",
+        "running",
+        "200m",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "running-400m",
+      "name": "Running (400m)",
+      "category": "monostructural",
+      "equipment": [],
+      "trackingType": "time",
+      "defaultUnit": "seconds",
+      "commonRx": {
+        "male": 70,
+        "female": 85
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "quads",
+        "hamstrings",
+        "glutes"
+      ],
+      "scalingOptions": [
+        "running 200m",
+        "assault bike"
+      ],
+      "searchTags": [
+        "run",
+        "running",
+        "400m",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "running-800m",
+      "name": "Running (800m)",
+      "category": "monostructural",
+      "equipment": [],
+      "trackingType": "time",
+      "defaultUnit": "seconds",
+      "commonRx": {
+        "male": 160,
+        "female": 190
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "quads",
+        "hamstrings",
+        "glutes"
+      ],
+      "scalingOptions": [
+        "running 400m",
+        "rowing"
+      ],
+      "searchTags": [
+        "run",
+        "running",
+        "800m",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "running-1000m",
+      "name": "Running (1000m)",
+      "category": "monostructural",
+      "equipment": [],
+      "trackingType": "time",
+      "defaultUnit": "seconds",
+      "commonRx": {
+        "male": 210,
+        "female": 250
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "quads",
+        "hamstrings",
+        "glutes"
+      ],
+      "scalingOptions": [
+        "running 800m",
+        "rowing"
+      ],
+      "searchTags": [
+        "run",
+        "running",
+        "1000m",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "rowing",
+      "name": "Rowing (Cal/meters)",
+      "category": "monostructural",
+      "equipment": [
+        "rowing machine"
+      ],
+      "trackingType": "time",
+      "defaultUnit": "seconds",
+      "commonRx": {
+        "male": 240,
+        "female": 280
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "quads",
+        "hamstrings",
+        "core"
+      ],
+      "scalingOptions": [
+        "assault bike",
+        "skierg",
+        "running"
+      ],
+      "searchTags": [
+        "rowing",
+        "row",
+        "rower",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "assault-bike",
+      "name": "Assault Bike / Echo Bike",
+      "category": "monostructural",
+      "equipment": [
+        "assault bike"
+      ],
+      "trackingType": "time",
+      "defaultUnit": "seconds",
+      "commonRx": {
+        "male": 200,
+        "female": 240
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "quads",
+        "hamstrings",
+        "glutes"
+      ],
+      "scalingOptions": [
+        "rowing",
+        "skierg",
+        "running"
+      ],
+      "searchTags": [
+        "bike",
+        "assault bike",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "shuttle-run",
+      "name": "Shuttle Run",
+      "category": "monostructural",
+      "equipment": [],
+      "trackingType": "time",
+      "defaultUnit": "seconds",
+      "commonRx": {
+        "male": 40,
+        "female": 50
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "quads",
+        "hamstrings",
+        "glutes"
+      ],
+      "scalingOptions": [
+        "running",
+        "sprint"
+      ],
+      "searchTags": [
+        "shuttle",
+        "run",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "double-under",
+      "name": "Double Under (DU)",
+      "category": "monostructural",
+      "equipment": [
+        "jump rope"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 75,
+        "female": 60
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "calves",
+        "shoulders",
+        "core"
+      ],
+      "scalingOptions": [
+        "single under",
+        "jump rope"
+      ],
+      "searchTags": [
+        "double under",
+        "du",
+        "jump rope"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "single-under",
+      "name": "Single Under (SU)",
+      "category": "monostructural",
+      "equipment": [
+        "jump rope"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 150,
+        "female": 120
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "calves",
+        "shoulders",
+        "core"
+      ],
+      "scalingOptions": [
+        "double under"
+      ],
+      "searchTags": [
+        "single under",
+        "su",
+        "jump rope"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "box-jump",
+      "name": "Box Jump",
+      "category": "monostructural",
+      "equipment": [
+        "box"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 10
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "step-up",
+        "box jump over"
+      ],
+      "searchTags": [
+        "box jump",
+        "jump",
+        "legs"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "box-jump-over",
+      "name": "Box Jump Over",
+      "category": "monostructural",
+      "equipment": [
+        "box"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 10,
+        "female": 8
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "box jump",
+        "step-over"
+      ],
+      "searchTags": [
+        "box jump over",
+        "jump",
+        "legs"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "burpee",
+      "name": "Burpee",
+      "category": "monostructural",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 25,
+        "female": 20
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "arms",
+        "core",
+        "legs"
+      ],
+      "scalingOptions": [
+        "burpee over bar",
+        "bar-facing burpee"
+      ],
+      "searchTags": [
+        "burpee",
+        "full body",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "burpee-over-bar",
+      "name": "Burpee Over Bar",
+      "category": "monostructural",
+      "equipment": [
+        "barbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 20,
+        "female": 15
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "arms",
+        "core",
+        "legs"
+      ],
+      "scalingOptions": [
+        "burpee",
+        "bar-facing burpee"
+      ],
+      "searchTags": [
+        "burpee",
+        "burpee over bar",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "bar-facing-burpee",
+      "name": "Bar-Facing Burpee",
+      "category": "monostructural",
+      "equipment": [
+        "barbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 20,
+        "female": 15
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "arms",
+        "core",
+        "legs"
+      ],
+      "scalingOptions": [
+        "burpee",
+        "burpee over bar"
+      ],
+      "searchTags": [
+        "burpee",
+        "bar-facing",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "burpee-box-jump-over",
+      "name": "Burpee Box Jump Over",
+      "category": "monostructural",
+      "equipment": [
+        "box"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 12
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "arms",
+        "core",
+        "legs"
+      ],
+      "scalingOptions": [
+        "burpee",
+        "box jump over"
+      ],
+      "searchTags": [
+        "burpee",
+        "box jump",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "burpee-pull-up",
+      "name": "Burpee Pull-Up",
+      "category": "monostructural",
+      "equipment": [
+        "pull-up bar"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "arms",
+        "back",
+        "core",
+        "legs"
+      ],
+      "scalingOptions": [
+        "burpee",
+        "pull-up"
+      ],
+      "searchTags": [
+        "burpee",
+        "pull-up",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "burpee-bmu",
+      "name": "Burpee BMU",
+      "category": "monostructural",
+      "equipment": [
+        "pull-up bar"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 8,
+        "female": 5
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "arms",
+        "back",
+        "core",
+        "legs"
+      ],
+      "scalingOptions": [
+        "burpee",
+        "burpee pull-up"
+      ],
+      "searchTags": [
+        "burpee",
+        "muscle-up",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "kettlebell-swing",
+      "name": "Kettlebell Swing (KBS)",
+      "category": "kettlebell",
+      "equipment": [
+        "kettlebell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 30,
+        "female": 20
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "core"
+      ],
+      "scalingOptions": [
+        "dumbbell swing",
+        "russian kbs"
+      ],
+      "searchTags": [
+        "kettlebell",
+        "swing",
+        "kbs"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "russian-kbs",
+      "name": "Russian KBS",
+      "category": "kettlebell",
+      "equipment": [
+        "kettlebell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 25,
+        "female": 18
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back"
+      ],
+      "scalingOptions": [
+        "kettlebell swing",
+        "dumbbell swing"
+      ],
+      "searchTags": [
+        "kettlebell",
+        "swing",
+        "russian"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "american-kbs",
+      "name": "American KBS",
+      "category": "kettlebell",
+      "equipment": [
+        "kettlebell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 30,
+        "female": 20
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "kettlebell swing",
+        "russian kbs"
+      ],
+      "searchTags": [
+        "kettlebell",
+        "swing",
+        "american"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "kb-goblet-squat",
+      "name": "KB Goblet Squat",
+      "category": "kettlebell",
+      "equipment": [
+        "kettlebell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 18,
+        "female": 12
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "core"
+      ],
+      "scalingOptions": [
+        "air squat",
+        "goblet squat"
+      ],
+      "searchTags": [
+        "kettlebell",
+        "goblet squat",
+        "legs"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "kb-single-arm-press",
+      "name": "KB Single Arm Press",
+      "category": "kettlebell",
+      "equipment": [
+        "kettlebell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "triceps",
+        "core"
+      ],
+      "scalingOptions": [
+        "kettlebell press",
+        "dumbbell press"
+      ],
+      "searchTags": [
+        "kettlebell",
+        "press",
+        "single arm"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "kb-thruster",
+      "name": "KB Thruster",
+      "category": "kettlebell",
+      "equipment": [
+        "kettlebell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 10
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "shoulders",
+        "triceps"
+      ],
+      "scalingOptions": [
+        "thruster",
+        "dumbbell thruster"
+      ],
+      "searchTags": [
+        "kettlebell",
+        "thruster"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "kb-snatch",
+      "name": "KB Snatch",
+      "category": "kettlebell",
+      "equipment": [
+        "kettlebell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 10
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "dumbbell snatch",
+        "kettlebell swing"
+      ],
+      "searchTags": [
+        "kettlebell",
+        "snatch"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "db-snatch",
+      "name": "DB Snatch",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 14,
+        "female": 10
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "kettlebell snatch",
+        "power snatch"
+      ],
+      "searchTags": [
+        "dumbbell",
+        "snatch"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "alt-db-snatch",
+      "name": "Alt DB Snatch",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 20,
+        "female": 14
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "db snatch",
+        "kettlebell snatch"
+      ],
+      "searchTags": [
+        "dumbbell",
+        "snatch",
+        "alternating"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "db-hang-snatch",
+      "name": "DB Hang Snatch",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "db snatch",
+        "kettlebell clean"
+      ],
+      "searchTags": [
+        "dumbbell",
+        "snatch",
+        "hang"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "db-box-step-over",
+      "name": "DB Box Step-Over",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell",
+        "box"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 10
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "step-up",
+        "box step-up"
+      ],
+      "searchTags": [
+        "dumbbell",
+        "box",
+        "step"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "db-power-clean",
+      "name": "DB Power Clean",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "power clean",
+        "kettlebell clean"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "db-floor-press",
+      "name": "DB Floor Press",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 10
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "shoulders",
+        "triceps"
+      ],
+      "scalingOptions": [
+        "bench press",
+        "db bench press"
+      ],
+      "searchTags": [
+        "dumbbell",
+        "press",
+        "floor"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "db-push-press",
+      "name": "DB Push Press",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 10
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "triceps",
+        "quads"
+      ],
+      "scalingOptions": [
+        "push press",
+        "db shoulder press"
+      ],
+      "searchTags": [
+        "dumbbell",
+        "push press"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "db-oh-walking-lunge",
+      "name": "DB OH Walking Lunge",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 10
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "walking lunge",
+        "db walking lunge"
+      ],
+      "searchTags": [
+        "dumbbell",
+        "lunge",
+        "overhead"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "db-front-rack-lunge",
+      "name": "DB Front Rack Walking Lunge",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 10
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "walking lunge",
+        "db walking lunge"
+      ],
+      "searchTags": [
+        "dumbbell",
+        "lunge",
+        "front rack"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "db-hammer-curl",
+      "name": "DB Hammer Curl",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 10
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "biceps",
+        "forearms"
+      ],
+      "scalingOptions": [
+        "dumbbell curl"
+      ],
+      "searchTags": [
+        "dumbbell",
+        "curl",
+        "hammer"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "alt-db-swing",
+      "name": "Alt DB Swing",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 25,
+        "female": 18
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "core"
+      ],
+      "scalingOptions": [
+        "kettlebell swing",
+        "dumbbell swing"
+      ],
+      "searchTags": [
+        "dumbbell",
+        "swing",
+        "alternating"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "single-arm-db-press",
+      "name": "Single Arm DB Strict Press",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "triceps",
+        "core"
+      ],
+      "scalingOptions": [
+        "shoulder press",
+        "kb single arm press"
+      ],
+      "searchTags": [
+        "dumbbell",
+        "press",
+        "single arm"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "air-squat",
+      "name": "Air Squat",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 50,
+        "female": 40
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "box squat"
+      ],
+      "searchTags": [
+        "squat",
+        "air squat",
+        "bodyweight"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "sit-up",
+      "name": "Sit-Up",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 30,
+        "female": 25
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "abs",
+        "hip flexors"
+      ],
+      "scalingOptions": [
+        "v-up",
+        "ghd sit-up"
+      ],
+      "searchTags": [
+        "sit-up",
+        "core",
+        "abs"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "ghd-sit-up",
+      "name": "GHD Sit-Up",
+      "category": "bodyweight",
+      "equipment": [
+        "ghd machine"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 20,
+        "female": 15
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "abs",
+        "hip flexors"
+      ],
+      "scalingOptions": [
+        "sit-up",
+        "v-up"
+      ],
+      "searchTags": [
+        "sit-up",
+        "ghd",
+        "core"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "v-up",
+      "name": "V-Up",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 20,
+        "female": 15
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "abs",
+        "hip flexors"
+      ],
+      "scalingOptions": [
+        "sit-up",
+        "ghd sit-up"
+      ],
+      "searchTags": [
+        "v-up",
+        "core",
+        "abs"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "push-up",
+      "name": "Push-Up",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 40,
+        "female": 25
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "shoulders",
+        "triceps"
+      ],
+      "scalingOptions": [
+        "hand release push-up",
+        "incline push-up"
+      ],
+      "searchTags": [
+        "push-up",
+        "chest",
+        "bodyweight"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "hand-release-push-up",
+      "name": "Hand Release Push-Up",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 35,
+        "female": 22
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "shoulders",
+        "triceps"
+      ],
+      "scalingOptions": [
+        "push-up"
+      ],
+      "searchTags": [
+        "push-up",
+        "hand release",
+        "chest"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "pike-push-up",
+      "name": "Pike Push-Up",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 20,
+        "female": 15
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "triceps",
+        "chest"
+      ],
+      "scalingOptions": [
+        "push-up",
+        "hspu"
+      ],
+      "searchTags": [
+        "pike",
+        "push-up",
+        "shoulders"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "inch-worm",
+      "name": "Inch Worm",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 12
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "shoulders",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "push-up"
+      ],
+      "searchTags": [
+        "inch worm",
+        "mobility"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "mountain-climber",
+      "name": "Mountain Climber",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 40,
+        "female": 30
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "core",
+        "shoulders",
+        "cardio"
+      ],
+      "scalingOptions": [
+        "plank"
+      ],
+      "searchTags": [
+        "mountain climber",
+        "core",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "plank",
+      "name": "Plank",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "time",
+      "defaultUnit": "seconds",
+      "commonRx": {
+        "male": 120,
+        "female": 90
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "core",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "hollow hold"
+      ],
+      "searchTags": [
+        "plank",
+        "core"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "banded-pull-apart",
+      "name": "Banded Pull-Apart",
+      "category": "bodyweight",
+      "equipment": [
+        "resistance band"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 20,
+        "female": 15
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "shoulders",
+        "back"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "band",
+        "pull-apart",
+        "shoulders"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "lateral-band-walk",
+      "name": "Lateral Walk (Band)",
+      "category": "bodyweight",
+      "equipment": [
+        "resistance band"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 20,
+        "female": 15
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "glutes",
+        "hip abductors"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "lateral walk",
+        "band",
+        "glutes"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "curtsy-lunge",
+      "name": "Curtsy Lunge",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 12
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "glutes",
+        "quads",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "lunge"
+      ],
+      "searchTags": [
+        "curtsy lunge",
+        "glutes"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "cossack-squat",
+      "name": "Cossack Squat",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 12
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "glutes",
+        "quads",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "air squat"
+      ],
+      "searchTags": [
+        "cossack squat",
+        "mobility"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "donkey-calf-raise",
+      "name": "Donkey Calf Raise",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 25,
+        "female": 18
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "calves"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "calf raise",
+        "calves"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "jumping-jack",
+      "name": "Jumping Jack",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 50,
+        "female": 40
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "legs",
+        "shoulders"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "jumping jack",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "jump-rope",
+      "name": "Jump Rope",
+      "category": "bodyweight",
+      "equipment": [
+        "jump rope"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 150,
+        "female": 120
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "calves",
+        "core"
+      ],
+      "scalingOptions": [
+        "double under"
+      ],
+      "searchTags": [
+        "jump rope",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "jumping-lunge",
+      "name": "Jumping Lunge",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 20,
+        "female": 15
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "lunge"
+      ],
+      "searchTags": [
+        "jumping lunge",
+        "legs"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "jumping-squat",
+      "name": "Jumping Squat",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 30,
+        "female": 22
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "air squat"
+      ],
+      "searchTags": [
+        "jumping squat",
+        "legs"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "pvc-passthrough",
+      "name": "PVC Passthrough",
+      "category": "bodyweight",
+      "equipment": [
+        "pvc pipe"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 12
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "shoulders"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "pvc",
+        "passthrough",
+        "mobility"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "pvc-good-morning",
+      "name": "PVC Good Morning",
+      "category": "bodyweight",
+      "equipment": [
+        "pvc pipe"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 12
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "hamstrings",
+        "back"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "pvc",
+        "good morning",
+        "mobility"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "pvc-ohs",
+      "name": "PVC OHS",
+      "category": "bodyweight",
+      "equipment": [
+        "pvc pipe"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 12
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "shoulders"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "pvc",
+        "overhead squat",
+        "mobility"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "tempo-back-squat",
+      "name": "Tempo Back Squat",
+      "category": "bodyweight",
+      "equipment": [
+        "barbell"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 80,
+        "female": 55
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "back squat"
+      ],
+      "searchTags": [
+        "tempo squat",
+        "strength"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "broad-jump",
+      "name": "Broad Jump",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 10,
+        "female": 8
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "broad jump",
+        "jump",
+        "legs"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "wall-ball",
+      "name": "Wall Ball (WBS)",
+      "category": "odd-objects",
+      "equipment": [
+        "wall ball"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 30,
+        "female": 20
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "thrusters"
+      ],
+      "searchTags": [
+        "wall ball",
+        "wbs",
+        "cardio"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "lat-pull-over",
+      "name": "Lat Pull Over",
+      "category": "odd-objects",
+      "equipment": [
+        "wall ball"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 12
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "lats",
+        "shoulders",
+        "chest"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "lat",
+        "pull over"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "three-point-row",
+      "name": "Three Point Row",
+      "category": "odd-objects",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "arms"
+      ],
+      "scalingOptions": [
+        "dumbbell row"
+      ],
+      "searchTags": [
+        "three point row"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "landmine-squat",
+      "name": "Landmine Squat",
+      "category": "odd-objects",
+      "equipment": [
+        "landmine"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 12
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "core"
+      ],
+      "scalingOptions": [
+        "front squat"
+      ],
+      "searchTags": [
+        "landmine",
+        "squat"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "landmine-single-row",
+      "name": "Landmine Single Arm Row",
+      "category": "odd-objects",
+      "equipment": [
+        "landmine"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "arms"
+      ],
+      "scalingOptions": [
+        "dumbbell row"
+      ],
+      "searchTags": [
+        "landmine",
+        "row"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "landmine-rotation",
+      "name": "Landmine Butt Rotation",
+      "category": "odd-objects",
+      "equipment": [
+        "landmine"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 10
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "core",
+        "obliques"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "landmine",
+        "rotation"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "sled-push",
+      "name": "Sled Push",
+      "category": "odd-objects",
+      "equipment": [
+        "sled"
+      ],
+      "trackingType": "distance",
+      "defaultUnit": "meters",
+      "commonRx": {
+        "male": 40,
+        "female": 30
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "core"
+      ],
+      "scalingOptions": [
+        "sled pull"
+      ],
+      "searchTags": [
+        "sled",
+        "push"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "shoulder-tap",
+      "name": "Shoulder Tap",
+      "category": "bodyweight",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 40,
+        "female": 30
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "core"
+      ],
+      "scalingOptions": [
+        "plank"
+      ],
+      "searchTags": [
+        "shoulder tap",
+        "core"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "elevated-ring-row",
+      "name": "Elevated Ring Row",
+      "category": "gymnastics",
+      "equipment": [
+        "rings"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 10
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "arms",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "ring row"
+      ],
+      "searchTags": [
+        "ring row",
+        "elevated"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "banded-strict-press",
+      "name": "Banded Strict Press",
+      "category": "bodyweight",
+      "equipment": [
+        "resistance band"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 12
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "triceps"
+      ],
+      "scalingOptions": [
+        "shoulder press"
+      ],
+      "searchTags": [
+        "band",
+        "press",
+        "shoulders"
+      ],
+      "priority": "high",
+      "fromBoxPhotos": true
+    },
+    {
+      "id": "sumo-deadlift-high-pull",
+      "name": "Sumo Deadlift High Pull",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 110,
+        "female": 75
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "clean high pull"
+      ],
+      "searchTags": [
+        "sumo deadlift high pull",
+        "sdhp"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "cluster",
+      "name": "Cluster",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 100,
+        "female": 65
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "shoulders",
+        "triceps"
+      ],
+      "scalingOptions": [
+        "thruster"
+      ],
+      "searchTags": [
+        "cluster"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "bear-complex",
+      "name": "Bear Complex",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 5,
+        "female": 3
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "bear complex"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "sotts-press",
+      "name": "Sotts Press",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 50,
+        "female": 33
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "triceps",
+        "core"
+      ],
+      "scalingOptions": [
+        "overhead squat"
+      ],
+      "searchTags": [
+        "sotts press"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "snatch-balance",
+      "name": "Snatch Balance",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 90,
+        "female": 60
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "overhead squat"
+      ],
+      "searchTags": [
+        "snatch balance"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "hang-squat-clean",
+      "name": "Hang Squat Clean",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 95,
+        "female": 60
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "squat clean"
+      ],
+      "searchTags": [
+        "hang squat clean",
+        "hsc"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "split-jerk",
+      "name": "Split Jerk",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 125,
+        "female": 85
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "shoulders",
+        "triceps"
+      ],
+      "scalingOptions": [
+        "push jerk"
+      ],
+      "searchTags": [
+        "split jerk",
+        "jerk"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "squat-clean-thruster",
+      "name": "Squat Clean Thruster",
+      "category": "weightlifting",
+      "equipment": [
+        "barbell",
+        "plates"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 85,
+        "female": 55
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "thruster"
+      ],
+      "searchTags": [
+        "squat clean thruster"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "pistol-squat",
+      "name": "Pistol Squat",
+      "category": "gymnastics",
+      "equipment": [],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 5,
+        "female": 3
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "air squat",
+        "box squat"
+      ],
+      "searchTags": [
+        "pistol squat",
+        "single leg"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "deficit-hspu",
+      "name": "Deficit HSPU",
+      "category": "gymnastics",
+      "equipment": [
+        "plates"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 8,
+        "female": 5
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "triceps",
+        "core"
+      ],
+      "scalingOptions": [
+        "hspu"
+      ],
+      "searchTags": [
+        "deficit hspu"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "ring-muscle-up",
+      "name": "Ring Muscle-Up",
+      "category": "gymnastics",
+      "equipment": [
+        "rings"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 8,
+        "female": 4
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "chest",
+        "shoulders",
+        "arms"
+      ],
+      "scalingOptions": [
+        "bar muscle-up"
+      ],
+      "searchTags": [
+        "ring muscle-up",
+        "muscle-up"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "strict-ring-muscle-up",
+      "name": "Strict Ring Muscle-Up",
+      "category": "gymnastics",
+      "equipment": [
+        "rings"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 5,
+        "female": 2
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "chest",
+        "shoulders",
+        "arms"
+      ],
+      "scalingOptions": [
+        "ring muscle-up"
+      ],
+      "searchTags": [
+        "strict ring muscle-up"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "toes-through-rings",
+      "name": "Toes Through Rings",
+      "category": "gymnastics",
+      "equipment": [
+        "rings"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 10,
+        "female": 8
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "core",
+        "hip flexors"
+      ],
+      "scalingOptions": [
+        "toes to bar"
+      ],
+      "searchTags": [
+        "toes through rings"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "knees-to-elbows",
+      "name": "Knees-to-Elbows",
+      "category": "gymnastics",
+      "equipment": [
+        "pull-up bar"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 25,
+        "female": 18
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "abs",
+        "hip flexors"
+      ],
+      "scalingOptions": [
+        "toes to bar"
+      ],
+      "searchTags": [
+        "knees to elbows",
+        "kte"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "skin-the-cat",
+      "name": "Skin the Cat",
+      "category": "gymnastics",
+      "equipment": [
+        "pull-up bar"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 5,
+        "female": 3
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "back",
+        "core"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "skin the cat"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "rope-climb-legless",
+      "name": "Rope Climb Legless",
+      "category": "gymnastics",
+      "equipment": [
+        "rope"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 3,
+        "female": 2
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "arms",
+        "core"
+      ],
+      "scalingOptions": [
+        "rope climb"
+      ],
+      "searchTags": [
+        "rope climb",
+        "legless"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "pegboard-climb",
+      "name": "Pegboard Climb",
+      "category": "gymnastics",
+      "equipment": [
+        "pegboard"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 3,
+        "female": 2
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "arms",
+        "core"
+      ],
+      "scalingOptions": [
+        "rope climb"
+      ],
+      "searchTags": [
+        "pegboard",
+        "climb"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "handstand-walk",
+      "name": "Handstand Walk",
+      "category": "gymnastics",
+      "equipment": [
+        "wall"
+      ],
+      "trackingType": "distance",
+      "defaultUnit": "meters",
+      "commonRx": {
+        "male": 30,
+        "female": 20
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "core"
+      ],
+      "scalingOptions": [
+        "wall walk"
+      ],
+      "searchTags": [
+        "handstand walk",
+        "hsw"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "echo-bike-sprint",
+      "name": "Echo Bike Sprint",
+      "category": "monostructural",
+      "equipment": [
+        "echo bike"
+      ],
+      "trackingType": "time",
+      "defaultUnit": "seconds",
+      "commonRx": {
+        "male": 120,
+        "female": 150
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "quads",
+        "hamstrings",
+        "glutes"
+      ],
+      "scalingOptions": [
+        "assault bike"
+      ],
+      "searchTags": [
+        "echo bike",
+        "sprint"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "skierg",
+      "name": "SkiErg",
+      "category": "monostructural",
+      "equipment": [
+        "skierg"
+      ],
+      "trackingType": "time",
+      "defaultUnit": "seconds",
+      "commonRx": {
+        "male": 240,
+        "female": 280
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "shoulders",
+        "arms"
+      ],
+      "scalingOptions": [
+        "rowing"
+      ],
+      "searchTags": [
+        "skierg",
+        "ski erg"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "sandbag-clean",
+      "name": "Sandbag Clean",
+      "category": "odd-objects",
+      "equipment": [
+        "sandbag"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 10,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back"
+      ],
+      "scalingOptions": [
+        "power clean"
+      ],
+      "searchTags": [
+        "sandbag clean"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "sandbag-over-shoulder",
+      "name": "Sandbag Over Shoulder",
+      "category": "odd-objects",
+      "equipment": [
+        "sandbag"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 8,
+        "female": 6
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "sandbag clean"
+      ],
+      "searchTags": [
+        "sandbag",
+        "shoulder"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "atlas-stone",
+      "name": "Atlas Stone",
+      "category": "odd-objects",
+      "equipment": [
+        "atlas stone"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 5,
+        "female": 3
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "back",
+        "core"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "atlas stone"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "yoke-carry",
+      "name": "Yoke Carry",
+      "category": "odd-objects",
+      "equipment": [
+        "yoke"
+      ],
+      "trackingType": "distance",
+      "defaultUnit": "meters",
+      "commonRx": {
+        "male": 40,
+        "female": 30
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "core",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "farmer's carry"
+      ],
+      "searchTags": [
+        "yoke",
+        "carry"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "worm",
+      "name": "Worm",
+      "category": "odd-objects",
+      "equipment": [
+        "worm"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 5,
+        "female": 3
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "core",
+        "shoulders"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "worm"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "d-ball-clean",
+      "name": "D-Ball Clean",
+      "category": "odd-objects",
+      "equipment": [
+        "d-ball"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 8,
+        "female": 6
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back"
+      ],
+      "scalingOptions": [
+        "power clean"
+      ],
+      "searchTags": [
+        "d-ball",
+        "medicine ball"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "sled-pull",
+      "name": "Sled Pull",
+      "category": "odd-objects",
+      "equipment": [
+        "sled"
+      ],
+      "trackingType": "distance",
+      "defaultUnit": "meters",
+      "commonRx": {
+        "male": 40,
+        "female": 30
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "hamstrings",
+        "glutes",
+        "back"
+      ],
+      "scalingOptions": [
+        "sled push"
+      ],
+      "searchTags": [
+        "sled pull"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "farmers-carry",
+      "name": "Farmer's Carry",
+      "category": "odd-objects",
+      "equipment": [
+        "dumbbell",
+        "kettlebell"
+      ],
+      "trackingType": "distance",
+      "defaultUnit": "meters",
+      "commonRx": {
+        "male": 40,
+        "female": 30
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "traps",
+        "forearms",
+        "core"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "farmers carry",
+        "carry"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "pig-flip",
+      "name": "Pig Flip",
+      "category": "odd-objects",
+      "equipment": [
+        "pig"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 5,
+        "female": 3
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "core",
+        "shoulders"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "pig flip"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "axle-bar-deadlift",
+      "name": "Axle Bar Deadlift",
+      "category": "weightlifting",
+      "equipment": [
+        "axle bar"
+      ],
+      "trackingType": "weight",
+      "defaultUnit": "kg",
+      "commonRx": {
+        "male": 135,
+        "female": 90
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back"
+      ],
+      "scalingOptions": [
+        "deadlift"
+      ],
+      "searchTags": [
+        "axle bar",
+        "deadlift"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "ghd-back-extension",
+      "name": "GHD Back Extension",
+      "category": "gymnastics",
+      "equipment": [
+        "ghd machine"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 12
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "back",
+        "glutes"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "ghd back extension"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "ghd-hip-extension",
+      "name": "GHD Hip Extension",
+      "category": "gymnastics",
+      "equipment": [
+        "ghd machine"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 15,
+        "female": 12
+      },
+      "isCompound": false,
+      "muscleGroups": [
+        "hamstrings",
+        "glutes"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "ghd hip extension"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "turkish-get-up",
+      "name": "Turkish Get-Up",
+      "category": "odd-objects",
+      "equipment": [
+        "kettlebell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 5,
+        "female": 3
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "core",
+        "glutes"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "turkish get-up",
+        "tgu"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "kb-windmill",
+      "name": "KB Windmill",
+      "category": "kettlebell",
+      "equipment": [
+        "kettlebell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 5,
+        "female": 3
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "core",
+        "hamstrings"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "kettlebell windmill"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "kb-clean",
+      "name": "KB Clean",
+      "category": "kettlebell",
+      "equipment": [
+        "kettlebell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "glutes",
+        "hamstrings",
+        "back",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "power clean"
+      ],
+      "searchTags": [
+        "kettlebell clean"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "kb-overhead-carry",
+      "name": "KB Overhead Carry",
+      "category": "kettlebell",
+      "equipment": [
+        "kettlebell"
+      ],
+      "trackingType": "distance",
+      "defaultUnit": "meters",
+      "commonRx": {
+        "male": 30,
+        "female": 20
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "shoulders",
+        "core"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "kettlebell carry",
+        "overhead"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "kb-front-rack-carry",
+      "name": "KB Front Rack Carry",
+      "category": "kettlebell",
+      "equipment": [
+        "kettlebell"
+      ],
+      "trackingType": "distance",
+      "defaultUnit": "meters",
+      "commonRx": {
+        "male": 30,
+        "female": 20
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "core",
+        "quads"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "kettlebell carry",
+        "front rack"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "db-step-up",
+      "name": "DB Step-Up",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell",
+        "box"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 10
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "step-up"
+      ],
+      "searchTags": [
+        "dumbbell step-up"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "db-bench-press",
+      "name": "DB Bench Press",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell",
+        "bench"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "shoulders",
+        "triceps"
+      ],
+      "scalingOptions": [
+        "bench press"
+      ],
+      "searchTags": [
+        "dumbbell bench press"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "db-reverse-lunge",
+      "name": "DB Reverse Lunge",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 10
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "hamstrings"
+      ],
+      "scalingOptions": [
+        "walking lunge"
+      ],
+      "searchTags": [
+        "dumbbell reverse lunge"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "db-cluster",
+      "name": "DB Cluster",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 10,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "quads",
+        "glutes",
+        "shoulders"
+      ],
+      "scalingOptions": [
+        "cluster"
+      ],
+      "searchTags": [
+        "dumbbell cluster"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "man-maker",
+      "name": "Man Maker",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 10,
+        "female": 7
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "back",
+        "shoulders",
+        "core"
+      ],
+      "scalingOptions": [],
+      "searchTags": [
+        "man maker"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "devil-press",
+      "name": "Devil Press",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 12,
+        "female": 8
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "chest",
+        "back",
+        "shoulders",
+        "core"
+      ],
+      "scalingOptions": [
+        "man maker"
+      ],
+      "searchTags": [
+        "devil press"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    },
+    {
+      "id": "renegade-row",
+      "name": "Renegade Row",
+      "category": "dumbbell",
+      "equipment": [
+        "dumbbell"
+      ],
+      "trackingType": "reps",
+      "defaultUnit": "reps",
+      "commonRx": {
+        "male": 20,
+        "female": 14
+      },
+      "isCompound": true,
+      "muscleGroups": [
+        "back",
+        "arms",
+        "core"
+      ],
+      "scalingOptions": [
+        "dumbbell row"
+      ],
+      "searchTags": [
+        "renegade row"
+      ],
+      "priority": "normal",
+      "fromBoxPhotos": false
+    }
   ]
 }

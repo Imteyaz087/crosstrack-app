@@ -1,513 +1,296 @@
-import { useState, useEffect, useRef } from 'react';
-import { useStore } from '../stores/useStore';
-import { db } from '../db/database';
+import { useState, useRef } from 'react'
+import { useStore } from '../stores/useStore'
+import { useSaveToast } from '../components/SaveToast'
+import { today } from '../utils/macros'
+import { Camera, X, Plus, Trash2, Check, Sparkles, Loader2 } from 'lucide-react'
+import type { WodType, RxScaled } from '../types'
+import { hasApiKey, analyzeImage, WHITEBOARD_PROMPT } from '../services/gemini'
 
-interface PhotoLog {
-  id?: number;
-  date: string;
-  workoutId?: number;
-  blobRef?: string;
-}
-
-interface PhotoEntry {
-  photo: PhotoLog;
-  workoutDate?: string;
+interface ParsedMovement {
+  name: string
+  reps: string
 }
 
 export function PhotoLogPage() {
-  const { workouts } = useStore();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  const [photos, setPhotos] = useState<PhotoEntry[]>([]);
-  const [selectedPhoto, setSelectedPhoto] = useState<PhotoEntry | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [groupedPhotos, setGroupedPhotos] = useState<{ month: string; photos: PhotoEntry[] }[]>([]);
-  const [stats, setStats] = useState({ total: 0, thisMonth: 0 });
-  const [isLoading, setIsLoading] = useState(false);
+  const { saveWorkout } = useStore()
+  const { showToast, toastEl } = useSaveToast()
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  useEffect(() => {
-    loadPhotos();
-  }, []);
+  const [cameraActive, setCameraActive] = useState(false)
+  const [capturedImage, setCapturedImage] = useState<string | null>(null)
+  const [mode, setMode] = useState<'capture' | 'entry'>('capture')
+  const [parsing, setParsing] = useState(false)
 
-  const loadPhotos = async () => {
+  // Manual entry fields
+  const [wodName, setWodName] = useState('')
+  const [wodType, setWodType] = useState<WodType>('ForTime')
+  const [movements, setMovements] = useState<ParsedMovement[]>([{ name: '', reps: '' }])
+  const [score, setScore] = useState('')
+  const [rx, setRx] = useState<RxScaled>('RX')
+  const [notes, setNotes] = useState('')
+
+  const startCamera = async () => {
     try {
-      const allPhotos = await db.photoLogs.toArray();
-      
-      // Enhance photos with workout info
-      const enhancedPhotos = allPhotos.map(photo => ({
-        photo,
-        workoutDate: photo.workoutId 
-          ? workouts?.find(w => w.id === photo.workoutId)?.date 
-          : undefined
-      }));
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+      })
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+        await videoRef.current.play()
+        setCameraActive(true)
+      }
+    } catch {
+      showToast('Camera access denied', 'error')
+    }
+  }
 
-      // Sort by date descending
-      enhancedPhotos.sort((a, b) => new Date(b.photo.date).getTime() - new Date(a.photo.date).getTime());
-      
-      setPhotos(enhancedPhotos);
+  const capturePhoto = async () => {
+    if (!videoRef.current || !canvasRef.current) return
+    const canvas = canvasRef.current
+    const video = videoRef.current
+    canvas.width = video.videoWidth
+    canvas.height = video.videoHeight
+    const ctx = canvas.getContext('2d')
+    ctx?.drawImage(video, 0, 0)
+    const imageData = canvas.toDataURL('image/jpeg', 0.8)
+    setCapturedImage(imageData)
 
-      // Group by month
-      const grouped = new Map<string, PhotoEntry[]>();
-      enhancedPhotos.forEach(entry => {
-        const date = new Date(entry.photo.date);
-        const monthKey = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
-        if (!grouped.has(monthKey)) {
-          grouped.set(monthKey, []);
+    // Stop camera
+    const stream = video.srcObject as MediaStream
+    stream?.getTracks().forEach(t => t.stop())
+    setCameraActive(false)
+    setMode('entry')
+
+    // Auto-parse with Gemini if key is available
+    if (hasApiKey()) {
+      setParsing(true)
+      try {
+        const result = await analyzeImage(imageData, WHITEBOARD_PROMPT)
+        if (!result) {
+          showToast('AI parsing failed — enter manually', 'error')
+          setParsing(false)
+          return
         }
-        grouped.get(monthKey)!.push(entry);
-      });
-
-      const groupedArray = Array.from(grouped.entries()).map(([month, photos]) => ({
-        month,
-        photos
-      }));
-
-      setGroupedPhotos(groupedArray);
-
-      // Calculate stats
-      const now = new Date();
-      const thisMonthPhotos = enhancedPhotos.filter(entry => {
-        const photoDate = new Date(entry.photo.date);
-        return photoDate.getMonth() === now.getMonth() && 
-               photoDate.getFullYear() === now.getFullYear();
-      });
-
-      setStats({
-        total: allPhotos.length,
-        thisMonth: thisMonthPhotos.length
-      });
-    } catch (error) {
-      console.error('Error loading photos:', error);
-    }
-  };
-
-  const handlePhotoCapture = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsLoading(true);
-    try {
-      const reader = new FileReader();
-      reader.onload = async (event) => {
-        const blobRef = event.target?.result as string; // base64 data URL
-
-        const today = new Date().toISOString().split('T')[0];
-        await db.photoLogs.add({
-          date: today,
-          blobRef
-        });
-
-        // Reset input
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
+        const jsonStr = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+        let parsed: Record<string, unknown>
+        try {
+          parsed = JSON.parse(jsonStr)
+        } catch {
+          showToast('Could not parse AI response — enter manually', 'error')
+          setParsing(false)
+          return
         }
-
-        loadPhotos();
-        setIsLoading(false);
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error('Error uploading photo:', error);
-      setIsLoading(false);
+        if (parsed.error) {
+          showToast('Could not read whiteboard — enter manually', 'error')
+        } else {
+          if (parsed.wodName) setWodName(parsed.wodName as string)
+          if (parsed.wodType) {
+            const validTypes: WodType[] = ['AMRAP', 'ForTime', 'EMOM', 'Tabata', 'Strength', 'Chipper', 'Other']
+            if (validTypes.includes(parsed.wodType as WodType)) setWodType(parsed.wodType as WodType)
+          }
+          if (Array.isArray(parsed.movements) && parsed.movements.length > 0) {
+            setMovements(parsed.movements.map((m: Record<string, string>) => ({ name: m.name || '', reps: m.reps || '' })))
+          }
+          if (parsed.notes) setNotes(parsed.notes as string)
+          showToast('Whiteboard parsed! Review & edit below', 'success')
+        }
+      } catch {
+        showToast('AI parsing failed — enter manually', 'error')
+      } finally {
+        setParsing(false)
+      }
     }
-  };
+  }
 
-  const handleDeletePhoto = async (id?: number) => {
-    if (!id) return;
-    if (!window.confirm('Delete this photo? This action cannot be undone.')) return;
+  const addMovement = () => setMovements([...movements, { name: '', reps: '' }])
 
+  const updateMovement = (idx: number, field: 'name' | 'reps', value: string) => {
+    const next = [...movements]
+    next[idx] = { ...next[idx], [field]: value }
+    setMovements(next)
+  }
+
+  const removeMovement = (idx: number) => {
+    if (movements.length <= 1) return
+    setMovements(movements.filter((_, i) => i !== idx))
+  }
+
+  const [saving, setSaving] = useState(false)
+
+  const handleSave = async () => {
+    if (!wodName.trim()) { showToast('Enter a WOD name', 'error'); return }
+    if (saving) return
+    setSaving(true)
     try {
-      await db.photoLogs.delete(id);
-      loadPhotos();
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error('Error deleting photo:', error);
+      const movNames = movements.filter(m => m.name.trim()).map(m => m.reps ? `${m.reps} ${m.name}` : m.name)
+      await saveWorkout({
+        date: today(),
+        workoutType: wodType,
+        name: wodName,
+        description: movNames.join(', '),
+        movements: movements.filter(m => m.name.trim()).map(m => m.name),
+        scoreDisplay: score || undefined,
+        scoreValue: score ? parseFloat(score.replace(':', '.')) : undefined,
+        scoreUnit: wodType === 'ForTime' ? 'time' : wodType === 'AMRAP' ? 'rounds' : 'reps',
+        rxOrScaled: rx,
+        isBenchmark: false,
+        prFlag: false,
+        notes: notes || undefined,
+      })
+      showToast(`Logged ${wodName}!`, 'success')
+      setMode('capture'); setCapturedImage(null); setWodName('')
+      setMovements([{ name: '', reps: '' }]); setScore(''); setNotes('')
+    } catch {
+      showToast('Failed to save workout — try again', 'error')
+    } finally {
+      setSaving(false)
     }
-  };
+  }
 
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric',
-      year: 'numeric'
-    });
-  };
-
-  const openPhotoModal = (photoEntry: PhotoEntry) => {
-    setSelectedPhoto(photoEntry);
-    setIsModalOpen(true);
-  };
-
-  const closePhotoModal = () => {
-    setIsModalOpen(false);
-    setSelectedPhoto(null);
-  };
-
-  return (
-    <div className="page-container">
-      <div className="page-header">
-        <h1 className="page-title">Workout Photo Log</h1>
-        <p className="page-subtitle">Track your progress with photos</p>
-      </div>
-
-      {/* Stats Section */}
-      <div className="stats-grid">
-        <div className="glass-card stagger-1">
-          <div className="stat-label">Total Photos</div>
-          <div className="stat-value">{stats.total}</div>
-          <div className="stat-unit">captured</div>
-        </div>
-        <div className="glass-card stagger-2">
-          <div className="stat-label">This Month</div>
-          <div className="stat-value">{stats.thisMonth}</div>
-          <div className="stat-unit">photos</div>
-        </div>
-      </div>
-
-      {/* Capture Button */}
-      <div className="capture-section stagger-3 page-enter">
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          onChange={handlePhotoCapture}
-          style={{ display: 'none' }}
-          disabled={isLoading}
-        />
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          disabled={isLoading}
-          className="tap-target btn-primary capture-btn"
-        >
-          {isLoading ? '📸 Uploading...' : '📸 Capture Photo'}
-        </button>
-        <p className="capture-hint">Tap to capture from camera or gallery</p>
-      </div>
-
-      {/* Photo Grid */}
-      {photos.length === 0 ? (
-        <div className="glass-card section-card empty-state stagger-4 page-enter">
-          <div className="empty-icon">📷</div>
-          <h3 className="empty-title">No Photos Yet</h3>
-          <p className="empty-text">Capture your first workout photo to start building your progress gallery.</p>
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="tap-target btn-secondary"
-            style={{ marginTop: '16px' }}
-          >
-            Take First Photo
+  // Camera view
+  if (cameraActive) {
+    return (
+      <div className="fixed inset-0 bg-black z-50 flex flex-col">
+        <video ref={videoRef} className="flex-1 object-cover" playsInline autoPlay muted />
+        <canvas ref={canvasRef} className="hidden" />
+        <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-4">
+          <button onClick={() => {
+            const stream = videoRef.current?.srcObject as MediaStream
+            stream?.getTracks().forEach(t => t.stop())
+            setCameraActive(false)
+          }} className="w-12 h-12 bg-ct-elevated/80 rounded-full flex items-center justify-center" aria-label="Close camera">
+            <X size={20} className="text-ct-1" />
+          </button>
+          <button onClick={capturePhoto}
+            className="w-16 h-16 bg-white rounded-full border-4 border-cyan-400 flex items-center justify-center" aria-label="Take photo">
+            <div className="w-12 h-12 bg-cyan-400 rounded-full" />
           </button>
         </div>
-      ) : (
-        <div className="photos-section stagger-5 page-enter">
-          {groupedPhotos.map((group, groupIdx) => (
-            <div key={groupIdx} className="photo-group">
-              <h3 className="group-title">{group.month}</h3>
-              <div className="photo-grid">
-                {group.photos.map((entry, photoIdx) => (
-                  <div
-                    key={entry.photo.id || photoIdx}
-                    className="photo-card glass-card tap-target"
-                    onClick={() => openPhotoModal(entry)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <div className="photo-preview">
-                      {entry.photo.blobRef ? (
-                        <img
-                          src={entry.photo.blobRef}
-                          alt={`Photo ${entry.photo.date}`}
-                          className="photo-image"
-                        />
-                      ) : (
-                        <div className="photo-placeholder">
-                          <span className="placeholder-icon">📷</span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="photo-meta">
-                      <div className="photo-date">{formatDate(entry.photo.date)}</div>
-                      {entry.workoutDate && (
-                        <div className="photo-workout">Workout Log</div>
-                      )}
-                    </div>
-                  </div>
-                ))}
+      </div>
+    )
+  }
+
+  // Entry mode
+  if (mode === 'entry') {
+    return (
+      <div className="space-y-3">
+        {toastEl}
+        <button onClick={() => { setMode('capture'); setCapturedImage(null) }} className="text-cyan-400 text-sm px-2 py-1 -ml-2 rounded-lg active:bg-ct-surface" aria-label="Back to capture">&larr; Back</button>
+
+        {capturedImage && (
+          <div className="relative rounded-xl overflow-hidden">
+            <img src={capturedImage} alt="Whiteboard" className="w-full h-40 object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+            {parsing ? (
+              <div className="absolute bottom-2 left-3 flex items-center gap-2">
+                <Loader2 size={12} className="text-violet-400 animate-spin" />
+                <p className="text-[11px] text-violet-300">AI reading whiteboard...</p>
               </div>
-            </div>
+            ) : (
+              <p className="absolute bottom-2 left-3 text-[11px] text-ct-2 flex items-center gap-1">
+                {hasApiKey() && <Sparkles size={10} className="text-violet-400" />}
+                {hasApiKey() ? 'AI-parsed — review & edit below' : 'Type what you see on the whiteboard'}
+              </p>
+            )}
+          </div>
+        )}
+
+        <h2 className="text-lg font-bold text-ct-1">Log from Photo</h2>
+
+        <input type="text" value={wodName} onChange={e => setWodName(e.target.value)}
+          placeholder="WOD Name (e.g., Monday WOD)" aria-label="WOD name"
+          className="w-full bg-ct-surface border border-ct-border text-ct-1 rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400" />
+
+        <div className="flex gap-1.5 flex-wrap">
+          {(['ForTime', 'AMRAP', 'EMOM', 'Tabata', 'Strength', 'Other'] as WodType[]).map(t => (
+            <button key={t} onClick={() => setWodType(t)}
+              className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold ${
+                wodType === t ? 'bg-cyan-500/20 text-cyan-400' : 'bg-ct-elevated/50 text-ct-2'
+              }`}>{t}</button>
           ))}
         </div>
-      )}
 
-      {/* Photo Modal */}
-      {isModalOpen && selectedPhoto && (
-        <div className="modal-overlay" onClick={closePhotoModal}>
-          <div
-            className="modal-content glass-card"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="modal-close tap-target"
-              onClick={closePhotoModal}
-              aria-label="Close modal"
-            >
-              ✕
-            </button>
-
-            <div className="modal-body">
-              {selectedPhoto.photo.blobRef ? (
-                <img
-                  src={selectedPhoto.photo.blobRef}
-                  alt={`Photo ${selectedPhoto.photo.date}`}
-                  className="modal-image"
-                />
-              ) : (
-                <div className="modal-placeholder">
-                  <span>📷</span>
-                </div>
+        <div className="space-y-2">
+          <p className="text-[11px] uppercase tracking-widest text-ct-2">Movements</p>
+          {movements.map((m, idx) => (
+            <div key={idx} className="flex gap-2 items-center">
+              <input type="text" value={m.reps} onChange={e => updateMovement(idx, 'reps', e.target.value)}
+                placeholder="21-15-9" aria-label="Rep scheme" className="w-20 bg-ct-elevated text-ct-1 rounded-xl py-2 px-2 text-sm text-center focus:outline-none focus:ring-1 focus:ring-cyan-400" />
+              <input type="text" value={m.name} onChange={e => updateMovement(idx, 'name', e.target.value)}
+                placeholder="Thrusters" aria-label="Movement name" className="flex-1 bg-ct-elevated text-ct-1 rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400" />
+              {movements.length > 1 && (
+                <button onClick={() => removeMovement(idx)} className="p-1.5 text-red-400/50 active:text-red-400 rounded-lg" aria-label="Remove movement"><Trash2 size={14} /></button>
               )}
             </div>
+          ))}
+          <button onClick={addMovement}
+            className="w-full bg-slate-800/40 border border-dashed border-slate-600/50 text-ct-2 rounded-lg py-2 text-xs flex items-center justify-center gap-1">
+            <Plus size={12} /> Add Movement
+          </button>
+        </div>
 
-            <div className="modal-footer">
-              <div className="modal-info">
-                <p className="modal-date">{formatDate(selectedPhoto.photo.date)}</p>
-                {selectedPhoto.workoutDate && (
-                  <p className="modal-workout">
-                    Associated with workout on {formatDate(selectedPhoto.workoutDate)}
-                  </p>
-                )}
-              </div>
-
-              <button
-                onClick={() => handleDeletePhoto(selectedPhoto.photo.id)}
-                className="tap-target btn-danger"
-              >
-                🗑️ Delete Photo
-              </button>
-            </div>
+        <div className="flex gap-2">
+          <input type="text" value={score} onChange={e => setScore(e.target.value)}
+            placeholder={wodType === 'ForTime' ? 'Time (12:30)' : 'Score (rounds/reps)'} aria-label="Score"
+            className="flex-1 bg-ct-surface border border-ct-border text-ct-1 rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400" />
+          <div className="flex gap-1">
+            {(['RX', 'Scaled'] as RxScaled[]).map(r => (
+              <button key={r} onClick={() => setRx(r)}
+                className={`px-3 py-2 rounded-lg text-xs font-bold ${
+                  rx === r ? r === 'RX' ? 'bg-green-500/20 text-green-400' : 'bg-orange-500/20 text-orange-400'
+                  : 'bg-ct-elevated/50 text-ct-2'
+                }`}>{r}</button>
+            ))}
           </div>
         </div>
-      )}
 
-      <style>{`
-        .capture-section {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 12px;
-          padding: 24px;
-          text-align: center;
-        }
+        <textarea value={notes} onChange={e => setNotes(e.target.value)}
+          placeholder="Notes (optional)" aria-label="Workout notes" rows={2}
+          className="w-full bg-ct-surface border border-ct-border text-ct-1 rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400/30 resize-none" />
 
-        .capture-btn {
-          width: 100%;
-          max-width: 300px;
-          padding: 16px;
-          font-size: 16px;
-        }
+        <button onClick={handleSave}
+          disabled={!wodName.trim() || saving}
+          className={`w-full font-bold py-3.5 rounded-xl text-sm flex items-center justify-center gap-2 ${
+            wodName.trim() && !saving ? 'bg-cyan-500 text-slate-900 active:scale-[0.98]' : 'bg-ct-elevated/60 text-ct-2 cursor-not-allowed'
+          }`}>
+          {saving ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
+          {saving ? 'Saving...' : 'Save Workout'}
+        </button>
+      </div>
+    )
+  }
 
-        .capture-hint {
-          font-size: 14px;
-          color: var(--text-secondary);
-        }
+  // Capture mode (default)
+  return (
+    <div className="space-y-4">
+      {toastEl}
+      <h1 className="text-xl font-bold text-ct-1">Photo to Log</h1>
+      <p className="text-xs text-ct-2">
+        {hasApiKey() ? 'Snap a whiteboard photo — AI will auto-parse the WOD' : 'Snap a photo, then type in the workout'}
+      </p>
 
-        .photos-section {
-          padding: 16px 0;
-        }
+      <button onClick={startCamera}
+        className="w-full bg-ct-surface border-2 border-dashed border-cyan-500/30 rounded-ct-lg py-12 flex flex-col items-center gap-3 active:bg-slate-800/80">
+        <div className="w-16 h-16 bg-cyan-500/10 rounded-ct-lg flex items-center justify-center">
+          <Camera size={28} className="text-cyan-400" />
+        </div>
+        <p className="text-sm font-semibold text-cyan-400">Open Camera</p>
+        <p className="text-[11px] text-ct-2">
+          {hasApiKey() ? 'AI will read the whiteboard automatically' : 'Take a photo of the whiteboard'}
+        </p>
+      </button>
 
-        .photo-group {
-          margin-bottom: 32px;
-        }
+      <div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-ct-elevated/50" />
+        <span className="text-[11px] text-ct-2">OR</span>
+        <div className="h-px flex-1 bg-ct-elevated/50" />
+      </div>
 
-        .group-title {
-          padding: 0 16px;
-          margin-bottom: 12px;
-          font-size: 16px;
-          font-weight: 600;
-          color: var(--text-primary);
-        }
-
-        .photo-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-          gap: 12px;
-          padding: 0 16px;
-        }
-
-        .photo-card {
-          overflow: hidden;
-          border-radius: 12px;
-          transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .photo-card:active {
-          transform: scale(0.95);
-        }
-
-        .photo-preview {
-          aspect-ratio: 1;
-          overflow: hidden;
-          background: var(--bg-raised);
-        }
-
-        .photo-image {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        .photo-placeholder {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: linear-gradient(135deg, var(--bg-card), var(--bg-raised));
-          font-size: 32px;
-        }
-
-        .placeholder-icon {
-          opacity: 0.5;
-        }
-
-        .photo-meta {
-          padding: 8px 12px;
-          background: var(--bg-raised);
-        }
-
-        .photo-date {
-          font-size: 12px;
-          font-weight: 600;
-          color: var(--text-primary);
-        }
-
-        .photo-workout {
-          font-size: 11px;
-          color: var(--volt);
-          margin-top: 4px;
-        }
-
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.7);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1000;
-          padding: 16px;
-          animation: fadeIn 0.2s ease-out;
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-
-        .modal-content {
-          max-width: 600px;
-          width: 100%;
-          max-height: 90vh;
-          overflow-y: auto;
-          border-radius: 16px;
-          position: relative;
-        }
-
-        .modal-close {
-          position: absolute;
-          top: 12px;
-          right: 12px;
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          border: none;
-          background: rgba(0, 0, 0, 0.3);
-          color: white;
-          font-size: 20px;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 10;
-        }
-
-        .modal-body {
-          padding: 24px 16px;
-          min-height: 300px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .modal-image {
-          width: 100%;
-          height: auto;
-          max-height: 400px;
-          object-fit: contain;
-          border-radius: 8px;
-        }
-
-        .modal-placeholder {
-          font-size: 64px;
-          opacity: 0.3;
-        }
-
-        .modal-footer {
-          padding: 16px;
-          border-top: 1px solid var(--border);
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-
-        .modal-info {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .modal-date {
-          font-size: 14px;
-          font-weight: 600;
-          color: var(--text-primary);
-          margin: 0;
-        }
-
-        .modal-workout {
-          font-size: 13px;
-          color: var(--text-secondary);
-          margin: 0;
-        }
-
-        .btn-danger {
-          background: rgba(255, 82, 82, 0.1);
-          color: #FF5252;
-          border: 1px solid #FF5252;
-          width: 100%;
-          padding: 12px;
-          border-radius: 8px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: background 0.2s;
-        }
-
-        .btn-danger:active {
-          background: rgba(255, 82, 82, 0.2);
-        }
-
-        @media (max-width: 480px) {
-          .photo-grid {
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-          }
-        }
-      `}</style>
+      <button onClick={() => setMode('entry')}
+        className="w-full bg-ct-surface border border-ct-border rounded-xl py-3.5 text-sm font-semibold text-ct-2 flex items-center justify-center gap-2">
+        <Plus size={14} /> Enter Manually
+      </button>
     </div>
-  );
+  )
 }

@@ -16,7 +16,6 @@ export function ConfirmDialog({
   onConfirm, onCancel, destructive = true,
 }: ConfirmDialogProps) {
   if (!open) return null
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-6" onClick={onCancel}>
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
@@ -33,12 +32,14 @@ export function ConfirmDialog({
           </div>
         </div>
         <div className="flex gap-3">
-          <button onClick={onCancel} className="flex-1 py-3.5 rounded-xl bg-ct-elevated text-ct-2 font-medium active:bg-slate-600 transition-colors">
+          <button onClick={onCancel}
+            className="flex-1 py-3.5 rounded-xl bg-ct-elevated text-ct-2 font-medium active:bg-slate-600 transition-colors">
             {cancelLabel}
           </button>
-          <button onClick={onConfirm} className={`flex-1 py-3.5 rounded-xl font-bold active:scale-[0.98] transition-all ${
-            destructive ? 'bg-red-500 text-ct-1' : 'bg-cyan-500 text-slate-900'
-          }`}>
+          <button onClick={onConfirm}
+            className={`flex-1 py-3.5 rounded-xl font-bold active:scale-[0.98] transition-all ${
+              destructive ? 'bg-red-500 text-ct-1' : 'bg-cyan-500 text-slate-900'
+            }`}>
             {confirmLabel}
           </button>
         </div>

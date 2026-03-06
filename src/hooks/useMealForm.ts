@@ -62,18 +62,13 @@ export function useMealForm(
     }
   }, [foodSearch])
 
-  const macros = selectedFood && grams
-    ? calcMacros(selectedFood, parseFloat(grams) || 0)
-    : null
+  const macros = selectedFood && grams ? calcMacros(selectedFood, parseFloat(grams) || 0) : null
 
   // Meals already logged for the currently-selected meal type
   const mealsForType = todayMeals.filter(m => m.mealType === mealType)
   const mealsForTypeMacros = mealsForType.reduce((a, m) => ({
-    calories: a.calories + m.calories,
-    protein: a.protein + m.protein,
-    carbs: a.carbs + m.carbs,
-    fat: a.fat + m.fat,
-    fiber: a.fiber + (m.fiber || 0),
+    calories: a.calories + m.calories, protein: a.protein + m.protein,
+    carbs: a.carbs + m.carbs, fat: a.fat + m.fat, fiber: a.fiber + (m.fiber || 0),
   }), { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 })
 
   // Evidence-based targets from profile goal + body stats
@@ -93,7 +88,7 @@ export function useMealForm(
   const handleSelectApiResult = useCallback(async (result: NutritionResult) => {
     // Validate nutrition data before saving
     if (!result.name || result.name.trim().length === 0) {
-      onToast('Invalid food data – missing name', 'error')
+      onToast('Invalid food data — missing name', 'error')
       return
     }
     if (result.caloriesPer100g < 0 || result.proteinPer100g < 0 || result.carbsPer100g < 0 || result.fatPer100g < 0) {
@@ -103,11 +98,10 @@ export function useMealForm(
     try {
       const food = resultToFoodItem(result)
       // Save to local library so it's available offline next time
-      const id = await saveCustomFood(food)
-      const savedFood: FoodItem = { ...food, id, defaultServingG: result.servingSize || 100, isCustom: true }
-      handleSelectFood(savedFood, result.servingSize || 100)
+      const saved = await saveCustomFood(food)
+      handleSelectFood(saved, result.servingSize || 100)
     } catch {
-      onToast('Failed to save food – try again', 'error')
+      onToast('Failed to save food — try again', 'error')
     }
   }, [saveCustomFood, onToast])
 
@@ -117,7 +111,7 @@ export function useMealForm(
     if (!selectedFood) { onToast('Select a food first', 'error'); return }
     const g = parseFloat(grams)
     if (!g || g <= 0) { onToast('Enter a valid amount in grams', 'error'); return }
-    if (g > 5000) { onToast('Amount seems too high – check grams', 'error'); return }
+    if (g > 5000) { onToast('Amount seems too high — check grams', 'error'); return }
     if (savingMeal) return
     setSavingMeal(true)
     try {
@@ -136,7 +130,7 @@ export function useMealForm(
       await loadRecentFoods()
       onToast(`${savedName} added!`, 'success')
     } catch {
-      onToast('Failed to save meal – try again', 'error')
+      onToast('Failed to save meal — try again', 'error')
     } finally {
       setSavingMeal(false)
     }
@@ -157,7 +151,7 @@ export function useMealForm(
     mealsForType, mealsForTypeMacros, targets, todayMacros, goalName,
     apiResults, apiSearching, savingMeal,
     setMealType, setGrams, setFoodSearch, setShowAllFoods,
-    handleSelectFood, handleSelectApiResult,
-    handleSaveMeal, handleDeleteMeal, resetMeal, setSelectedFood,
+    handleSelectFood, handleSelectApiResult, handleSaveMeal, handleDeleteMeal, resetMeal,
+    setSelectedFood,
   }
 }

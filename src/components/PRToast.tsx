@@ -29,14 +29,17 @@ export function PRToast({ pr, onDone }: Props) {
   }, [onDone])
 
   return (
-    <div className={`fixed left-3 right-3 z-[200] flex justify-center transition-all duration-500 ease-out ${
-      visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-6 scale-95 pointer-events-none'
-    }`} style={{ top: 'calc(env(safe-area-inset-top, 0px) + 12px)' }}
-      role="alert" aria-live="assertive">
+    <div
+      className={`fixed left-3 right-3 z-[200] flex justify-center transition-all duration-500 ease-out ${
+        visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-6 scale-95 pointer-events-none'
+      }`}
+      style={{ top: 'calc(env(safe-area-inset-top, 0px) + 12px)' }}
+      role="alert"
+      aria-live="assertive"
+    >
       <div className="w-full max-w-sm bg-gradient-to-r from-yellow-600/90 via-amber-500/90 to-yellow-600/90 border border-yellow-400/60 backdrop-blur-md rounded-ct-lg px-4 py-3.5 shadow-2xl shadow-yellow-500/20">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 bg-yellow-300/20 rounded-xl flex items-center justify-center shrink-0 animate-bounce"
-            style={{ animationDuration: '1s', animationIterationCount: '2' }}>
+          <div className="w-11 h-11 bg-yellow-300/20 rounded-xl flex items-center justify-center shrink-0 animate-bounce" style={{ animationDuration: '1s', animationIterationCount: '2' }}>
             <Trophy size={22} className="text-yellow-200" />
           </div>
           <div className="flex-1 min-w-0">

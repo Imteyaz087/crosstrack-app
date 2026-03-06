@@ -93,7 +93,6 @@ function App() {
           </div>
         </Suspense>
       </main>
-
       <OfflineBar />
       <TabBar />
       <InstallPrompt />

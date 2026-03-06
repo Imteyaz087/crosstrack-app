@@ -1,59 +1,119 @@
 import { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStore } from '../stores/useStore'
-import { Download, Upload, Globe, Save } from 'lucide-react'
-
-const CARD   = 'var(--bg-card)'
-const RAISED = 'var(--bg-raised)'
-const BORDER = 'var(--border)'
-const VOLT   = 'var(--volt)'
-const GLOW   = 'var(--volt-glow)'
-const BSTR   = 'var(--border-str)'
-const TXT2   = 'var(--text-secondary)'
-const APP    = 'var(--bg-app)'
+import { calcNutritionTargets } from '../utils/macros'
+import type { Gender, ExperienceLevel, Goal } from '../types'
+import { Download, Upload, Globe, Save, RefreshCw, Key, Eye, EyeOff, Cloud } from 'lucide-react'
+import { SaveToast } from '../components/SaveToast'
+import { hasApiKey, setApiKey, clearApiKey } from '../services/gemini'
+import { hasFirebaseConfig, setFirebaseConfig, clearFirebaseConfig } from '../services/firebase'
 
 export function SettingsPage() {
   const { t, i18n } = useTranslation()
-  const { settings, loadSettings, updateSettings, exportAllData, importData } = useStore()
+  const { profile, loadProfile, saveProfile, exportAllData, importData } = useStore()
   const fileRef = useRef<HTMLInputElement>(null)
+  const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [geminiKey, setGeminiKey] = useState('')
+  const [showKey, setShowKey] = useState(false)
+  const [hasKey, setHasKey] = useState(hasApiKey())
+  const [hasFbConfig, setHasFbConfig] = useState(hasFirebaseConfig())
+  const [fbProjectId, setFbProjectId] = useState('')
+  const [fbApiKey, setFbApiKey] = useState('')
+  const [showFbSetup, setShowFbSetup] = useState(false)
 
   const [form, setForm] = useState({
-    displayName:   '',
-    weightKg:      72,
-    trainingTime:  '06:00',
-    proteinTarget: 180,
-    carbsTarget:   216,
-    fatTarget:     58,
-    calorieTarget: 2100,
-    waterTarget:   3000,
-    language:      'en' as 'en' | 'zh-TW' | 'zh-CN',
+    displayName: '',
+    age: '' as string,
+    gender: 'prefer_not_to_say' as Gender,
+    weightKg: '' as string,
+    heightCm: '' as string,
+    experienceLevel: 'beginner' as ExperienceLevel,
+    goal: 'general_health' as Goal,
+    trainingTime: '06:00',
+    trainingDaysPerWeek: 5,
+    proteinTarget: 150,
+    carbsTarget: 200,
+    fatTarget: 60,
+    calorieTarget: 2000,
+    waterTarget: 2500,
+    language: 'en' as 'en' | 'zh-TW' | 'zh-CN',
   })
 
-  useEffect(() => { loadSettings() }, [])
+  useEffect(() => { loadProfile() }, [])
   useEffect(() => {
-    if (settings) setForm({
-      displayName:   settings.displayName,
-      weightKg:      settings.weightKg,
-      trainingTime:  settings.trainingTime,
-      proteinTarget: settings.proteinTarget,
-      carbsTarget:   settings.carbsTarget,
-      fatTarget:     settings.fatTarget,
-      calorieTarget: settings.calorieTarget,
-      waterTarget:   settings.waterTarget,
-      language:      settings.language,
-    })
-  }, [settings])
+    if (profile) {
+      setForm({
+        displayName: profile.displayName,
+        age: profile.age?.toString() || '',
+        gender: profile.gender || 'prefer_not_to_say',
+        weightKg: profile.weightKg?.toString() || '',
+        heightCm: profile.heightCm?.toString() || '',
+        experienceLevel: profile.experienceLevel,
+        goal: profile.goal,
+        trainingTime: profile.trainingTime,
+        trainingDaysPerWeek: profile.trainingDaysPerWeek,
+        proteinTarget: profile.proteinTarget,
+        carbsTarget: profile.carbsTarget,
+        fatTarget: profile.fatTarget,
+        calorieTarget: profile.calorieTarget,
+        waterTarget: profile.waterTarget,
+        language: profile.language,
+      })
+    }
+  }, [profile])
+
+  const handleRecalculate = () => {
+    const w = parseFloat(form.weightKg) || 70
+    const targets = calcNutritionTargets(w, form.goal, form.gender)
+    setForm(f => ({
+      ...f,
+      proteinTarget: targets.protein,
+      carbsTarget: targets.carbs,
+      fatTarget: targets.fat,
+      calorieTarget: targets.calories,
+      waterTarget: targets.water,
+    }))
+  }
 
   const handleSave = async () => {
-    await updateSettings(form)
+    // Validate
+    const newErrors: Record<string, string> = {}
+    if (!form.displayName.trim()) newErrors.name = t('settings.nameRequired')
+    if (form.proteinTarget <= 0) newErrors.protein = t('settings.mustBePositive')
+    if (form.calorieTarget <= 0) newErrors.calories = t('settings.mustBePositive')
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      setToast({ msg: t('settings.fixErrors'), type: 'error' })
+      return
+    }
+    setErrors({})
+    await saveProfile({
+      displayName: form.displayName.trim(),
+      age: parseInt(form.age) || undefined,
+      gender: form.gender,
+      weightKg: parseFloat(form.weightKg) || undefined,
+      heightCm: parseFloat(form.heightCm) || undefined,
+      experienceLevel: form.experienceLevel,
+      goal: form.goal,
+      trainingTime: form.trainingTime,
+      trainingDaysPerWeek: form.trainingDaysPerWeek,
+      proteinTarget: form.proteinTarget,
+      carbsTarget: form.carbsTarget,
+      fatTarget: form.fatTarget,
+      calorieTarget: form.calorieTarget,
+      waterTarget: form.waterTarget,
+      language: form.language,
+    })
     i18n.changeLanguage(form.language)
+    setToast({ msg: t('settings.settingsSaved'), type: 'success' })
   }
 
   const handleExport = async () => {
     const json = await exportAllData()
     const blob = new Blob([json], { type: 'application/json' })
-    const url  = URL.createObjectURL(blob)
-    const a    = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
     a.href = url
     a.download = `trackvolt-backup-${new Date().toISOString().split('T')[0]}.json`
     a.click()
@@ -65,63 +125,82 @@ export function SettingsPage() {
     if (!file) return
     const text = await file.text()
     await importData(text)
-    loadSettings()
-    alert('Data imported successfully!')
+    loadProfile()
+    setToast({ msg: t('settings.dataImported'), type: 'success' })
   }
 
-  const field = (label: string, key: keyof typeof form, type = 'text') => (
-    <div style={{ borderColor: BORDER }} className="flex justify-between items-center py-2.5 border-b">
-      <span style={{ color: 'var(--text-primary)' }} className="text-sm">{label}</span>
+  const field = (label: string, value: string | number, onChange: (v: string) => void, type = 'text', min?: number) => (
+    <div className="flex justify-between items-center py-2.5 border-b border-slate-700/30 min-h-[44px]">
+      <span className="text-sm text-ct-2">{label}</span>
       <input
         type={type}
-        value={form[key] as string | number}
-        onChange={e => setForm({ ...form, [key]: type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value })}
-        style={{ background: RAISED, color: 'white' }}
-        className="rounded-lg py-1.5 px-3 text-sm text-right w-28 focus:outline-none focus:ring-1 focus:ring-[var(--volt)]"
+        inputMode={type === 'number' ? 'decimal' : undefined}
+        value={value}
+        min={min}
+        onChange={e => {
+          const v = e.target.value
+          if (type === 'number' && min !== undefined && v !== '') {
+            const n = parseFloat(v)
+            if (!isNaN(n) && n < min) return
+          }
+          onChange(v)
+        }}
+        className="bg-ct-elevated rounded-lg py-2 px-3 text-ct-1 text-sm text-right w-28 focus:outline-none focus:ring-1 focus:ring-cyan-400 min-h-[44px]"
       />
     </div>
   )
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold text-white">{t('settings.title')}</h1>
+      {toast && <SaveToast message={toast.msg} type={toast.type} onDone={() => setToast(null)} />}
+      <h1 className="text-[1.75rem] font-bold text-ct-1 leading-tight tracking-tight">{t('settings.title')}</h1>
 
-      {/* ── Profile ───────────────────────────────────────────────────── */}
-      <div style={{ background: CARD, borderColor: BORDER }} className="rounded-2xl p-4 border">
-        <p style={{ color: TXT2 }} className="text-[10px] uppercase tracking-widest mb-2">{t('settings.profile')}</p>
-        {field(t('settings.name'), 'displayName')}
-        {field(t('settings.weightGoal') + ' (kg)', 'weightKg', 'number')}
-        {field(t('settings.trainingTime'), 'trainingTime', 'time')}
-      </div>
-
-      {/* ── Targets ───────────────────────────────────────────────────── */}
-      <div style={{ background: CARD, borderColor: BORDER }} className="rounded-2xl p-4 border">
-        <p style={{ color: TXT2 }} className="text-[10px] uppercase tracking-widest mb-2">{t('settings.targets')}</p>
-        {field(t('settings.proteinTarget') + ' (g)', 'proteinTarget', 'number')}
-        {field(t('settings.carbsTarget')   + ' (g)', 'carbsTarget',   'number')}
-        {field(t('settings.fatTarget')     + ' (g)', 'fatTarget',     'number')}
-        {field(t('settings.calorieTarget'),           'calorieTarget', 'number')}
-        {field(t('settings.waterTarget')   + ' (ml)', 'waterTarget',   'number')}
-      </div>
-
-      {/* ── App / Language ────────────────────────────────────────────── */}
-      <div style={{ background: CARD, borderColor: BORDER }} className="rounded-2xl p-4 border">
-        <p style={{ color: TXT2 }} className="text-[10px] uppercase tracking-widest mb-2">{t('settings.app')}</p>
-        <div style={{ borderColor: BORDER }} className="flex justify-between items-center py-2.5 border-b">
-          <span style={{ color: 'var(--text-primary)' }} className="text-sm flex items-center gap-2">
-            <Globe size={14} /> {t('settings.language')}
-          </span>
+      {/* Profile */}
+      <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
+        <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 mb-2">{t('settings.profile')}</p>
+        <div>
+          {field(t('settings.name'), form.displayName, v => { setForm(f => ({ ...f, displayName: v })); if (v.trim()) setErrors(e => { const { name, ...rest } = e; return rest }) })}
+          {errors.name && <p className="text-xs text-red-400 mt-0.5 ml-1">{errors.name}</p>}
+        </div>
+        {field(t('settings.age'), form.age, v => setForm(f => ({ ...f, age: v })), 'number', 1)}
+        {field(t('settings.weightKg'), form.weightKg, v => setForm(f => ({ ...f, weightKg: v })), 'number', 1)}
+        {field(t('settings.heightCm'), form.heightCm, v => setForm(f => ({ ...f, heightCm: v })), 'number', 1)}
+        {field(t('settings.trainingTime'), form.trainingTime, v => setForm(f => ({ ...f, trainingTime: v })), 'time')}
+        <div className="flex justify-between items-center py-2.5 border-b border-slate-700/30">
+          <span className="text-sm text-ct-2">{t('settings.trainingDaysWeek')}</span>
           <div className="flex gap-1">
-            {(['en', 'zh-TW', 'zh-CN'] as const).map((lang) => (
-              <button
-                key={lang}
-                onClick={() => setForm({ ...form, language: lang })}
-                style={form.language === lang
-                  ? { background: GLOW, color: VOLT, borderColor: BSTR }
-                  : { background: RAISED, color: TXT2, borderColor: BORDER }
-                }
-                className="px-3 py-1 rounded-lg text-xs font-medium border"
-              >
+            {[3, 4, 5, 6].map(d => (
+              <button key={d} onClick={() => setForm(f => ({ ...f, trainingDaysPerWeek: d }))}
+                className={`w-9 h-9 rounded-lg text-xs font-bold ${form.trainingDaysPerWeek === d ? 'bg-cyan-500/20 text-cyan-400' : 'bg-ct-elevated text-ct-2'}`}>{d}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Targets */}
+      <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
+        <div className="flex justify-between items-center mb-2">
+          <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2">{t('settings.targets')}</p>
+          <button onClick={handleRecalculate} className="flex items-center gap-1 text-xs text-cyan-400">
+            <RefreshCw size={12} /> {t('settings.autoCalc')}
+          </button>
+        </div>
+        {field(t('settings.proteinTarget') + ' (g)', form.proteinTarget, v => setForm(f => ({ ...f, proteinTarget: parseFloat(v) || 0 })), 'number', 1)}
+        {field(t('settings.carbsTarget') + ' (g)', form.carbsTarget, v => setForm(f => ({ ...f, carbsTarget: parseFloat(v) || 0 })), 'number', 1)}
+        {field(t('settings.fatTarget') + ' (g)', form.fatTarget, v => setForm(f => ({ ...f, fatTarget: parseFloat(v) || 0 })), 'number', 1)}
+        {field(t('settings.calorieTarget'), form.calorieTarget, v => setForm(f => ({ ...f, calorieTarget: parseFloat(v) || 0 })), 'number', 1)}
+        {field(t('settings.waterTarget') + ' (ml)', form.waterTarget, v => setForm(f => ({ ...f, waterTarget: parseFloat(v) || 0 })), 'number', 1)}
+      </div>
+
+      {/* App */}
+      <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
+        <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 mb-2">{t('settings.app')}</p>
+        <div className="flex justify-between items-center py-2.5 border-b border-slate-700/30">
+          <span className="text-sm text-ct-2 flex items-center gap-2 shrink-0"><Globe size={14} /> {t('settings.language')}</span>
+          <div className="flex gap-1 shrink-0">
+            {(['en', 'zh-TW', 'zh-CN'] as const).map(lang => (
+              <button key={lang} onClick={() => setForm(f => ({ ...f, language: lang }))}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium min-h-[32px] ${form.language === lang ? 'bg-cyan-500/20 text-cyan-400' : 'bg-ct-elevated text-ct-2'}`}>
                 {lang === 'en' ? 'EN' : lang === 'zh-TW' ? '繁中' : '简中'}
               </button>
             ))}
@@ -129,30 +208,104 @@ export function SettingsPage() {
         </div>
       </div>
 
-      {/* ── Save ──────────────────────────────────────────────────────── */}
-      <button
-        onClick={handleSave}
-        style={{ background: VOLT, color: APP }}
-        className="w-full font-bold py-3 rounded-xl flex items-center justify-center gap-2"
-      >
+      {/* Gemini AI */}
+      <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
+        <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 mb-2">{t('settings.aiFeatures')}</p>
+        {hasKey ? (
+          <div className="flex justify-between items-center py-2.5">
+            <span className="text-sm text-green-400 flex items-center gap-2"><Key size={14} /> {t('settings.apiKeyConfigured')}</span>
+            <button onClick={() => { clearApiKey(); setHasKey(false); setToast({ msg: t('settings.remove'), type: 'success' }) }}
+              className="text-xs text-red-400 bg-red-500/10 px-3 py-1 rounded-lg">{t('settings.remove')}</button>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <p className="text-xs text-ct-2">{t('settings.addGeminiKey')}</p>
+            <div className="flex gap-2">
+              <div className="flex-1 relative">
+                <input
+                  type={showKey ? 'text' : 'password'}
+                  value={geminiKey}
+                  onChange={e => setGeminiKey(e.target.value)}
+                  placeholder="AIzaSy..."
+                  className="w-full bg-ct-elevated rounded-lg py-2 px-3 pr-8 text-ct-1 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400"
+                />
+                <button onClick={() => setShowKey(!showKey)} className="absolute right-2 top-2 p-1 text-ct-2" aria-label={showKey ? 'Hide API key' : 'Show API key'}>
+                  {showKey ? <EyeOff size={14} /> : <Eye size={14} />}
+                </button>
+              </div>
+              <button onClick={() => {
+                if (geminiKey.trim().startsWith('AIza')) {
+                  setApiKey(geminiKey.trim())
+                  setHasKey(true)
+                  setGeminiKey('')
+                  setToast({ msg: 'Gemini API key saved!', type: 'success' })
+                } else {
+                  setToast({ msg: 'Invalid key format — should start with AIza', type: 'error' })
+                }
+              }} className="px-4 py-2 bg-violet-500/20 text-violet-400 rounded-lg text-xs font-bold shrink-0">
+                {t('settings.saveKey')}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Firebase Cloud Sync */}
+      <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
+        <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 mb-2 flex items-center gap-1.5"><Cloud size={10} /> {t('settings.cloudSync')}</p>
+        {hasFbConfig ? (
+          <div className="flex justify-between items-center py-2.5">
+            <span className="text-sm text-green-400 flex items-center gap-2"><Cloud size={14} /> {t('settings.firebaseConfigured')}</span>
+            <button onClick={() => { clearFirebaseConfig(); setHasFbConfig(false); setToast({ msg: t('settings.remove'), type: 'success' }) }}
+              className="text-xs text-red-400 bg-red-500/10 px-3 py-1 rounded-lg">{t('settings.remove')}</button>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <p className="text-xs text-ct-2">{t('settings.addFirebase')}</p>
+            {!showFbSetup ? (
+              <button onClick={() => setShowFbSetup(true)} className="w-full bg-blue-500/20 border border-blue-500/30 text-blue-400 font-bold py-2.5 rounded-xl text-xs">
+                {t('settings.setupFirebase')}
+              </button>
+            ) : (
+              <div className="space-y-2">
+                <input value={fbApiKey} onChange={e => setFbApiKey(e.target.value)} placeholder="Firebase API Key (AIza...)"
+                  className="w-full bg-ct-elevated rounded-xl py-2 px-3 text-ct-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400" />
+                <input value={fbProjectId} onChange={e => setFbProjectId(e.target.value)} placeholder="Project ID (e.g. my-app-12345)"
+                  className="w-full bg-ct-elevated rounded-xl py-2 px-3 text-ct-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400" />
+                <button onClick={() => {
+                  if (!fbApiKey.trim() || !fbProjectId.trim()) {
+                    setToast({ msg: t('settings.bothRequired'), type: 'error' }); return
+                  }
+                  setFirebaseConfig({
+                    apiKey: fbApiKey.trim(),
+                    authDomain: `${fbProjectId.trim()}.firebaseapp.com`,
+                    projectId: fbProjectId.trim(),
+                    storageBucket: `${fbProjectId.trim()}.firebasestorage.app`,
+                    messagingSenderId: '',
+                    appId: '',
+                  })
+                  setHasFbConfig(true); setFbApiKey(''); setFbProjectId(''); setShowFbSetup(false)
+                  setToast({ msg: 'Firebase configured! Go to Cloud Sync to sign in.', type: 'success' })
+                }} className="w-full bg-blue-500/20 text-blue-400 font-bold py-2.5 rounded-xl text-xs">
+                  {t('settings.saveFirebase')}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <button onClick={handleSave} className="w-full bg-cyan-500 text-slate-900 font-bold py-3 rounded-xl flex items-center justify-center gap-2 min-h-[48px]">
         <Save size={16} /> {t('settings.save')}
       </button>
 
-      {/* ── Data ──────────────────────────────────────────────────────── */}
-      <div style={{ background: CARD, borderColor: BORDER }} className="rounded-2xl p-4 border">
-        <p style={{ color: TXT2 }} className="text-[10px] uppercase tracking-widest mb-2">{t('settings.data')}</p>
-        <button
-          onClick={handleExport}
-          style={{ borderColor: BORDER, color: VOLT }}
-          className="w-full flex items-center gap-3 py-2.5 border-b text-sm"
-        >
+      {/* Data */}
+      <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
+        <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 mb-2">{t('settings.data')}</p>
+        <button onClick={handleExport} className="w-full flex items-center gap-3 py-2.5 border-b border-slate-700/30 text-cyan-400 text-sm min-h-[44px]">
           <Download size={16} /> {t('settings.exportData')}
         </button>
-        <button
-          onClick={() => fileRef.current?.click()}
-          style={{ color: VOLT }}
-          className="w-full flex items-center gap-3 py-2.5 text-sm"
-        >
+        <button onClick={() => fileRef.current?.click()} className="w-full flex items-center gap-3 py-2.5 text-cyan-400 text-sm min-h-[44px]">
           <Upload size={16} /> {t('settings.importData')}
         </button>
         <input ref={fileRef} type="file" accept=".json" onChange={handleImport} className="hidden" />

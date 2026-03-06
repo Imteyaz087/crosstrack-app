@@ -34,11 +34,13 @@ export function TodayPageSkeleton() {
         </div>
         <Bone className="h-9 w-16 rounded-full" />
       </div>
+
       <div className="flex gap-2">
         <Bone className="flex-1 h-12 rounded-xl" />
         <Bone className="flex-1 h-12 rounded-xl" />
         <Bone className="flex-1 h-12 rounded-xl" />
       </div>
+
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
         <Bone className="h-3 w-28 mb-3" />
         <Bone className="h-6 w-3/4 mb-2" />
@@ -48,6 +50,7 @@ export function TodayPageSkeleton() {
           <Bone className="h-5 w-8 rounded-full" />
         </div>
       </div>
+
       <div className="bg-ct-surface rounded-ct-lg p-3 border border-ct-border">
         <div className="flex justify-between mb-2">
           <Bone className="h-3 w-20" />
@@ -55,6 +58,7 @@ export function TodayPageSkeleton() {
         </div>
         <Bone className="h-1.5 w-full rounded-full" />
       </div>
+
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
         <div className="flex justify-between mb-3">
           <Bone className="h-3 w-24" />
@@ -69,6 +73,7 @@ export function TodayPageSkeleton() {
           ))}
         </div>
       </div>
+
       <div className="grid grid-cols-4 gap-2">
         {[1, 2, 3, 4].map(i => (
           <div key={i} className="bg-ct-surface rounded-ct-lg p-3 border border-ct-border text-center">

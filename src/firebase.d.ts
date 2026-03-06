@@ -12,6 +12,7 @@ declare module 'firebase/auth' {
     uid: string
     email: string | null
     displayName: string | null
+    photoURL?: string | null
   }
   export function getAuth(app?: import('firebase/app').FirebaseApp): { currentUser: User | null }
   export function signInWithPopup(auth: unknown, provider: unknown): Promise<{ user: User }>

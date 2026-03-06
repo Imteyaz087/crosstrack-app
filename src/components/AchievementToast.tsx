@@ -29,7 +29,7 @@ export function AchievementToast({ achievement, onDone }: Props) {
   return (
     <div className={`fixed top-0 left-0 right-0 z-[200] flex justify-center transition-all duration-400 ${visible ? 'opacity-100 translate-y-4' : 'opacity-0 -translate-y-4'}`}
       style={{ top: 'calc(env(safe-area-inset-top, 0px) + 12px)' }}>
-      <div className={`bg-gradient-to-r ${tierColors[achievement.tier as keyof typeof tierColors]} border rounded-ct-lg px-5 py-3.5 flex items-center gap-3 shadow-2xl max-w-sm`}>
+      <div className={`bg-gradient-to-r ${tierColors[achievement.tier]} border rounded-ct-lg px-5 py-3.5 flex items-center gap-3 shadow-2xl max-w-sm`}>
         <div className="w-11 h-11 bg-yellow-400/20 rounded-xl flex items-center justify-center shrink-0">
           <Trophy size={20} className="text-yellow-300" />
         </div>

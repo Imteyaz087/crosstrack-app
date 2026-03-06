@@ -329,3 +329,120 @@ Production has sub-folders and many more components:
 ---
 
 *This document is the single source of truth. Update it every session.*
+
+---
+
+## 2026-03-06 - Session 5 Verification Snapshot
+
+### Confirmed Workspace
+- Active source root: `C:\ClaudeWork\Imu\TrackVolt-App`
+- Production snapshot folder: `C:\ClaudeWork\Imu\TrackVolt-v2`
+
+### Confirmed Live Production Signals (https://trackvolt.app)
+- Framework build output served as Vite SPA (`/assets/index-*.js`, `/assets/index-*.css`)
+- PWA manifest exposes shortcuts: `Log Workout`, `WOD Timer`, `Track Nutrition`
+- Live marketing/manifest feature claims include: WOD logging, PR tracking, macro tracking, cycle sync, HYROX support, timers, 1RM calculator, achievements, offline-first
+
+### Local Screen Inventory (from `src/App.tsx` + `src/pages/MorePage.tsx`)
+- Main tabs: Today, Log, Train, Eat, More
+- More screens: Workout History, Weekly Planner, PR Wall, Movement PRs, Benchmark WODs, My Benchmarks, Meal Prep, Grocery, Body Measurements, Heart Rate, Training Insights, Progress, Achievements, Photo to Log, WOD Timer, 1RM Calculator, Cloud Sync, Settings
+
+### Handoff Status
+- Git remote configured: `origin -> https://github.com/Imteyaz087/crosstrack-app.git`
+- ZIP handoff prepared: `C:\ClaudeWork\Imu\TrackVolt-App.zip`
+- ZIP excludes: `node_modules`, `.git`, `dist`
+
+### 2026-03-06 CrossFit Logger Sync
+- Local `WorkoutLogger.tsx` was the main parity gap for the CrossFit log flow: the hook and `LogPage` already supported benchmark picking, WOD scan, CrossFit events, previous-result editing, and richer strength metadata, but the rendered component exposed only a stripped-down form.
+- The local source now exposes those capabilities in the CrossFit logging UI without changing deploy state.
+- Run/Cardio flow remains on the existing dedicated `CardioLogger.tsx` path and still builds successfully.
+
+### 2026-03-06 Live CrossFit Launcher Match
+- Local `WorkoutLogger.tsx` step-one screen now follows the live CrossFit launcher structure supplied by the user: headline, close button, `Full Class`, `WOD Only`, `Strength Only`, `CrossFit Events`, and recent editable workouts.
+- This was a UI parity update only. No deploy was performed.
+
+### 2026-03-06 Verification Pass
+- Reconfirmed source root `C:\ClaudeWork\Imu\TrackVolt-App`
+- Reconfirmed stack from code: React 19 + TypeScript + Vite 7 + Tailwind 4 + PWA plugin
+- Reconfirmed handoff readiness: Git remote still points to `https://github.com/Imteyaz087/crosstrack-app.git` and ZIP backup still exists at `C:\ClaudeWork\Imu\TrackVolt-App.zip`
+- Reconfirmed live production metadata claims: CrossFit WOD logging, PR tracking, macro tracking, cycle sync, HYROX support, timers, 1RM calculator, achievements, offline-first
+
+### 2026-03-06 Deep WorkoutLogger Parity
+- Fetched live `LogPage-0NaviZgC.js`, `WorkoutLogger-BYhetOm3.js`, and `CardioLogger-CfeceYK0.js` from `trackvolt.app` to compare against local source before editing.
+- Confirmed `CardioLogger.tsx` already matched live production, so Run/Cardio was not the remaining gap in local.
+- Upgraded local `WorkoutLogger.tsx` beyond the launcher screen so the deeper CrossFit entry UI now follows the live production pattern: unit-toggle header, gradient Strength/WOD sections, quick benchmark chips, time-cap chips, stepped score controls, richer strength programming/build controls, and polished movement entry.
+- `npm run build` passed after the parity patch.
+
+### 2026-03-06 WOD Detail Upgrade
+- Live `WorkoutLogger-BYhetOm3.js` still matches the March 6 production bundle hash, so live production remains the reference for CrossFit parity work.
+- `src/components/log/WorkoutLogger.tsx` now adds more detail density to the main WOD workflow:
+  - inline class-format toggle in step two so the user can switch between `Full Class`, `WOD Only`, and `Strength Only` without backing out
+  - expanded quick benchmark rail to include the broader live-style set (`Fran`, `Cindy`, `Grace`, `Helen`, `Murph`, `DT`, `Annie`, `Karen`, `Diane`, `Jackie`, `Fight Gone Bad`, `Filthy Fifty`, `Nancy`, `Angie`)
+  - inline benchmark detail card showing category, score type, scheme, movement tags, RX/Scaled standards, elite target, and effective time cap
+  - larger step-two title treatment to make the WOD / full workout view feel closer to the live main flow
+- `npm run build` passed after the change.
+
+### 2026-03-06 Local-vs-Live Audit
+- Live production shell still uses `index-Cny5lKgo.js` and lazy-loads the same top-level page set the local source currently exposes: Today, Log, Train, Eat, More, and Onboarding.
+- Live `MorePage-ClAdLFQh.js` matches the local `MorePage.tsx` subpage inventory and ordering for Workout History, Weekly Planner, PR Wall, Movement PRs, Benchmark WODs, My Benchmarks, Meal Prep, Grocery, Body Measurements, Heart Rate, Training Insights, Progress, Achievements, Photo Log, Timer, Calculator, Cloud Sync, and Settings.
+- Live `LogPage-0NaviZgC.js` still lazy-loads the same logger suite present locally: WorkoutLogger, HyroxLogger, CardioLogger, BarcodeScanner, CustomFoodCreator, EventLogger, ShareCardExporter, WodScanner, WodScanReview, CycleLogger, and CycleOnboarding.
+- The biggest remaining local parity gap is packaging, not page wiring: local `vite.config.ts` / `manifest.webmanifest` reference live asset paths (`/icon-192.png`, `/icon-512.png`, `/screenshots/*.png`) that are not yet present in local `public/` or `dist/` under those names.
+- Portability audit found no absolute path leaks outside `C:\ClaudeWork\Imu\` in source/config/docs, but there is still no `.env.example` for Firebase / USDA env expectations.
+- Capacitor is not integrated yet: no `@capacitor/*` packages, no `capacitor.config.*`, and no `ios/` project.
+
+### 2026-03-06 PWA Asset Parity Fix
+- Local packaging parity is now aligned with the live manifest paths:
+  - added `public/icon-192.png`
+  - added `public/icon-512.png`
+  - added `public/icon-512-maskable.png`
+  - added `public/screenshots/` with `today-dashboard.png`, `workout-log.png`, `nutrition-macros.png`, `progress-prs.png`, `cycle-training.png`, `achievements.png`, and `offline-first.png`
+- These assets were pulled into the project so the copied workspace stays self-contained inside `C:\ClaudeWork\Imu\`.
+- `npm run build` passed after the asset sync, and local `dist/` now contains the same manifest asset paths that live production serves.
+
+### 2026-03-06 Audit Coordination Rule
+- Cross-agent startup now requires reading `LIVE_APP_AUDIT.md` in addition to the memory files and `CODEX_SYNC.md`.
+- Purpose: keep both agents aligned on the latest saved live-app audit before any local edits.
+
+### 2026-03-06 Today and Log Parity Audit
+- Fetched and checked the current live chunks:
+  - `index-Cny5lKgo.js`
+  - `TodayPage-DNaUIE2-.js`
+  - `LogPage-0NaviZgC.js`
+- Confirmed current local parity for:
+  - `src/pages/TodayPage.tsx`
+  - `src/pages/LogPage.tsx`
+  - `src/components/log/LogModeSelector.tsx`
+- Verified parity scope:
+  - Today dashboard shell, quick tools, workout hero card, weekly summary, latest PR, cycle sync card, recovery score, macros card, body metrics, suggestion card, training insights card, grocery preview
+  - Log page lazy logger wiring and the visible mode-selector grid sections (`Training`, `Body & Nutrition`, `Wellness & Recovery`) plus quick templates
+- Outcome: no new Today/Log source gap found in this pass. Remaining tracked work stays outside these screens: portability setup docs and future Capacitor/iOS wrapper prep.
+
+### 2026-03-06 Portability Env Setup
+- Added `.env.example` in the project root with the confirmed env surface:
+  - `VITE_FIREBASE_API_KEY`
+  - `VITE_FIREBASE_AUTH_DOMAIN`
+  - `VITE_FIREBASE_PROJECT_ID`
+  - `VITE_FIREBASE_STORAGE_BUCKET`
+  - `VITE_FIREBASE_MESSAGING_SENDER_ID`
+  - `VITE_FIREBASE_APP_ID`
+  - `USDA_API_KEY`
+- Updated `.gitignore` so real env files stay local but `.env.example` remains tracked.
+- Updated `README.md` with the portable local setup flow: copy `.env.example` to `.env.local`, keep secrets local, and treat Firebase / USDA configuration as optional until provided.
+
+### 2026-03-06 Capacitor Bootstrap
+- Installed Capacitor packages:
+  - `@capacitor/core@8.1.0`
+  - `@capacitor/cli@8.1.0`
+  - `@capacitor/ios@8.1.0`
+- Added `capacitor.config.ts`:
+  - `appId: app.trackvolt`
+  - `appName: TrackVolt`
+  - `webDir: dist`
+- Generated the native `ios/` wrapper inside `C:\ClaudeWork\Imu\TrackVolt-App\ios`
+- Added package scripts:
+  - `npm run cap:sync`
+  - `npm run cap:copy`
+- Updated `README.md` with the Capacitor/iOS workflow and the macOS-only boundary for Xcode build/open steps
+- Verification:
+  - `npm run cap:sync` passed on Windows
+  - current web assets now sync into `ios/App/App/public`
