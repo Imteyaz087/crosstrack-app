@@ -130,7 +130,7 @@ export function WaterTracker({ t, currentWaterMl, waterTarget, onSave, onClose }
                 <span className={`text-2xl transition-all ${
                   isFilled ? 'grayscale-0' : isPartial ? 'grayscale-0 opacity-60' : 'grayscale opacity-30'
                 }`}>
-                  {isFilled ? E.glass : isPartial ? E.glass : E.tumbler}
+                  {E.glass}
                 </span>
                 {/* Glass number */}
                 <span className={`text-[0.6rem] font-bold tabular-nums mt-0.5 ${
