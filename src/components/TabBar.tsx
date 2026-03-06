@@ -56,7 +56,7 @@ export function TabBar() {
               isActive && !isCta ? 'text-cyan-400' : !isCta ? 'text-ct-2 active:text-ct-2' : ''
             }`}
           >
-            {/* Active indicator — pill highlight behind icon */}
+            {/* Active indicator  -  pill highlight behind icon */}
             {isActive && !isCta && (
               <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0">
                 <div className="w-1.5 h-1.5 rounded-full bg-v21 animate-tab-dot" />

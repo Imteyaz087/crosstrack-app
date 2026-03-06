@@ -1,5 +1,5 @@
 /**
- * EventScoreEntry — Score entry for CrossFit Events
+ * EventScoreEntry  -  Score entry for CrossFit Events
  * Handles: For Time (finished/capped), AMRAP (rounds+reps), EMOM
  */
 
@@ -173,7 +173,7 @@ export function EventScoreEntry({ template, customTitle, customWodType, customLi
         />
       </div>
 
-      {/* Score entry — depends on WOD type */}
+      {/* Score entry  -  depends on WOD type */}
       {isForTime && (
         <div className="space-y-3">
           <label className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold">Did you finish?</label>

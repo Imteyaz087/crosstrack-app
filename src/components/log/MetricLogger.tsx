@@ -16,19 +16,21 @@ interface MetricLoggerProps {
 }
 
 export function MetricLogger({
-  metricValue, metricConfig, onMetricValueChange, onSave, onClose,
+  metricValue,
+  metricConfig,
+  onMetricValueChange,
+  onSave,
+  onClose,
 }: MetricLoggerProps) {
   return (
     <div className="space-y-4 w-full overflow-hidden">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-bold text-ct-1">{metricConfig.label}</h1>
-        <button onClick={onClose} className="p-2 text-ct-2 active:text-ct-1" aria-label="Close"><X size={20} /></button>
+        <button onClick={onClose} className="min-h-[44px] min-w-[44px] flex items-center justify-center text-ct-2 active:text-ct-1" aria-label="Close"><X size={20} /></button>
       </div>
       <div className="bg-ct-surface rounded-ct-lg p-6 border border-ct-border text-center">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <input type="text" inputMode="decimal" pattern="[0-9.]*"
-            value={metricValue}
-            onChange={e => onMetricValueChange(e.target.value.replace(/[^\d.]/g, ''))}
+          <input type="text" inputMode="decimal" pattern="[0-9.]*" value={metricValue} onChange={e => onMetricValueChange(e.target.value.replace(/[^\d.]/g, ''))}
             placeholder={metricConfig.placeholder}
             className="w-36 bg-ct-elevated rounded-xl py-3.5 px-4 text-ct-1 text-2xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-cyan-400/50"
             autoFocus />
@@ -45,6 +47,7 @@ export function MetricLogger({
           </div>
         )}
       </div>
+      {/* Save  -  sticky at bottom */}
       <div className="sticky-save">
         <button onClick={onSave} className="w-full bg-cyan-500 text-slate-900 font-bold py-4 rounded-xl btn-press text-base shadow-lg shadow-cyan-500/30">Save</button>
       </div>

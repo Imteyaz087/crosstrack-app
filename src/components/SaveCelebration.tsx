@@ -1,3 +1,14 @@
+/**
+ * SaveCelebration  -  Fullscreen overlay for key moments
+ *
+ * Three modes:
+ *   'save'   -> Green checkmark with circle burst (workout/meal saved)
+ *   'pr'     -> Gold trophy with flash + confetti (new PR)
+ *   'streak' -> Orange flame with ring expansion (streak milestone)
+ *
+ * Auto-dismisses after duration. Renders on top of everything.
+ */
+
 import { useEffect, useState, useCallback } from 'react'
 import { Trophy, Flame, Check } from 'lucide-react'
 import { haptic } from '../hooks/useHaptic'
@@ -12,6 +23,7 @@ interface SaveCelebrationProps {
   duration?: number
 }
 
+// Confetti colors
 const CONFETTI_COLORS = ['#4ade80', '#22d3ee', '#f59e0b', '#ef4444', '#a78bfa', '#fb923c', '#f472b6']
 
 function ConfettiParticle({ delay, color, x }: { delay: number; color: string; x: number }) {
@@ -42,6 +54,7 @@ export function SaveCelebration({ type, message, subMessage, onDone, duration = 
   }, [onDone])
 
   useEffect(() => {
+    // Fire haptic on mount
     if (type === 'pr') haptic('success')
     else if (type === 'streak') haptic('success')
     else haptic('heavy')
@@ -63,20 +76,26 @@ export function SaveCelebration({ type, message, subMessage, onDone, duration = 
       role="alert"
       aria-live="assertive"
     >
-      <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" />
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-ct-bg/80 backdrop-blur-sm" />
 
+      {/* Gold flash for PR */}
       {type === 'pr' && !prefersReduced && (
         <div className="absolute inset-0 bg-yellow-500/20 animate-gold-flash" />
       )}
 
+      {/* Content */}
       <div className="relative z-10 flex flex-col items-center">
+        {/* Icon */}
         {type === 'save' && (
           <div className="relative">
+            {/* Circle burst */}
             {!prefersReduced && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-20 h-20 rounded-full border-2 border-green-400/50 animate-circle-burst" />
               </div>
             )}
+            {/* Checkmark circle */}
             <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center animate-spring-in">
               <Check size={32} className="text-slate-900" strokeWidth={3} />
             </div>
@@ -85,6 +104,7 @@ export function SaveCelebration({ type, message, subMessage, onDone, duration = 
 
         {type === 'pr' && (
           <div className="relative">
+            {/* Confetti */}
             {!prefersReduced && (
               <>
                 {CONFETTI_COLORS.map((color, i) => (
@@ -105,6 +125,7 @@ export function SaveCelebration({ type, message, subMessage, onDone, duration = 
 
         {type === 'streak' && (
           <div className="relative">
+            {/* Ring expansion */}
             {!prefersReduced && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-16 h-16 rounded-full border-2 border-orange-400/50 animate-streak-ring" />
@@ -116,6 +137,7 @@ export function SaveCelebration({ type, message, subMessage, onDone, duration = 
           </div>
         )}
 
+        {/* Text */}
         <p className="text-ct-1 font-bold text-lg mt-4 animate-spring-in" style={{ animationDelay: '150ms', opacity: 0 }}>
           {message || (type === 'save' ? 'Saved!' : type === 'pr' ? 'New PR!' : 'Streak!')}
         </p>

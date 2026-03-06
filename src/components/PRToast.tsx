@@ -4,10 +4,10 @@ import { haptic } from '../hooks/useHaptic'
 
 export interface PRInfo {
   movementName: string
-  prType: string
-  newValue: string
-  improvement?: string
-  previousDate?: string
+  prType: string       // '1RM', '3RM', 'Fastest', 'Max Reps', etc.
+  newValue: string      // "120 kg", "3:42", "15+8"
+  improvement?: string  // "+5 kg", "-12s", "+2 rounds"
+  previousDate?: string // "Jan 15"
 }
 
 interface Props {
@@ -19,8 +19,12 @@ export function PRToast({ pr, onDone }: Props) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
+    // Haptic vibration  -  celebratory pattern
     haptic('success')
+
+    // Animate in
     requestAnimationFrame(() => setVisible(true))
+
     const timer = setTimeout(() => {
       setVisible(false)
       setTimeout(onDone, 400)
@@ -39,9 +43,11 @@ export function PRToast({ pr, onDone }: Props) {
     >
       <div className="w-full max-w-sm bg-gradient-to-r from-yellow-600/90 via-amber-500/90 to-yellow-600/90 border border-yellow-400/60 backdrop-blur-md rounded-ct-lg px-4 py-3.5 shadow-2xl shadow-yellow-500/20">
         <div className="flex items-center gap-3">
+          {/* Trophy icon with pulse */}
           <div className="w-11 h-11 bg-yellow-300/20 rounded-xl flex items-center justify-center shrink-0 animate-bounce" style={{ animationDuration: '1s', animationIterationCount: '2' }}>
             <Trophy size={22} className="text-yellow-200" />
           </div>
+
           <div className="flex-1 min-w-0">
             <p className="text-[11px] uppercase tracking-[0.15em] text-yellow-200/80 font-bold">New PR!</p>
             <p className="text-[15px] font-bold text-ct-1 truncate">{pr.movementName}</p>
@@ -49,6 +55,8 @@ export function PRToast({ pr, onDone }: Props) {
               <span className="text-xs text-yellow-100 font-semibold">{pr.prType}: {pr.newValue}</span>
             </div>
           </div>
+
+          {/* Improvement badge */}
           {pr.improvement && (
             <div className="text-right shrink-0">
               <p className="text-lg font-black text-ct-1 tabular-nums">{pr.improvement}</p>

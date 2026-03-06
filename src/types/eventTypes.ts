@@ -1,5 +1,5 @@
 // ============================================================
-// TRACKVOLT — CrossFit Events Type Definitions
+// TRACKVOLT  -  CrossFit Events Type Definitions
 // Separate from Workout: Events = Open, Hero, Girls, Custom
 // ============================================================
 
@@ -9,7 +9,7 @@ export type EventCategory = 'open' | 'hero' | 'girl' | 'custom'
 export type EventSource = 'template' | 'manual' | 'scanned'
 
 /**
- * EventLog — A saved CrossFit Event result.
+ * EventLog  -  A saved CrossFit Event result.
  * Stored in its own Dexie table (eventLogs), separate from workouts.
  */
 export interface EventLog {
@@ -52,8 +52,8 @@ export interface EventLog {
 }
 
 /**
- * EventTemplate — A predefined event from the library.
- * Not stored in DB — static data in eventTemplates.ts.
+ * EventTemplate  -  A predefined event from the library.
+ * Not stored in DB  -  static data in eventTemplates.ts.
  */
 export interface EventTemplate {
   name: string

@@ -86,7 +86,7 @@ export function CycleLogger({
     { value: 'heavy', labelKey: 'cycle.heavy' },
   ]
 
-  // Quick symptoms — keep English as stored values, show translated labels
+  // Quick symptoms  -  keep English as stored values, show translated labels
   const quickSymptoms = [
     { value: 'Cramps', labelKey: 'cycle.cramps' },
     { value: 'Fatigue', labelKey: 'cycle.fatigue' },
@@ -146,7 +146,7 @@ export function CycleLogger({
             <p className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: `${phaseColor?.bg || '#94a3b8'}` }}>
               {phaseEmoji} {phaseLabel} {t('cycle.phase')}
             </p>
-            <p className="text-2xl font-bold text-ct-1 mt-1">{t('cycle.dayOf')} {cycleDay || '—'}</p>
+            <p className="text-2xl font-bold text-ct-1 mt-1">{t('cycle.dayOf')} {cycleDay || ' - '}</p>
           </div>
           <div className="text-right">
             {daysUntilPeriod !== null && daysUntilPeriod > 0 && (
@@ -182,7 +182,7 @@ export function CycleLogger({
         </button>
       </div>
 
-      {/* Flow level — only when period active */}
+      {/* Flow level  -  only when period active */}
       {periodActive && (
         <div className="bg-ct-surface rounded-ct-lg p-3 border border-ct-border">
           <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold mb-2">{t('cycle.flowLevelLabel')}</p>
@@ -200,7 +200,7 @@ export function CycleLogger({
         </div>
       )}
 
-      {/* Symptoms — quick access */}
+      {/* Symptoms  -  quick access */}
       <div className="bg-ct-surface rounded-ct-lg p-3 border border-ct-border">
         <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold mb-2">{t('cycle.symptoms')}</p>
         <div className="flex flex-wrap gap-1.5">
@@ -283,7 +283,7 @@ export function CycleLogger({
         </div>
       </div>
 
-      {/* Training recommendation — collapsible */}
+      {/* Training recommendation  -  collapsible */}
       {trainingRec && (
         <button
           onClick={() => setShowTrainingRec(!showTrainingRec)}

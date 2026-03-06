@@ -13,7 +13,7 @@ export function ErrorRetry({ message = 'Something went wrong', onRetry }: ErrorR
       </div>
       <p className="text-sm text-ct-2 text-center">{message}</p>
       <button onClick={onRetry}
-        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 border border-ct-border text-sm text-cyan-400 font-medium active:bg-ct-elevated transition-colors">
+        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-ct-surface border border-ct-border text-sm text-cyan-400 font-medium active:bg-ct-elevated transition-colors">
         <RefreshCw size={14} /> Try Again
       </button>
     </div>

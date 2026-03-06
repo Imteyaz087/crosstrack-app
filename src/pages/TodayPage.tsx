@@ -4,19 +4,27 @@ import { useStore } from '../stores/useStore'
 import { MacroBar } from '../components/MacroBar'
 import {
   Dumbbell, Moon, Droplets, Zap, TrendingUp, Timer, Calculator,
-  Activity, Flame, ShoppingCart, ChevronRight, Plus, Sun, CloudMoon, Sparkles,
-  Trophy, Clock, Shield, Brain
+  Activity, ShoppingCart, ChevronRight, Plus, Sun, CloudMoon, Sparkles,
+  Trophy, Clock, Shield, Brain, Target
 } from 'lucide-react'
 import { TimerPage } from './TimerPage'
 import { CalcPage } from './CalcPage'
-import { useCycleTracking, PHASE_COLORS } from '../hooks/useCycleTracking'
+import { useCycleTracking } from '../hooks/useCycleTracking'
 import { CycleTrainingCard } from '../components/CycleTrainingCard'
 import { useCountUp } from '../hooks/useCountUp'
+import { useStreak } from '../hooks/useStreak'
+import { useReadiness } from '../hooks/useReadiness'
 import { useStreakCelebration } from '../hooks/useStreakCelebration'
-import { SaveCelebration } from '../components/SaveCelebration'
+import { CelebrationOverlay } from '../components/CelebrationOverlay'
+import type { CelebrationData } from '../components/CelebrationOverlay'
+import { useCelebrationShare } from '../hooks/useCelebrationShare'
+import { StreakRing } from '../components/StreakRing'
+import { ReadinessCard, ReadinessCardEmpty } from '../components/ReadinessCard'
+import { ShareCardExporter } from '../components/sharecard/ShareCardExporter'
 import { WeeklySummary, shouldShowWeeklySummary } from '../components/WeeklySummary'
 import { ReviewPrompt, shouldShowReview } from '../components/ReviewPrompt'
 import { SleepDetailCard } from '../components/SleepDetailCard'
+import { TodayPageSkeleton } from '../components/SkeletonCard'
 
 type Overlay = null | 'timer' | 'calc'
 
@@ -30,6 +38,7 @@ function getGreetingKey(): { key: string; icon: typeof Sun } {
 export function TodayPage() {
   const { t, i18n } = useTranslation()
   const [overlay, setOverlay] = useState<Overlay>(null)
+  const [dataReady, setDataReady] = useState(false)
   const {
     profile, todayLog, todayWorkout, todayMeals, todayMacros,
     groceryItems, allDailyLogs, workouts, movementPRs,
@@ -50,7 +59,7 @@ export function TodayPage() {
       loadAllDailyLogs(),
       loadWorkouts(),
       loadMovementPRs(),
-    ])
+    ]).then(() => setDataReady(true))
   }, [])
 
   const name = profile?.displayName || 'Athlete'
@@ -58,23 +67,15 @@ export function TodayPage() {
   const GreetingIcon = greeting.icon
   const mealsCount = new Set(todayMeals.map(m => m.mealType)).size
 
-  // Calculate streak
-  const streak = (() => {
-    if (!allDailyLogs || allDailyLogs.length === 0) return 0
-    const dates = new Set(allDailyLogs.map(l => l.date))
-    let count = 0
-    const d = new Date()
-    const todayStr = d.toISOString().split('T')[0]
-    if (dates.has(todayStr) || todayWorkout || todayMeals.length > 0) count++
-    else return 0
-    for (let i = 1; i < 365; i++) {
-      d.setDate(d.getDate() - 1)
-      const ds = d.toISOString().split('T')[0]
-      if (dates.has(ds)) count++
-      else break
-    }
-    return count
-  })()
+  // Streak data from dedicated hook
+  const streakData = useStreak()
+
+  // Readiness data from dedicated hook
+  const readiness = useReadiness()
+
+  // Celebration share bridge
+  const { shareData, isShareOpen, openShare, closeShare } = useCelebrationShare()
+  const [activeCelebration, setActiveCelebration] = useState<CelebrationData | null>(null)
 
   // Water progress
   const waterTarget = profile?.waterTarget || 3000
@@ -88,16 +89,14 @@ export function TodayPage() {
   // Grocery unchecked count
   const groceryUnchecked = groceryItems.filter(g => !g.isChecked).length
 
-  // Weekly training stats
-  const weeklyStats = useMemo(() => {
-    if (!workouts || workouts.length === 0) return null
+  // Weekly PR count (training done/target already in streakData)
+  const weeklyPRs = useMemo(() => {
+    if (!workouts || workouts.length === 0) return 0
     const now = new Date()
-    const last7 = workouts.filter(w => (now.getTime() - new Date(w.date).getTime()) / 86400000 <= 7)
-    const target = profile?.trainingDaysPerWeek || 5
-    return { done: last7.length, target, prs: last7.filter(w => w.prFlag).length }
-  }, [workouts, profile])
+    return workouts.filter(w => (now.getTime() - new Date(w.date).getTime()) / 86400000 <= 7 && w.prFlag).length
+  }, [workouts])
 
-  // Latest PR — most recent movement PR for gold card
+  // Latest PR  -  most recent movement PR for gold card
   const latestPR = useMemo(() => {
     if (!movementPRs || movementPRs.length === 0) return null
     const sorted = [...movementPRs].sort((a, b) => b.date.localeCompare(a.date))
@@ -125,51 +124,21 @@ export function TodayPage() {
     return null
   }, [todayWorkout, workouts, profile])
 
-  // Auto Recovery Score — computed from sleep, energy, cycle phase, training load
-  const recoveryScore = useMemo(() => {
-    const sleep = todayLog?.sleepHours
-    const energy = todayLog?.energy
-    const hasCycle = cycle.settings && cycle.currentPhase
+  // Recovery/readiness score now comes from useReadiness() hook (declared above)
 
-    if (!sleep && !energy) return null
-
-    if (hasCycle) {
-      // With cycle: Sleep 40% + Energy 25% + Cycle Phase 20% + Training Load 15%
-      const sleepScore = sleep ? Math.min(100, (sleep / 8) * 100) : 50
-      const energyScore = energy ? (energy / 5) * 100 : 50
-      const cycleImpact = cycle.currentPhase === 'follicular' ? 90 : cycle.currentPhase === 'ovulation' ? 80 : cycle.currentPhase === 'luteal' ? 50 : 40
-      const weekSessions = weeklyStats?.done || 0
-      const weekTarget = weeklyStats?.target || 5
-      const loadScore = weekSessions <= weekTarget ? 80 : Math.max(30, 100 - (weekSessions - weekTarget) * 15)
-
-      return Math.round(sleepScore * 0.4 + energyScore * 0.25 + cycleImpact * 0.2 + loadScore * 0.15)
-    } else {
-      // Without cycle: Sleep 50% + Energy 30% + Training 20%
-      const sleepScore = sleep ? Math.min(100, (sleep / 8) * 100) : 50
-      const energyScore = energy ? (energy / 5) * 100 : 50
-      const weekSessions = weeklyStats?.done || 0
-      const weekTarget = weeklyStats?.target || 5
-      const loadScore = weekSessions <= weekTarget ? 80 : Math.max(30, 100 - (weekSessions - weekTarget) * 15)
-
-      return Math.round(sleepScore * 0.5 + energyScore * 0.3 + loadScore * 0.2)
-    }
-  }, [todayLog, cycle.settings, cycle.currentPhase, weeklyStats])
-
-  // Animated numbers — count up from 0 on mount
-  const animatedStreak = useCountUp(streak, 400)
-  const animatedRecovery = useCountUp(recoveryScore || 0, 800)
+  // Animated numbers  -  count up from 0 on mount
   const animatedCalories = useCountUp(Math.round(calCurrent), 700)
   const animatedWaterPct = useCountUp(waterPct, 500)
 
   // Retention: streak milestone celebrations
-  const { pendingMilestone, dismiss: dismissMilestone } = useStreakCelebration(streak)
+  const { pendingMilestone, dismiss: dismissMilestone } = useStreakCelebration(streakData.currentStreak)
 
   // Retention: weekly summary + review prompt
   const [showWeeklySummary, setShowWeeklySummary] = useState(() => shouldShowWeeklySummary())
   const [showReview, setShowReview] = useState(() => {
     const totalWorkouts = workouts?.length || 0
     const hasPR = (movementPRs?.length || 0) > 0
-    return shouldShowReview(totalWorkouts, hasPR, streak)
+    return shouldShowReview(totalWorkouts, hasPR, streakData.currentStreak)
   })
 
   // Average daily calories over last 7 days (for weekly summary)
@@ -182,37 +151,55 @@ export function TodayPage() {
     })
     if (last7.length === 0) return 0
     // Sum calories from todayMeals would be more accurate, but we approximate
-    return calTarget * 0.8 // placeholder — real implementation would sum meal calories per day
+    return calTarget * 0.8 // placeholder  -  real implementation would sum meal calories per day
   }, [allDailyLogs, calTarget])
 
-  // Overlays — rendered AFTER all hooks to maintain consistent hook count
+  // Is this a brand-new user with zero data?
+  const isFirstTime = dataReady && !todayWorkout && !todayLog && (!workouts || workouts.length === 0) && todayMeals.length === 0
+
+  // Overlays  -  rendered AFTER all hooks to maintain consistent hook count
   if (overlay === 'timer') return <TimerPage onClose={() => setOverlay(null)} />
   if (overlay === 'calc') return <CalcPage onClose={() => setOverlay(null)} />
 
+  // Show skeleton while data loads (prevents flash of dashes)
+  if (!dataReady) return <TodayPageSkeleton />
+
   return (
     <div className="space-y-4 pb-20 stagger-children">
-      {/* Streak milestone celebration overlay */}
-      {pendingMilestone && (
-        <SaveCelebration
-          type="streak"
-          message={pendingMilestone.title}
-          subMessage={pendingMilestone.subtitle}
-          onDone={dismissMilestone}
-          duration={2500}
-        />
+      {/* Celebration overlay  -  streak milestones + workout saves */}
+      <CelebrationOverlay
+        celebration={pendingMilestone ? {
+          type: 'streak',
+          title: pendingMilestone.title,
+          subtitle: pendingMilestone.subtitle,
+          sharePayload: {
+            date: new Date().toISOString().split('T')[0],
+            streakDays: streakData.currentStreak,
+          },
+        } : activeCelebration}
+        onDismiss={() => {
+          if (pendingMilestone) dismissMilestone()
+          else setActiveCelebration(null)
+        }}
+        onShare={openShare}
+      />
+
+      {/* Share card exporter  -  renders when user taps Share on celebration */}
+      {isShareOpen && shareData && (
+        <ShareCardExporter data={shareData} onClose={closeShare} onToast={() => {}} />
       )}
 
-      {/* Weekly Summary — shown at start of week */}
+      {/* Weekly Summary  -  shown at start of week */}
       {showWeeklySummary && (
         <WeeklySummary
           workouts={workouts || []}
-          streak={streak}
+          streak={streakData.currentStreak}
           avgCalories={avgCalories}
           onDismiss={() => setShowWeeklySummary(false)}
         />
       )}
 
-      {/* Header — greeting + streak with ambient gradient backdrop */}
+      {/* Header  -  greeting + streak with ambient gradient backdrop */}
       <div className="flex justify-between items-start ambient-header">
         <div>
           <div className="flex items-center gap-1.5 mb-1">
@@ -223,15 +210,41 @@ export function TodayPage() {
             {new Date().toLocaleDateString(i18n.language === 'zh-TW' ? 'zh-TW' : i18n.language === 'zh-CN' ? 'zh-CN' : 'en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
           </h1>
         </div>
-        {streak > 0 && (
-          <div className="flex items-center gap-1.5 bg-orange-500/10 border border-orange-500/20 px-3 py-1.5 rounded-full min-h-[44px]">
-            <Flame size={14} className="text-orange-400 animate-flame" />
-            <span className="text-xs font-bold text-orange-400 tabular-nums">{animatedStreak}d</span>
-          </div>
-        )}
+        <StreakRing
+          currentStreak={streakData.currentStreak}
+          weeklyDone={streakData.weeklyDone}
+          weeklyTarget={streakData.weeklyTarget}
+          freezeAvailable={streakData.freezeAvailable}
+          freezeUsedThisWeek={streakData.freezeUsedThisWeek}
+          bestStreak={streakData.bestStreak}
+        />
       </div>
 
-      {/* Quick Tools — 48px min touch targets */}
+      {/* FIRST-TIME WELCOME  -  shown only when user has zero data */}
+      {isFirstTime && (
+        <button
+          onClick={() => setActiveTab('log')}
+          className="w-full text-left bg-gradient-to-br from-cyan-500/15 via-violet-500/10 to-cyan-500/5 rounded-ct-lg p-5 border border-cyan-500/25 card-press"
+        >
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-cyan-500/20 rounded-2xl flex items-center justify-center shrink-0">
+              <Target size={24} className="text-cyan-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[15px] font-bold text-ct-1 mb-1">{t('today.welcomeTitle', 'Ready to start?')}</p>
+              <p className="text-[13px] text-ct-2 leading-relaxed mb-2">
+                {t('today.welcomeDesc', 'Log your first workout, meal, or body check-in to unlock your dashboard.')}
+              </p>
+              <span className="inline-flex items-center gap-1 text-xs font-bold text-cyan-400">
+                {t('today.welcomeCta', 'Log your first entry')}
+                <ChevronRight size={12} />
+              </span>
+            </div>
+          </div>
+        </button>
+      )}
+
+      {/* Quick Tools  -  48px min touch targets */}
       <div className="flex gap-2">
         {[
           { onClick: () => setOverlay('timer'), icon: Timer, label: t('more.wodTimer'), bg: 'bg-cyan-500/10', border: 'border-cyan-500/20', text: 'text-cyan-400' },
@@ -249,7 +262,7 @@ export function TodayPage() {
         ))}
       </div>
 
-      {/* #6 ENHANCED TODAY'S WORKOUT — hero card */}
+      {/* #6 ENHANCED TODAY'S WORKOUT  -  hero card */}
       <button
         className="w-full text-left glass-card rounded-ct-lg p-4 card-press"
         onClick={() => setActiveTab(todayWorkout ? 'train' : 'log')}
@@ -263,7 +276,7 @@ export function TodayPage() {
           <>
             <p className="text-[1.25rem] font-semibold text-ct-1">{todayWorkout.name}</p>
             <p className="text-[0.8125rem] text-ct-2 mt-0.5">{todayWorkout.workoutType}
-              {todayWorkout.scoreDisplay && <span className="tabular-nums"> — {todayWorkout.scoreDisplay}</span>}
+              {todayWorkout.scoreDisplay && <span className="tabular-nums">  -  {todayWorkout.scoreDisplay}</span>}
             </p>
 
             {/* Enhanced details: movements, duration, description */}
@@ -326,29 +339,29 @@ export function TodayPage() {
         )}
       </button>
 
-      {/* Weekly Training Progress — mini bar */}
-      {weeklyStats && (
+      {/* Weekly Training Progress  -  mini bar (uses streakData for done/target) */}
+      {streakData.weeklyDone > 0 && (
         <div className="bg-ct-surface rounded-ct-lg p-3 border border-ct-border">
           <div className="flex items-center justify-between mb-2">
             <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">{t('today.thisWeek')}</p>
-            <span className="text-xs text-ct-2 tabular-nums">{weeklyStats.done} / {weeklyStats.target} {t('today.sessions')}</span>
+            <span className="text-xs text-ct-2 tabular-nums">{streakData.weeklyDone} / {streakData.weeklyTarget} {t('today.sessions')}</span>
           </div>
           <div className="h-1.5 bg-ct-elevated rounded-full overflow-hidden">
             <div
               className="h-full rounded-full animate-bar-fill bar-glow"
-              style={{ background: 'linear-gradient(90deg, #22d3ee, #a855f7)', width: `${Math.min(100, (weeklyStats.done / weeklyStats.target) * 100)}%` }}
+              style={{ background: 'linear-gradient(90deg, #22d3ee, #a855f7)', width: `${streakData.weeklyProgressPct}%` }}
             />
           </div>
-          {weeklyStats.prs > 0 && (
+          {weeklyPRs > 0 && (
             <div className="flex items-center gap-1 mt-1.5">
               <Trophy size={10} className="text-red-400" />
-              <span className="text-[11px] text-red-400 font-medium">{weeklyStats.prs} {t('common.pr')}{weeklyStats.prs !== 1 ? 's' : ''} {t('today.thisWeek').toLowerCase()}!</span>
+              <span className="text-[11px] text-red-400 font-medium">{weeklyPRs} {t('common.pr')}{weeklyPRs !== 1 ? 's' : ''} {t('today.thisWeek').toLowerCase()}!</span>
             </div>
           )}
         </div>
       )}
 
-      {/* LATEST PR — gold highlight card */}
+      {/* LATEST PR  -  gold highlight card */}
       {latestPR && (
         <button
           className="w-full text-left bg-gradient-to-r from-yellow-500/10 to-amber-500/5 rounded-ct-lg p-3 border border-yellow-500/25 card-press"
@@ -376,7 +389,7 @@ export function TodayPage() {
         </button>
       )}
 
-      {/* CYCLE PHASE + TRAINING SYNC — only if cycle tracking enabled */}
+      {/* CYCLE PHASE + TRAINING SYNC  -  only if cycle tracking enabled */}
       {cycle.settings && cycle.currentPhase && (
         <CycleTrainingCard
           phase={cycle.currentPhase}
@@ -387,53 +400,20 @@ export function TodayPage() {
         />
       )}
 
-      {/* AUTO RECOVERY SCORE — computed from sleep + energy + cycle + training */}
-      {recoveryScore !== null && (
-        <div className="bg-ct-surface rounded-ct-lg p-3 border border-ct-border">
-          <div className="flex items-center gap-3">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${
-              recoveryScore >= 70 ? 'bg-green-500/15' : recoveryScore >= 40 ? 'bg-yellow-500/15' : 'bg-red-500/15'
-            }`}>
-              <Activity size={20} className={
-                recoveryScore >= 70 ? 'text-green-400' : recoveryScore >= 40 ? 'text-yellow-400' : 'text-red-400'
-              } />
-            </div>
-            <div className="flex-1">
-              <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">{t('today.recoveryScore')}</p>
-              <div className="flex items-baseline gap-1.5">
-                <p className={`text-2xl font-bold ${
-                  recoveryScore >= 70 ? 'text-green-400' : recoveryScore >= 40 ? 'text-yellow-400' : 'text-red-400'
-                }`}>{animatedRecovery}</p>
-                <p className="text-xs text-ct-2">/ 100</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className={`text-xs font-semibold ${
-                recoveryScore >= 70 ? 'text-green-400' : recoveryScore >= 40 ? 'text-yellow-400' : 'text-red-400'
-              }`}>{recoveryScore >= 70 ? t('today.readyToTrain') : recoveryScore >= 40 ? t('today.moderateLoad') : t('today.takeItEasy')}</p>
-              {cycle.settings && cycle.currentPhase && (
-                <p className="text-[11px] text-ct-2 mt-0.5 flex items-center gap-1 justify-end">
-                  <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: PHASE_COLORS[cycle.currentPhase].bg }} />
-                  {PHASE_COLORS[cycle.currentPhase].label} {t('today.factoredIn')}
-                </p>
-              )}
-            </div>
-          </div>
-          {/* Recovery bar */}
-          <div className="h-1.5 bg-ct-elevated rounded-full overflow-hidden mt-2">
-            <div
-              className={`h-full rounded-full animate-bar-fill bar-glow ${
-                recoveryScore >= 70 ? 'bg-gradient-to-r from-green-500 to-green-400' :
-                recoveryScore >= 40 ? 'bg-gradient-to-r from-yellow-500 to-yellow-400' :
-                'bg-gradient-to-r from-red-500 to-red-400'
-              }`}
-              style={{ width: `${recoveryScore}%` }}
-            />
-          </div>
-        </div>
+      {/* READINESS SCORE  -  from useReadiness hook */}
+      {readiness.isAvailable ? (
+        <ReadinessCard
+          score={readiness.score!}
+          status={readiness.status!}
+          recommendation={readiness.recommendation!}
+          factorsBreakdown={readiness.factorsBreakdown}
+          onLogNow={() => setActiveTab('log')}
+        />
+      ) : (
+        <ReadinessCardEmpty onLogNow={() => setActiveTab('log')} />
       )}
 
-      {/* RED-S WARNING — if detected */}
+      {/* RED-S WARNING  -  if detected */}
       {cycle.redsFlags && cycle.redsFlags.isAtRisk && (
         <div className="bg-red-500/10 rounded-ct-lg p-3 border border-red-500/20 flex items-start gap-3">
           <Shield size={20} className="text-red-400 shrink-0 mt-0.5" />
@@ -444,7 +424,7 @@ export function TodayPage() {
         </div>
       )}
 
-      {/* NUTRITION — compact macro overview */}
+      {/* NUTRITION  -  compact macro overview */}
       <button
         className="w-full text-left bg-ct-surface rounded-ct-lg p-4 border border-ct-border surface-highlight card-press"
         onClick={() => setActiveTab('eat')}
@@ -459,37 +439,50 @@ export function TodayPage() {
           <MacroBar label={t('log.carbs')} current={todayMacros.carbs} target={profile?.carbsTarget || 200} unit="g" color="#fb923c" />
           <MacroBar label={t('log.fat')} current={todayMacros.fat} target={profile?.fatTarget || 60} unit="g" color="#f472b6" />
         </div>
-        <p className="text-[11px] text-ct-2 mt-2">{mealsCount} {t('today.mealsLogged')} — {t('today.tapToLogMeal')}</p>
+        <p className="text-[11px] text-ct-2 mt-2">{mealsCount} {t('today.mealsLogged')}  -  {t('today.tapToLogMeal')}</p>
       </button>
 
-      {/* BODY METRICS — 4-column grid */}
+      {/* BODY METRICS  -  4-column grid */}
       <div className="grid grid-cols-4 gap-2">
         {[
-          { icon: TrendingUp, value: todayLog?.weightKg, label: 'kg', color: 'text-cyan-400' },
-          { icon: Moon, value: todayLog?.sleepHours, label: 'hrs', color: 'text-indigo-400' },
-          { icon: Droplets, value: waterCurrent ? (waterCurrent / 1000).toFixed(1) : null, label: `${animatedWaterPct}%`, color: 'text-blue-400' },
-          { icon: Zap, value: todayLog?.energy, label: '/5', color: 'text-yellow-400' },
-        ].map(({ icon: MetricIcon, value, label, color }, i) => (
+          { icon: TrendingUp, value: todayLog?.weightKg, label: 'kg', color: 'text-cyan-400', name: t('today.weight') },
+          { icon: Moon, value: todayLog?.sleepHours, label: 'hrs', color: 'text-indigo-400', name: t('today.sleep') },
+          { icon: Droplets, value: waterCurrent ? (waterCurrent / 1000).toFixed(1) : null, label: `${animatedWaterPct}%`, color: 'text-blue-400', name: t('today.water') },
+          { icon: Zap, value: todayLog?.energy, label: '/5', color: 'text-yellow-400', name: t('today.energy') },
+        ].map(({ icon: MetricIcon, value, label, color, name }, i) => (
           <button
             key={i}
             onClick={() => setActiveTab('log')}
-            className="bg-ct-surface rounded-ct-lg p-3 border border-ct-border surface-highlight text-center card-press min-h-[64px]"
-            aria-label={`${[t('today.weight'), t('today.sleep'), t('today.water'), t('today.energy')][i]}: ${value || '—'}`}
+            className={`rounded-ct-lg p-3 text-center card-press min-h-[64px] ${
+              value != null
+                ? 'bg-ct-surface border border-ct-border surface-highlight'
+                : 'bg-ct-surface/50 border border-dashed border-ct-border/60'
+            }`}
+            aria-label={`${name}: ${value ?? t('today.tapToAdd', 'Tap to add')}`}
           >
-            <MetricIcon size={16} className={`mx-auto mb-1 ${color}`} />
-            <p className="text-sm font-bold text-ct-1">{value || '—'}</p>
-            <p className="text-[11px] text-ct-2">{label}</p>
+            <MetricIcon size={16} className={`mx-auto mb-1 ${value != null ? color : 'text-ct-2/50'}`} />
+            {value != null ? (
+              <>
+                <p className="text-sm font-bold text-ct-1">{value}</p>
+                <p className="text-[11px] text-ct-2">{label}</p>
+              </>
+            ) : (
+              <>
+                <Plus size={12} className="mx-auto text-ct-2/40 mb-0.5" />
+                <p className="text-[10px] text-ct-2/50">{t('today.add', 'Add')}</p>
+              </>
+            )}
           </button>
         ))}
       </div>
 
-      {/* AutoSleep detailed card — shown when imported sleep data exists */}
+      {/* AutoSleep detailed card  -  shown when imported sleep data exists */}
       {todayLog && (todayLog.sleepDeepHours || todayLog.sleepScore || todayLog.sleepHRV) && (
         <SleepDetailCard log={todayLog} />
       )}
 
-      {/* Manual Recovery data — only show if logged AND no auto recovery score showing */}
-      {!recoveryScore && todayLog && (todayLog.readinessScore || todayLog.rpe) && (
+      {/* Manual Recovery data  -  only show if logged AND no auto readiness score showing */}
+      {!readiness.isAvailable && todayLog && (todayLog.readinessScore || todayLog.rpe) && (
         <div className="bg-ct-surface rounded-ct-lg p-3 border border-ct-border flex items-center gap-3">
           <Activity size={16} className="text-green-400 shrink-0" />
           <div className="flex-1 flex gap-4 text-xs">
@@ -506,7 +499,7 @@ export function TodayPage() {
         </div>
       )}
 
-      {/* WORKOUT SUGGESTION — only if no workout today */}
+      {/* WORKOUT SUGGESTION  -  only if no workout today */}
       {suggestion && (
         <button
           className="w-full text-left bg-violet-500/10 rounded-ct-lg p-3 border border-violet-500/20 flex items-center gap-3 card-press"
@@ -522,7 +515,7 @@ export function TodayPage() {
         </button>
       )}
 
-      {/* AI COACH — quick access to training insights */}
+      {/* AI COACH  -  quick access to training insights */}
       <button
         className="w-full text-left bg-violet-500/10 rounded-ct-lg p-3 border border-violet-500/20 flex items-center gap-3 card-press"
         onClick={() => setActiveTab('more')}
@@ -537,12 +530,12 @@ export function TodayPage() {
         <ChevronRight size={14} className="text-violet-500/50 shrink-0" />
       </button>
 
-      {/* Review Prompt — shown at peak happiness moments */}
+      {/* Review Prompt  -  shown at peak happiness moments */}
       {showReview && (
         <ReviewPrompt onDismiss={() => setShowReview(false)} />
       )}
 
-      {/* GROCERY PREVIEW — only if items exist */}
+      {/* GROCERY PREVIEW  -  only if items exist */}
       {groceryUnchecked > 0 && (
         <button
           className="w-full text-left bg-ct-surface rounded-ct-lg p-3 border border-ct-border flex items-center gap-3 card-press"

@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStore } from '../stores/useStore'
-import { Search, Filter, Dumbbell, Trophy, Clock, Flame } from 'lucide-react'
+import { Search, Filter, Dumbbell, Trophy, Clock, Flame, Loader2 } from 'lucide-react'
+import { EmptyState } from '../components/EmptyState'
 import type { WodType } from '../types'
 
 const WOD_TYPES: WodType[] = ['AMRAP', 'ForTime', 'EMOM', 'Tabata', 'Chipper', 'Strength', 'StrengthMetcon', 'HYROX', 'Running', 'Cardio', 'Other']
@@ -9,17 +10,16 @@ const WOD_TYPES: WodType[] = ['AMRAP', 'ForTime', 'EMOM', 'Tabata', 'Chipper', '
 export function WorkoutHistoryPage() {
   const { t } = useTranslation()
   const { workouts, loadWorkouts } = useStore()
-
+  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState<WodType | 'all'>('all')
   const [showFilters, setShowFilters] = useState(false)
   const [sortBy, setSortBy] = useState<'date' | 'name'>('date')
 
-  useEffect(() => { loadWorkouts() }, [])
+  useEffect(() => { loadWorkouts().finally(() => setLoading(false)) }, [])
 
   const filtered = useMemo(() => {
     let result = [...workouts]
-
     if (search.trim()) {
       const q = search.toLowerCase()
       result = result.filter(w =>
@@ -29,14 +29,11 @@ export function WorkoutHistoryPage() {
         w.notes?.toLowerCase().includes(q)
       )
     }
-
     if (typeFilter !== 'all') {
       result = result.filter(w => w.workoutType === typeFilter)
     }
-
     if (sortBy === 'name') result.sort((a, b) => a.name.localeCompare(b.name))
     else result.sort((a, b) => b.date.localeCompare(a.date))
-
     return result
   }, [workouts, search, typeFilter, sortBy])
 
@@ -63,8 +60,19 @@ export function WorkoutHistoryPage() {
     return `${months[parseInt(m) - 1]} ${y}`
   }
 
+  if (loading) {
+    return (
+      <div className="space-y-4 stagger-children">
+        <h2 className="text-[1.75rem] font-bold text-ct-1 leading-tight">{t('history.title')}</h2>
+        <div className="flex items-center justify-center py-12">
+          <Loader2 size={24} className="text-cyan-400 animate-spin" />
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 stagger-children">
       <h2 className="text-[1.75rem] font-bold text-ct-1 leading-tight">{t('history.title')}</h2>
 
       {/* Stats row */}
@@ -91,7 +99,7 @@ export function WorkoutHistoryPage() {
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder={t('history.searchPlaceholder')}
-          className="w-full bg-ct-surface border border-ct-border rounded-xl py-2.5 pl-10 pr-10 text-sm text-ct-1 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-400 min-h-[44px]"
+          className="w-full bg-ct-surface border border-ct-border rounded-xl py-2.5 pl-10 pr-10 text-sm text-ct-1 placeholder-ct-2 focus:outline-none focus:ring-1 focus:ring-cyan-400 min-h-[44px]"
         />
         <button onClick={() => setShowFilters(!showFilters)} className="absolute right-3 top-1/2 -translate-y-1/2" aria-label="Toggle filters">
           <Filter size={16} className={showFilters ? 'text-cyan-400' : 'text-ct-2'} />
@@ -135,10 +143,7 @@ export function WorkoutHistoryPage() {
 
       {/* Grouped workout list */}
       {grouped.length === 0 ? (
-        <div className="bg-ct-surface rounded-ct-lg p-8 border border-ct-border text-center">
-          <Dumbbell size={32} className="text-ct-2 mx-auto mb-3" />
-          <p className="text-sm text-ct-2">{search ? t('training.noWorkoutsLogged') : t('training.noWorkoutsLogged')}</p>
-        </div>
+        <EmptyState icon={Dumbbell} title={t('training.noWorkoutsLogged')} />
       ) : (
         grouped.map(([month, wods]) => (
           <div key={month}>
@@ -158,9 +163,7 @@ export function WorkoutHistoryPage() {
                     <div className="text-right shrink-0 ml-2">
                       {w.scoreDisplay && <p className="text-sm font-bold text-cyan-400 tabular-nums">{w.scoreDisplay}</p>}
                       <span className={`text-[11px] font-bold ${
-                        w.rxOrScaled === 'RX' ? 'text-green-400'
-                        : w.rxOrScaled === 'Elite' ? 'text-purple-400'
-                        : 'text-orange-400'
+                        w.rxOrScaled === 'RX' ? 'text-green-400' : w.rxOrScaled === 'Elite' ? 'text-purple-400' : 'text-orange-400'
                       }`}>{w.rxOrScaled}</span>
                     </div>
                   </div>

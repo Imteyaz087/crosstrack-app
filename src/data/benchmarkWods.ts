@@ -1,5 +1,5 @@
 // ============================================================
-// TRACKVOLT Benchmark WOD Database — Girls, Heroes, Open
+// TRACKVOLT Benchmark WOD Database  -  Girls, Heroes, Open
 // ============================================================
 import type { BenchmarkWod } from '../types'
 
@@ -50,5 +50,3 @@ export const BENCHMARK_WODS: Omit<BenchmarkWod, 'id'>[] = [
   { name: 'Open 22.1', category: 'open', description: '15min AMRAP: 3 Wall Walks, 12 DB Snatches, 15 Box Jumps (ascending)', wodType: 'AMRAP', scoreUnit: 'reps', rxStandard: 'M: 50lb/24in / F: 35lb/20in', scaledStandard: 'M: 35lb / F: 20lb, Shorter box' },
   { name: 'Open 23.1', category: 'open', description: '14min AMRAP: 60 Cal Row, 50 TTB, 40 Wall Balls, 30 Cleans, 20 Muscle-ups', wodType: 'AMRAP', scoreUnit: 'reps', rxStandard: 'M: 20lb/135lb / F: 14lb/95lb', scaledStandard: 'Hanging Knee Raises, Pull-ups + Dips' },
 ]
-
-export const benchmarkWodsSeed = BENCHMARK_WODS

@@ -48,9 +48,9 @@ export function OnboardingPage() {
         <button onClick={() => { setLanguage('en'); i18n.changeLanguage('en') }}
           className={`px-6 py-3 rounded-xl text-sm font-semibold transition-colors card-press ${language === 'en' ? 'bg-cyan-500 text-slate-900' : 'bg-ct-surface text-ct-2 border border-ct-border'}`}>English</button>
         <button onClick={() => { setLanguage('zh-TW'); i18n.changeLanguage('zh-TW') }}
-          className={`px-6 py-3 rounded-xl text-sm font-semibold transition-colors card-press ${language === 'zh-TW' ? 'bg-cyan-500 text-slate-900' : 'bg-ct-surface text-ct-2 border border-ct-border'}`}>{'\u7E41\u9AD4\u4E2D\u6587'}</button>
+          className={`px-6 py-3 rounded-xl text-sm font-semibold transition-colors card-press ${language === 'zh-TW' ? 'bg-cyan-500 text-slate-900' : 'bg-ct-surface text-ct-2 border border-ct-border'}`}>繁體中文</button>
         <button onClick={() => { setLanguage('zh-CN'); i18n.changeLanguage('zh-CN') }}
-          className={`px-6 py-3 rounded-xl text-sm font-semibold transition-colors card-press ${language === 'zh-CN' ? 'bg-cyan-500 text-slate-900' : 'bg-ct-surface text-ct-2 border border-ct-border'}`}>{'\u7B80\u4F53\u4E2D\u6587'}</button>
+          className={`px-6 py-3 rounded-xl text-sm font-semibold transition-colors card-press ${language === 'zh-CN' ? 'bg-cyan-500 text-slate-900' : 'bg-ct-surface text-ct-2 border border-ct-border'}`}>简体中文</button>
       </div>
     </div>,
 
@@ -202,7 +202,7 @@ export function OnboardingPage() {
         </div>
       </div>
 
-      {/* Scrollable content — inner wrapper centers when short, scrolls when tall */}
+      {/* Scrollable content  -  inner wrapper centers when short, scrolls when tall */}
       <div className="flex-1 overflow-y-auto">
         <div style={{ minHeight: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px' }} key={step}>
           <div className="w-full max-w-lg animate-fade-in">

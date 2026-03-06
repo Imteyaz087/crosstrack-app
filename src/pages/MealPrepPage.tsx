@@ -232,7 +232,7 @@ export function MealPrepPage() {
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <p className="text-sm font-semibold text-ct-1">{t.name}</p>
-                    <p className="text-[11px] text-ct-2">{t.items.length} items — {Math.round(macros.calories)} cal — {Math.round(macros.protein)}g protein</p>
+                    <p className="text-[11px] text-ct-2">{t.items.length} items  -  {Math.round(macros.calories)} cal  -  {Math.round(macros.protein)}g protein</p>
                   </div>
                   <span className="text-[9px] text-ct-2 bg-ct-elevated/50 px-1.5 py-0.5 rounded capitalize">{t.mealType.replace('_', ' ')}</span>
                 </div>

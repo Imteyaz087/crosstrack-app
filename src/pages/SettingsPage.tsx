@@ -130,7 +130,7 @@ export function SettingsPage() {
   }
 
   const field = (label: string, value: string | number, onChange: (v: string) => void, type = 'text', min?: number) => (
-    <div className="flex justify-between items-center py-2.5 border-b border-slate-700/30 min-h-[44px]">
+    <div className="flex justify-between items-center py-2.5 border-b border-ct-border/30 min-h-[44px]">
       <span className="text-sm text-ct-2">{label}</span>
       <input
         type={type}
@@ -151,7 +151,7 @@ export function SettingsPage() {
   )
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 stagger-children">
       {toast && <SaveToast message={toast.msg} type={toast.type} onDone={() => setToast(null)} />}
       <h1 className="text-[1.75rem] font-bold text-ct-1 leading-tight tracking-tight">{t('settings.title')}</h1>
 
@@ -165,13 +165,62 @@ export function SettingsPage() {
         {field(t('settings.age'), form.age, v => setForm(f => ({ ...f, age: v })), 'number', 1)}
         {field(t('settings.weightKg'), form.weightKg, v => setForm(f => ({ ...f, weightKg: v })), 'number', 1)}
         {field(t('settings.heightCm'), form.heightCm, v => setForm(f => ({ ...f, heightCm: v })), 'number', 1)}
+
+        {/* Gender */}
+        <div className="flex justify-between items-center py-2.5 border-b border-ct-border/30 min-h-[44px]">
+          <span className="text-sm text-ct-2">{t('settings.gender')}</span>
+          <select
+            value={form.gender}
+            onChange={e => setForm(f => ({ ...f, gender: e.target.value as Gender }))}
+            className="bg-ct-elevated rounded-lg py-2 px-3 text-ct-1 text-sm text-right min-h-[44px] focus:outline-none focus:ring-1 focus:ring-cyan-400 appearance-none"
+          >
+            <option value="male">{t('settings.genderMale')}</option>
+            <option value="female">{t('settings.genderFemale')}</option>
+            <option value="other">{t('settings.genderOther')}</option>
+            <option value="prefer_not_to_say">{t('settings.genderPreferNot')}</option>
+          </select>
+        </div>
+
+        {/* Experience Level */}
+        <div className="flex justify-between items-center py-2.5 border-b border-ct-border/30 min-h-[44px]">
+          <span className="text-sm text-ct-2">{t('settings.experience')}</span>
+          <select
+            value={form.experienceLevel}
+            onChange={e => setForm(f => ({ ...f, experienceLevel: e.target.value as ExperienceLevel }))}
+            className="bg-ct-elevated rounded-lg py-2 px-3 text-ct-1 text-sm text-right min-h-[44px] focus:outline-none focus:ring-1 focus:ring-cyan-400 appearance-none"
+          >
+            <option value="beginner">{t('settings.expBeginner')}</option>
+            <option value="intermediate">{t('settings.expIntermediate')}</option>
+            <option value="advanced">{t('settings.expAdvanced')}</option>
+            <option value="elite">{t('settings.expElite')}</option>
+          </select>
+        </div>
+
+        {/* Goal */}
+        <div className="flex justify-between items-center py-2.5 border-b border-ct-border/30 min-h-[44px]">
+          <span className="text-sm text-ct-2">{t('settings.goal')}</span>
+          <select
+            value={form.goal}
+            onChange={e => setForm(f => ({ ...f, goal: e.target.value as Goal }))}
+            className="bg-ct-elevated rounded-lg py-2 px-3 text-ct-1 text-sm text-right min-h-[44px] focus:outline-none focus:ring-1 focus:ring-cyan-400 appearance-none"
+          >
+            <option value="general_health">{t('settings.goalGeneralHealth')}</option>
+            <option value="fat_loss">{t('settings.goalFatLoss')}</option>
+            <option value="muscle_gain">{t('settings.goalMuscleGain')}</option>
+            <option value="performance">{t('settings.goalPerformance')}</option>
+            <option value="recomp">{t('settings.goalRecomp')}</option>
+            <option value="endurance">{t('settings.goalEndurance')}</option>
+            <option value="hyrox">{t('settings.goalHyrox')}</option>
+          </select>
+        </div>
+
         {field(t('settings.trainingTime'), form.trainingTime, v => setForm(f => ({ ...f, trainingTime: v })), 'time')}
-        <div className="flex justify-between items-center py-2.5 border-b border-slate-700/30">
+        <div className="flex justify-between items-center py-2.5 border-b border-ct-border/30">
           <span className="text-sm text-ct-2">{t('settings.trainingDaysWeek')}</span>
           <div className="flex gap-1">
             {[3, 4, 5, 6].map(d => (
               <button key={d} onClick={() => setForm(f => ({ ...f, trainingDaysPerWeek: d }))}
-                className={`w-9 h-9 rounded-lg text-xs font-bold ${form.trainingDaysPerWeek === d ? 'bg-cyan-500/20 text-cyan-400' : 'bg-ct-elevated text-ct-2'}`}>{d}</button>
+                className={`w-11 h-11 rounded-lg text-xs font-bold ${form.trainingDaysPerWeek === d ? 'bg-cyan-500/20 text-cyan-400' : 'bg-ct-elevated text-ct-2'}`}>{d}</button>
             ))}
           </div>
         </div>
@@ -181,7 +230,7 @@ export function SettingsPage() {
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
         <div className="flex justify-between items-center mb-2">
           <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2">{t('settings.targets')}</p>
-          <button onClick={handleRecalculate} className="flex items-center gap-1 text-xs text-cyan-400">
+          <button onClick={handleRecalculate} className="flex items-center gap-1 text-xs text-cyan-400 min-h-[44px] px-2">
             <RefreshCw size={12} /> {t('settings.autoCalc')}
           </button>
         </div>
@@ -195,12 +244,12 @@ export function SettingsPage() {
       {/* App */}
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
         <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 mb-2">{t('settings.app')}</p>
-        <div className="flex justify-between items-center py-2.5 border-b border-slate-700/30">
+        <div className="flex justify-between items-center py-2.5 border-b border-ct-border/30">
           <span className="text-sm text-ct-2 flex items-center gap-2 shrink-0"><Globe size={14} /> {t('settings.language')}</span>
           <div className="flex gap-1 shrink-0">
             {(['en', 'zh-TW', 'zh-CN'] as const).map(lang => (
               <button key={lang} onClick={() => setForm(f => ({ ...f, language: lang }))}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium min-h-[32px] ${form.language === lang ? 'bg-cyan-500/20 text-cyan-400' : 'bg-ct-elevated text-ct-2'}`}>
+                className={`px-3.5 py-2 rounded-lg text-xs font-medium min-h-[44px] ${form.language === lang ? 'bg-cyan-500/20 text-cyan-400' : 'bg-ct-elevated text-ct-2'}`}>
                 {lang === 'en' ? 'EN' : lang === 'zh-TW' ? '繁中' : '简中'}
               </button>
             ))}
@@ -215,7 +264,7 @@ export function SettingsPage() {
           <div className="flex justify-between items-center py-2.5">
             <span className="text-sm text-green-400 flex items-center gap-2"><Key size={14} /> {t('settings.apiKeyConfigured')}</span>
             <button onClick={() => { clearApiKey(); setHasKey(false); setToast({ msg: t('settings.remove'), type: 'success' }) }}
-              className="text-xs text-red-400 bg-red-500/10 px-3 py-1 rounded-lg">{t('settings.remove')}</button>
+              className="text-xs text-red-400 bg-red-500/10 px-3 py-1 rounded-lg min-h-[44px] flex items-center">{t('settings.remove')}</button>
           </div>
         ) : (
           <div className="space-y-2">
@@ -229,7 +278,7 @@ export function SettingsPage() {
                   placeholder="AIzaSy..."
                   className="w-full bg-ct-elevated rounded-lg py-2 px-3 pr-8 text-ct-1 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400"
                 />
-                <button onClick={() => setShowKey(!showKey)} className="absolute right-2 top-2 p-1 text-ct-2" aria-label={showKey ? 'Hide API key' : 'Show API key'}>
+                <button onClick={() => setShowKey(!showKey)} className="absolute right-2 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] flex items-center justify-center text-ct-2" aria-label={showKey ? 'Hide API key' : 'Show API key'}>
                   {showKey ? <EyeOff size={14} /> : <Eye size={14} />}
                 </button>
               </div>
@@ -238,11 +287,11 @@ export function SettingsPage() {
                   setApiKey(geminiKey.trim())
                   setHasKey(true)
                   setGeminiKey('')
-                  setToast({ msg: 'Gemini API key saved!', type: 'success' })
+                  setToast({ msg: t('settings.apiKeySaved', 'Gemini API key saved!'), type: 'success' })
                 } else {
-                  setToast({ msg: 'Invalid key format — should start with AIza', type: 'error' })
+                  setToast({ msg: t('settings.invalidKeyFormat', 'Invalid key format — should start with AIza'), type: 'error' })
                 }
-              }} className="px-4 py-2 bg-violet-500/20 text-violet-400 rounded-lg text-xs font-bold shrink-0">
+              }} className="px-4 py-2 bg-violet-500/20 text-violet-400 rounded-lg text-xs font-bold shrink-0 min-h-[44px]">
                 {t('settings.saveKey')}
               </button>
             </div>
@@ -257,21 +306,21 @@ export function SettingsPage() {
           <div className="flex justify-between items-center py-2.5">
             <span className="text-sm text-green-400 flex items-center gap-2"><Cloud size={14} /> {t('settings.firebaseConfigured')}</span>
             <button onClick={() => { clearFirebaseConfig(); setHasFbConfig(false); setToast({ msg: t('settings.remove'), type: 'success' }) }}
-              className="text-xs text-red-400 bg-red-500/10 px-3 py-1 rounded-lg">{t('settings.remove')}</button>
+              className="text-xs text-red-400 bg-red-500/10 px-3 py-1 rounded-lg min-h-[44px] flex items-center">{t('settings.remove')}</button>
           </div>
         ) : (
           <div className="space-y-2">
             <p className="text-xs text-ct-2">{t('settings.addFirebase')}</p>
             {!showFbSetup ? (
-              <button onClick={() => setShowFbSetup(true)} className="w-full bg-blue-500/20 border border-blue-500/30 text-blue-400 font-bold py-2.5 rounded-xl text-xs">
+              <button onClick={() => setShowFbSetup(true)} className="w-full bg-blue-500/20 border border-blue-500/30 text-blue-400 font-bold py-2.5 rounded-xl text-xs min-h-[44px]">
                 {t('settings.setupFirebase')}
               </button>
             ) : (
               <div className="space-y-2">
                 <input value={fbApiKey} onChange={e => setFbApiKey(e.target.value)} placeholder="Firebase API Key (AIza...)"
-                  className="w-full bg-ct-elevated rounded-xl py-2 px-3 text-ct-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400" />
+                  className="w-full bg-ct-elevated rounded-xl py-2 px-3 text-ct-1 text-xs focus:outline-none focus:ring-1 focus:ring-purple-400" />
                 <input value={fbProjectId} onChange={e => setFbProjectId(e.target.value)} placeholder="Project ID (e.g. my-app-12345)"
-                  className="w-full bg-ct-elevated rounded-xl py-2 px-3 text-ct-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400" />
+                  className="w-full bg-ct-elevated rounded-xl py-2 px-3 text-ct-1 text-xs focus:outline-none focus:ring-1 focus:ring-purple-400" />
                 <button onClick={() => {
                   if (!fbApiKey.trim() || !fbProjectId.trim()) {
                     setToast({ msg: t('settings.bothRequired'), type: 'error' }); return
@@ -285,8 +334,8 @@ export function SettingsPage() {
                     appId: '',
                   })
                   setHasFbConfig(true); setFbApiKey(''); setFbProjectId(''); setShowFbSetup(false)
-                  setToast({ msg: 'Firebase configured! Go to Cloud Sync to sign in.', type: 'success' })
-                }} className="w-full bg-blue-500/20 text-blue-400 font-bold py-2.5 rounded-xl text-xs">
+                  setToast({ msg: t('settings.firebaseSaved', 'Firebase configured! Go to Cloud Sync to sign in.'), type: 'success' })
+                }} className="w-full bg-blue-500/20 text-blue-400 font-bold py-2.5 rounded-xl text-xs min-h-[44px]">
                   {t('settings.saveFirebase')}
                 </button>
               </div>
@@ -302,13 +351,19 @@ export function SettingsPage() {
       {/* Data */}
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
         <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 mb-2">{t('settings.data')}</p>
-        <button onClick={handleExport} className="w-full flex items-center gap-3 py-2.5 border-b border-slate-700/30 text-cyan-400 text-sm min-h-[44px]">
+        <button onClick={handleExport} className="w-full flex items-center gap-3 py-2.5 border-b border-ct-border/30 text-cyan-400 text-sm min-h-[44px]">
           <Download size={16} /> {t('settings.exportData')}
         </button>
         <button onClick={() => fileRef.current?.click()} className="w-full flex items-center gap-3 py-2.5 text-cyan-400 text-sm min-h-[44px]">
           <Upload size={16} /> {t('settings.importData')}
         </button>
         <input ref={fileRef} type="file" accept=".json" onChange={handleImport} className="hidden" />
+      </div>
+
+      {/* Version footer */}
+      <div className="text-center pb-8">
+        <p className="text-[11px] text-ct-3">{t('settings.version')} 1.0.0</p>
+        <p className="text-[11px] text-ct-3 mt-0.5">TrackVolt</p>
       </div>
     </div>
   )

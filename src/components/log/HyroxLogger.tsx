@@ -3,10 +3,22 @@ import { ChevronLeft, Timer, Trophy } from 'lucide-react'
 import type { HyroxStation, RxScaled } from '../../types'
 
 const HYROX_STATIONS: string[] = [
-  '1km Run', '1000m SkiErg', '1km Run', '50m Sled Push',
-  '1km Run', '50m Sled Pull', '1km Run', '80m Burpee Broad Jump',
-  '1km Run', '1000m Row', '1km Run', '200m Farmers Carry',
-  '1km Run', '100m Sandbag Lunges', '1km Run', '75/100 Wall Balls',
+  '1km Run',
+  '1000m SkiErg',
+  '1km Run',
+  '50m Sled Push',
+  '1km Run',
+  '50m Sled Pull',
+  '1km Run',
+  '80m Burpee Broad Jump',
+  '1km Run',
+  '1000m Row',
+  '1km Run',
+  '200m Farmers Carry',
+  '1km Run',
+  '100m Sandbag Lunges',
+  '1km Run',
+  '75/100 Wall Balls',
 ]
 
 interface HyroxLoggerProps {
@@ -65,13 +77,11 @@ export function HyroxLogger({ onSave, onClose }: HyroxLoggerProps) {
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-orange-500/20">
         <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-3">Total Finish Time</p>
         <div className="flex items-center gap-2 overflow-hidden">
-          <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={3}
-            value={totalMin} onChange={e => setTotalMin(e.target.value.replace(/\D/g, ''))}
+          <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={3} value={totalMin} onChange={e => setTotalMin(e.target.value.replace(/\D/g, ''))}
             placeholder="MM" aria-label="Minutes"
             className="min-w-0 flex-1 bg-ct-elevated rounded-xl py-3 px-2 text-ct-1 text-center text-2xl font-bold focus:outline-none focus:ring-1 focus:ring-orange-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
           <span className="text-2xl text-ct-2 font-bold shrink-0">:</span>
-          <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={2}
-            value={totalSec} onChange={e => setTotalSec(e.target.value.replace(/\D/g, ''))}
+          <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={2} value={totalSec} onChange={e => setTotalSec(e.target.value.replace(/\D/g, ''))}
             placeholder="SS" aria-label="Seconds"
             className="min-w-0 flex-1 bg-ct-elevated rounded-xl py-3 px-2 text-ct-1 text-center text-2xl font-bold focus:outline-none focus:ring-1 focus:ring-orange-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
         </div>
@@ -86,8 +96,8 @@ export function HyroxLogger({ onSave, onClose }: HyroxLoggerProps) {
               className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${
                 rxScaled === level
                   ? level === 'Elite' ? 'bg-purple-500/20 text-purple-400 border border-purple-400/40'
-                    : level === 'RX' ? 'bg-green-500/20 text-green-400 border border-green-400/40'
-                    : 'bg-orange-500/20 text-orange-400 border border-orange-400/40'
+                  : level === 'RX' ? 'bg-green-500/20 text-green-400 border border-green-400/40'
+                  : 'bg-orange-500/20 text-orange-400 border border-orange-400/40'
                   : 'bg-ct-elevated text-ct-2'
               }`}>{level === 'RX' ? 'Open' : level === 'Elite' ? 'Pro' : 'Doubles'}</button>
           ))}
@@ -96,12 +106,13 @@ export function HyroxLogger({ onSave, onClose }: HyroxLoggerProps) {
 
       {/* Station Times (collapsible) */}
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
-        <button onClick={() => setShowStationTimes(!showStationTimes)} className="w-full flex items-center justify-between">
+        <button onClick={() => setShowStationTimes(!showStationTimes)}
+          className="w-full flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Timer size={16} className="text-orange-400" />
             <p className="text-sm font-semibold text-ct-1">Station Splits</p>
           </div>
-          <span className="text-xs text-ct-2">{showStationTimes ? 'Hide' : 'Optional – tap to add'}</span>
+          <span className="text-xs text-ct-2">{showStationTimes ? 'Hide' : 'Optional  -  tap to add'}</span>
         </button>
 
         {showStationTimes && (
@@ -112,11 +123,15 @@ export function HyroxLogger({ onSave, onClose }: HyroxLoggerProps) {
                   {idx + 1}
                 </span>
                 <span className="text-xs text-ct-2 flex-1 truncate">{station.name}</span>
-                <input type="text" inputMode="numeric" pattern="[0-9]*"
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   placeholder="sec"
                   value={station.timeSeconds || ''}
                   onChange={e => updateStation(idx, 'timeSeconds', parseInt(e.target.value.replace(/\D/g, '')) || undefined)}
-                  className="w-20 bg-ct-elevated rounded-lg py-1.5 px-2 text-ct-1 text-xs text-center focus:outline-none focus:ring-1 focus:ring-orange-400" />
+                  className="w-20 bg-ct-elevated rounded-lg py-1.5 px-2 text-ct-1 text-xs text-center focus:outline-none focus:ring-1 focus:ring-orange-400"
+                />
               </div>
             ))}
           </div>
@@ -127,17 +142,19 @@ export function HyroxLogger({ onSave, onClose }: HyroxLoggerProps) {
       <div className="flex gap-3">
         <button onClick={() => setPrFlag(!prFlag)}
           className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${
-            prFlag ? 'bg-red-500/20 text-red-400 border border-red-400/40' : 'bg-slate-800 text-ct-2 border border-slate-700'
+            prFlag ? 'bg-red-500/20 text-red-400 border border-red-400/40' : 'bg-ct-surface text-ct-2 border border-ct-border'
           }`}>
           <Trophy size={14} /> PR
         </button>
-        <input value={notes} onChange={e => setNotes(e.target.value)} placeholder="Notes (optional)"
-          className="flex-1 bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-ct-1 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400" />
+        <input value={notes} onChange={e => setNotes(e.target.value)}
+          placeholder="Notes (optional)"
+          className="flex-1 bg-ct-surface border border-ct-border rounded-xl py-2.5 px-3 text-ct-1 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400" />
       </div>
 
-      {/* Save – sticky at bottom */}
+      {/* Save  -  sticky at bottom */}
       <div className="sticky-save">
-        <button onClick={handleSave} disabled={!totalMin && !totalSec}
+        <button onClick={handleSave}
+          disabled={!totalMin && !totalSec}
           className={`w-full py-4 rounded-xl font-bold text-base transition-all ${
             totalMin || totalSec
               ? 'bg-orange-500 text-slate-900 shadow-lg shadow-orange-500/30 active:scale-[0.98]'

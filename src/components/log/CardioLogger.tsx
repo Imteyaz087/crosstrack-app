@@ -181,7 +181,7 @@ export function CardioLogger({ onSave, onClose }: CardioLoggerProps) {
         <button onClick={() => setShowSplits(!showSplits)}
           className="w-full flex items-center justify-between">
           <p className="text-sm font-semibold text-ct-1">Splits</p>
-          <span className="text-xs text-ct-2">{showSplits ? 'Hide' : 'Optional — tap to add'}</span>
+          <span className="text-xs text-ct-2">{showSplits ? 'Hide' : 'Optional  -  tap to add'}</span>
         </button>
         {showSplits && (
           <div className="mt-3 space-y-2">
@@ -214,7 +214,7 @@ export function CardioLogger({ onSave, onClose }: CardioLoggerProps) {
           className="flex-1 bg-ct-surface border border-ct-border rounded-xl py-2.5 px-3 text-ct-1 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400" />
       </div>
 
-      {/* Save — sticky at bottom */}
+      {/* Save  -  sticky at bottom */}
       <div className="sticky-save">
         <button onClick={handleSave}
           disabled={!distance || (!durationMin && !durationSec)}

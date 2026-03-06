@@ -31,11 +31,11 @@ export function CloudSyncPage() {
       const unsub = onAuthChange((u) => {
         setUser(u)
         if (u) {
-          getLastSyncTime(u.uid).then(setLastSync).catch(() => { /* first login — no sync time yet */ })
+          getLastSyncTime(u.uid).then(setLastSync).catch(() => { /* first login  -  no sync time yet */ })
         }
       })
       return unsub
-    } catch { /* Firebase not configured yet — safe to ignore */ }
+    } catch { /* Firebase not configured yet  -  safe to ignore */ }
   }, [configured])
 
   // ---- Cloud Auth ----
@@ -114,7 +114,7 @@ export function CloudSyncPage() {
     try {
       await navigator.clipboard.writeText(exportedData)
       showToast('Copied to clipboard!', 'success')
-    } catch { showToast('Copy failed — try Download instead', 'error') }
+    } catch { showToast('Copy failed  -  try Download instead', 'error') }
   }
 
   const handleDownload = () => {
@@ -170,7 +170,7 @@ export function CloudSyncPage() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 stagger-children">
       {toastEl}
       <h1 className="text-xl font-bold text-ct-1">{t('cloudSyncPage.title')}</h1>
       <p className="text-xs text-ct-2">{t('cloudSyncPage.desc')}</p>
@@ -197,7 +197,7 @@ export function CloudSyncPage() {
             </button>
           </div>
         ) : (
-          /* Signed in — show sync controls */
+          /* Signed in  -  show sync controls */
           <>
             <div className="flex items-center gap-3">
               {user.photoURL ? (
@@ -211,7 +211,7 @@ export function CloudSyncPage() {
                 <p className="text-sm font-semibold text-ct-1 truncate">{user.displayName || user.email}</p>
                 <p className="text-[11px] text-ct-2 truncate">{user.email}</p>
               </div>
-              <button onClick={handleSignOut} className="text-xs text-ct-2 bg-ct-elevated/50 px-3 py-1.5 rounded-lg flex items-center gap-1">
+              <button onClick={handleSignOut} className="text-xs text-ct-2 bg-ct-elevated/50 px-3 py-1.5 rounded-lg flex items-center gap-1 min-h-[44px]">
                 <LogOut size={12} /> {t('cloudSyncPage.signOut')}
               </button>
             </div>

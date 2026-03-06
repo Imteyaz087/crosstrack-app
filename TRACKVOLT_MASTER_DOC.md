@@ -471,3 +471,153 @@ Production has sub-folders and many more components:
 - Verification:
   - `npm run build` passed after the sync
   - no deploy performed
+
+### 2026-03-07 Product Audit Snapshot
+- Benchmark review covered functional fitness, running, nutrition, recovery, and health-ecosystem leaders using current official product pages.
+- TrackVolt's strongest positioning is not "another fitness tracker"; it is the hybrid-athlete operating system angle:
+  - CrossFit + HYROX + running + macros + recovery + cycle-aware coaching in one mobile-first product
+  - offline-first local ownership
+  - built-in share-card foundation
+  - strong page breadth for an early-stage product
+- Biggest market gaps versus leaders:
+  - no durable community loop or coach/program feedback loop
+  - running module lacks imports, zones, GPS/social depth, and plan progression
+  - nutrition workflow lacks the trust/coverage of best-in-class food search, barcode, and adaptive coaching products
+  - recovery is useful but still mostly manual-input driven; no simple flagship readiness score yet
+  - onboarding/value communication is weaker than the breadth of the product
+- Recommended product strategy:
+  1. win the "fastest all-in-one logging loop for hybrid athletes"
+  2. turn existing data into daily recommendations and streak momentum
+  3. add credibility features in running/HYROX and nutrition before expanding social scope
+  4. use iOS polish and premium share outputs as brand leverage
+
+### World-Class Product Direction
+- Core product promise:
+  - `One app for hybrid athletes to log, understand, and improve everything that matters.`
+- Strategic position versus market:
+  - leaders win one vertical each:
+    - SugarWOD / BTWB in CrossFit
+    - Strava / Garmin in running
+    - MacroFactor / MyFitnessPal / Cronometer in nutrition
+    - WHOOP / Oura in recovery
+  - TrackVolt can win by unifying the most-used parts of those systems into one faster athlete workflow
+- For TrackVolt to feel world-class, the experience must become:
+  - faster than specialists for logging
+  - clearer than specialists for daily decisions
+  - more cohesive than specialists across sports and recovery/nutrition
+  - more premium in visual polish and sharing than typical fitness PWAs
+- Product build order:
+  1. perfect the daily capture loop
+  2. perfect the "today" decision layer
+  3. deepen trust in running/HYROX/nutrition data
+  4. strengthen motivation loops
+  5. then scale advanced AI, coaching, and social layers
+
+### 2026-03-07 iOS Launch Readiness Snapshot
+- Current status: **not ready for App Store launch yet**
+- Confirmed launch blockers from local audit:
+  - native iOS permission strings are missing in `ios/App/App/Info.plist` even though camera/photo flows exist in the web app
+  - there is no public privacy-policy URL or public support URL prepared for App Store Connect metadata
+  - no Mac/Xcode archive/TestFlight validation has been done
+- Confirmed positives:
+  - Capacitor is initialized
+  - native iOS project exists inside `ios/`
+  - app icon asset catalog exists
+  - launch storyboard exists
+  - bundle identifier is configured as `app.trackvolt`
+  - screenshot source assets already exist at `1290x2796`
+- Build/update status:
+  - the temporary March 7 build regression in `TimerPage.tsx` has been repaired
+  - `npm run build` passes again
+  - `npm run cap:sync` passes again
+- Recommended launch sequence:
+  1. restore a green build
+  2. add missing native metadata/permission strings
+  3. publish support/privacy URLs
+  4. prepare App Store Connect metadata and screenshots
+  5. run real-device/Xcode/TestFlight validation on macOS
+
+## 2026-03-07 - Hook centralization progress
+- Added `src/hooks/useStreak.ts` as the new centralized streak contract for Today/Progress UI work.
+- Added `src/hooks/useReadiness.ts` as the new centralized readiness contract, preserving current Today-page weighting.
+- Shared the exact exported interfaces in `CODEX_FINDINGS.md` for Cowork to align `StreakRing` and `ReadinessCard` props.
+- Verified `npm run build` passes after the hook additions.
+
+## 2026-03-07 - Timer regression fixed
+- Restored `src/pages/TimerPage.tsx` to the richer CrossFit WOD timer flow after the user rejected the simplified timer.
+- The restored timer now again supports advanced per-mode configuration, preset CRUD, countdown/work/rest/done states, and the detailed AMRAP / For Time set-rest controls the user specifically requested.
+- `onClose` remains optional so Today/More overlay entry points keep working.
+- `npm run build` passes after the timer restore.
+
+## 2026-03-07 - Timer premium setup polish
+- Polished `src/pages/TimerPage.tsx` around the user-required CrossFit AMRAP/EMOM/For Time setup fields instead of changing the underlying timer behavior.
+- New setup direction:
+  - clearer mode hero with description
+  - denser premium control cards
+  - preserved key AMRAP fields: minutes, seconds, number of sets, rest-between-sets toggle, rest minutes, rest seconds
+  - sticky CTA/footer summary so the `Start Timer` action stays visible above the tab bar
+  - improved active timer presentation with a top session summary and ambient glow
+- Also applied a minimal type-narrowing fix in `src/services/firebase.ts` so the strict build stays green.
+- `npm run build` passes after the timer polish.
+
+## 2026-03-07 - Timer active-state polish
+- Added a second WOD timer quality pass after the setup-screen polish.
+- `src/pages/TimerPage.tsx` now treats the active timer as a dedicated workout instrument:
+  - countdown, work, rest, and done each have their own visual state
+  - the active screen shows stronger current-block / next-cue context
+  - the central timer ring is larger and easier to read under fatigue
+  - a slim progress strip complements the round dots for interval awareness
+- Box-style cueing was upgraded in:
+  - `src/hooks/useTimerAudio.ts`
+  - `src/hooks/useTimerVoice.ts`
+  - `src/hooks/useTimerEngine.ts`
+- A minimal casing fix in `src/hooks/useCelebrationShare.ts` was required to unblock build verification before the timer pass could be confirmed.
+- Verification: `npm run build` passed.
+
+## 2026-03-07 - Timer setup QA and attraction pass
+- Performed a local mobile-browser QA pass for the WOD Timer setup screen and captured a real screenshot for review.
+- `src/pages/TimerPage.tsx` was refined again to feel more elite on the setup side:
+  - consistent iconography instead of broken emoji markers
+  - clearer session summary language for single-effort modes
+  - compact work / sets / rest stat row under the hero
+  - stronger footer summary + CTA treatment
+- `src/pages/TodayPage.tsx` received a one-line prop fix so build verification stayed green.
+- Verification: `npm run build` passed and local screenshot was captured at `C:/ClaudeWork/Imu/trackvolt-timer-amrap-mobile-check.png`.
+
+## 2026-03-07 - Premium timer protocol pass
+- Performed another visual/UI pass on the WOD Timer setup screen with the goal of more premium presentation and customer wow factor.
+- `src/pages/TimerPage.tsx` now leans into an instrument-panel style:
+  - stronger hero framing (`Timer Protocol`)
+  - clearer work / sets / rest spec cards with supporting micro-copy
+  - more premium CTA dock and glow treatment
+  - better spacing for sticky controls
+- `src/components/InstallPrompt.tsx` now suppresses itself while full-screen workout tools are active, preventing overlay clashes on the timer screen.
+- Verification: local mobile-browser screenshot at `C:/ClaudeWork/Imu/trackvolt-timer-amrap-mobile-final.png` and green `npm run build`.
+
+## 2026-03-07 - Global differentiation research
+- External product scan across Strava, BTWB, SmartWOD, Runna, Garmin, WHOOP, Oura, MacroFactor, Cronometer, RoxFit, and TrainRox reinforced the current thesis: TrackVolt's moat is not single-category dominance, but being the best hybrid-athlete command center.
+- Strongest build opportunities identified:
+  - Hybrid Readiness Engine
+  - Hybrid Weakness Map across CrossFit + HYROX + running
+  - session-aware fueling guidance
+  - event intelligence for repeat efforts and pacing
+  - coachable share cards
+- Recommended near-term order: launch blockers first, then readiness, event compare/history, richer share cards, and only later deeper adaptive planning.
+
+## 2026-03-07 - 60-idea innovation bank added
+- Saved a large research-driven idea bank to `CODEX_FINDINGS.md` so Claude can review global product patterns and decide what TrackVolt should or should not build.
+- The list draws from official sources and some Reddit user-sentiment signals across: Apple Health, WHOOP, Oura, Strava, BTWB, SmartWOD, Runna, MacroFactor, Cronometer, Levels, Nutrisense, InsideTracker, Flo, Wild.AI, RoxFit, and TrainRox.
+- Core conclusion remains unchanged: TrackVolt's best chance to become world-class is to be the best hybrid-athlete operating layer, not to become a clone of any single category leader.
+
+## 2026-03-07 - Deep app improvement audit
+- Local engineering audit confirms the next important work is not more feature sprawl.
+- Immediate risks:
+  - failing lint despite green build
+  - very low automated test coverage
+  - oversized core files and centralized store complexity
+  - unresolved App Store blockers
+- Recommended sequence:
+  1. code health and launch blockers
+  2. Today-page decision quality
+  3. event/benchmark retention depth
+  4. share/motivation improvements

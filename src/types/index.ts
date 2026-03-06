@@ -1,6 +1,7 @@
 // ============================================================
-// TRACKVOLT Type Definitions — Universal (all ages, genders)
+// TRACKVOLT Type Definitions  -  Universal (all ages, genders)
 // ============================================================
+
 export type WodType = 'AMRAP' | 'ForTime' | 'EMOM' | 'Tabata' | 'Chipper' | 'Strength' | 'StrengthMetcon' | 'HYROX' | 'Running' | 'Cardio' | 'Other'
 export type ScoreUnit = 'reps' | 'time' | 'rounds' | 'load' | 'calories' | 'meters' | 'distance'
 export type CardioType = 'run' | 'row' | 'bike' | 'ski' | 'swim' | 'hike' | 'other'
@@ -12,7 +13,7 @@ export type SleepQuality = 1 | 2 | 3 | 4 | 5
 export type EnergyLevel = 1 | 2 | 3 | 4 | 5
 export type Gender = 'male' | 'female' | 'other' | 'prefer_not_to_say'
 export type ExperienceLevel = 'beginner' | 'intermediate' | 'advanced' | 'elite'
-export type Goal = 'fat_loss' | 'muscle_gain' | 'performance' | 'recomp' | 'general_health' | 'endurance'
+export type Goal = 'fat_loss' | 'muscle_gain' | 'performance' | 'recomp' | 'general_health' | 'endurance' | 'hyrox'
 export type TimerMode = 'amrap' | 'emom' | 'fortime' | 'tabata' | 'rest' | 'custom'
 export type SorenessLevel = 0 | 1 | 2 | 3 | 4 | 5
 
@@ -48,18 +49,16 @@ export interface DailyLog {
   bodyFatPct?: number
   sleepHours?: number
   sleepQuality?: SleepQuality
-
   // AutoSleep / Apple Watch detailed sleep data
-  sleepScore?: number        // 0–100 quality score
-  sleepDeepHours?: number    // deep sleep hours
-  sleepRemHours?: number     // REM sleep hours
-  sleepLightHours?: number   // light sleep hours
-  sleepAwakeHours?: number   // awake during night hours
-  sleepHRV?: number          // HRV in ms (SDNN)
-  sleepAvgHR?: number        // avg HR during sleep (bpm)
-  sleepEfficiency?: number   // sleep efficiency 0–100%
-  sleepSource?: 'manual' | 'autosleep' | 'health'  // import source
-
+  sleepScore?: number          // 0-100 quality score
+  sleepDeepHours?: number      // deep sleep hours
+  sleepRemHours?: number       // REM sleep hours
+  sleepLightHours?: number     // light sleep hours
+  sleepAwakeHours?: number     // awake during night hours
+  sleepHRV?: number            // HRV in ms (SDNN)
+  sleepAvgHR?: number          // avg HR during sleep (bpm)
+  sleepEfficiency?: number     // sleep efficiency 0-100%
+  sleepSource?: 'manual' | 'autosleep' | 'health' // import source
   waterMl?: number
   steps?: number
   energy?: EnergyLevel
@@ -100,18 +99,15 @@ export interface Workout {
   heartRateAvg?: number
   heartRateMax?: number
   caloriesBurned?: number
-
   // Cardio/Running fields
   cardioType?: CardioType
   distanceValue?: number
   distanceUnit?: DistanceUnit
-  paceDisplay?: string      // e.g. "5:30/km"
-  splits?: string[]          // e.g. ["5:20", "5:35", "5:40"]
-  elevationGain?: number     // meters
-
+  paceDisplay?: string        // e.g. "5:30/km"
+  splits?: string[]            // e.g. ["5:20", "5:35", "5:40"]
+  elevationGain?: number       // meters
   // HYROX specific
   hyroxStations?: HyroxStation[]
-
   notes?: string
   createdAt: string
   updatedAt: string
@@ -119,8 +115,8 @@ export interface Workout {
 
 // ============ HYROX Station ============
 export interface HyroxStation {
-  name: string          // e.g. "1km Run", "SkiErg 1000m"
-  timeSeconds?: number  // station time
+  name: string                 // e.g. "1km Run", "SkiErg 1000m"
+  timeSeconds?: number         // station time
   notes?: string
 }
 
@@ -263,12 +259,12 @@ export interface CycleSettings {
 
 export interface CycleLog {
   id?: number
-  date: string           // ISO date
-  cycleDay?: number      // 1-35
+  date: string                     // ISO date
+  cycleDay?: number                // 1-35
   phase?: CyclePhase
   periodActive: boolean
   flowLevel?: FlowLevel
-  symptoms: string[]     // physical symptoms
+  symptoms: string[]               // physical symptoms
   mood?: CycleMood
   energy?: CycleEnergy
   sleepQuality?: 'great' | 'good' | 'poor' | 'terrible'
@@ -279,8 +275,8 @@ export interface CycleLog {
 // ============ Weekly Planner ============
 export interface WeeklyPlan {
   id?: number
-  weekKey: string        // ISO date of Monday, e.g. "2026-02-23"
-  dayIndex: number       // 0=Mon, 6=Sun
+  weekKey: string              // ISO date of Monday, e.g. "2026-02-23"
+  dayIndex: number             // 0=Mon, 6=Sun
   name: string
   type: WodType
   description: string
@@ -291,10 +287,10 @@ export interface WeeklyPlan {
 // ============ Nutrition API Cache ============
 export interface NutritionCache {
   id?: number
-  cacheKey: string           // "usda:{query}" or "barcode:{code}"
+  cacheKey: string             // "usda:{query}" or "barcode:{code}"
   source: 'usda' | 'off'
   data: NutritionResult[] | NutritionResult | null
-  expiresAt: number          // Unix timestamp (ms)
+  expiresAt: number            // Unix timestamp (ms)
   createdAt: string
 }
 

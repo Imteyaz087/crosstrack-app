@@ -90,8 +90,8 @@ export function CycleCalendar({
   const selectedCycleDay = selectedDate ? getCycleDayForDate(new Date(selectedDate)) : null
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end z-50">
-      <div className="w-full bg-slate-900 rounded-t-3xl p-4 pb-6 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end z-50" role="dialog" aria-modal="true" aria-label="Cycle Calendar">
+      <div className="w-full bg-ct-bg rounded-t-3xl p-4 pb-6 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-ct-1">Cycle Calendar</h2>
@@ -121,7 +121,7 @@ export function CycleCalendar({
                 {currentPhase ? (
                   <p className="text-lg font-bold" style={{ color: PHASE_COLORS[currentPhase].bg }}>{PHASE_COLORS[currentPhase].label}</p>
                 ) : (
-                  <p className="text-lg font-bold text-ct-1">—</p>
+                  <p className="text-lg font-bold text-ct-1"> - </p>
                 )}
               </div>
             </div>
@@ -188,7 +188,7 @@ export function CycleCalendar({
                     isToday
                       ? 'border-white ring-2 ring-white/20'
                       : isSelected
-                        ? 'border-slate-300'
+                        ? 'border-ct-1'
                         : 'border-transparent'
                   }`}
                   style={{
@@ -198,7 +198,7 @@ export function CycleCalendar({
                   }}
                 >
                   {/* Day number */}
-                  <span className="text-xs font-semibold text-slate-200">
+                  <span className="text-xs font-semibold text-ct-1">
                     {day.getDate()}
                   </span>
 
@@ -214,7 +214,7 @@ export function CycleCalendar({
                   {/* Symptom/mood indicator */}
                   {log?.symptoms && log.symptoms.length > 0 && (
                     <div
-                      className="absolute bottom-1 left-1 w-1.5 h-1.5 rounded-full bg-slate-300"
+                      className="absolute bottom-1 left-1 w-1.5 h-1.5 rounded-full bg-ct-2"
                       aria-label="Has symptoms logged"
                     />
                   )}
@@ -259,7 +259,7 @@ export function CycleCalendar({
               <div className="space-y-3">
                 {/* Period */}
                 {selectedDayLog.periodActive && (
-                  <div className="flex items-center gap-2 pb-3 border-b border-slate-700/30">
+                  <div className="flex items-center gap-2 pb-3 border-b border-ct-border">
                     <Droplets size={14} className="text-red-400 shrink-0" />
                     <div>
                       <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">
@@ -277,7 +277,7 @@ export function CycleCalendar({
 
                 {/* Symptoms */}
                 {selectedDayLog.symptoms && selectedDayLog.symptoms.length > 0 && (
-                  <div className="pb-3 border-b border-slate-700/30">
+                  <div className="pb-3 border-b border-ct-border">
                     <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold mb-2">
                       Symptoms
                     </p>
@@ -285,7 +285,7 @@ export function CycleCalendar({
                       {selectedDayLog.symptoms.map(symptom => (
                         <span
                           key={symptom}
-                          className="px-2 py-1 bg-ct-elevated/50 text-slate-200 rounded-md text-[11px] font-medium"
+                          className="px-2 py-1 bg-ct-elevated/50 text-ct-1 rounded-md text-[11px] font-medium"
                         >
                           {symptom}
                         </span>
@@ -296,14 +296,14 @@ export function CycleCalendar({
 
                 {/* Mood & Energy */}
                 {(selectedDayLog.mood || selectedDayLog.energy) && (
-                  <div className="pb-3 border-b border-slate-700/30">
+                  <div className="pb-3 border-b border-ct-border">
                     <div className="grid grid-cols-2 gap-2">
                       {selectedDayLog.mood && (
                         <div>
                           <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold mb-1">
                             Mood
                           </p>
-                          <p className="text-xs text-slate-200 capitalize">
+                          <p className="text-xs text-ct-1 capitalize">
                             {selectedDayLog.mood}
                           </p>
                         </div>
@@ -313,7 +313,7 @@ export function CycleCalendar({
                           <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold mb-1">
                             Energy
                           </p>
-                          <p className="text-xs text-slate-200 capitalize">
+                          <p className="text-xs text-ct-1 capitalize">
                             {selectedDayLog.energy}
                           </p>
                         </div>
@@ -328,7 +328,7 @@ export function CycleCalendar({
                     <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold mb-1">
                       Sleep
                     </p>
-                    <p className="text-xs text-slate-200 capitalize">
+                    <p className="text-xs text-ct-1 capitalize">
                       {selectedDayLog.sleepQuality}
                     </p>
                   </div>
@@ -336,7 +336,7 @@ export function CycleCalendar({
 
                 {/* Notes */}
                 {selectedDayLog.notes && (
-                  <div className="pt-2 border-t border-slate-700/30">
+                  <div className="pt-2 border-t border-ct-border">
                     <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold mb-1">
                       Notes
                     </p>

@@ -159,7 +159,7 @@ export function usePRDetection() {
       const scoreUnit = workout.scoreUnit || 'reps'
       const division = workout.rxOrScaled || 'RX'
 
-      // Check existing benchmark results from workouts — FILTER BY RX/SCALED DIVISION
+      // Check existing benchmark results from workouts  -  FILTER BY RX/SCALED DIVISION
       const allWorkouts = useStore.getState().workouts
       const previousBests = allWorkouts.filter(
         w => w.name.toLowerCase() === wodName.toLowerCase()
@@ -196,7 +196,7 @@ export function usePRDetection() {
             value: workout.scoreValue,
             unit: scoreUnit === 'time' ? 'seconds' : 'reps',
             date: today(),
-            notes: `Benchmark WOD PR (${division}) — ${workout.scoreDisplay || ''}`,
+            notes: `Benchmark WOD PR (${division})  -  ${workout.scoreDisplay || ''}`,
           })
 
           // Format improvement
@@ -284,7 +284,7 @@ export function usePRDetection() {
       const cardioName = workout.name.trim()
       const cardioDivision = workout.rxOrScaled || 'RX'
       if (cardioName && workout.scoreValue && workout.scoreValue > 0) {
-        // For cardio/HYROX, lower time = better — filter by same division
+        // For cardio/HYROX, lower time = better  -  filter by same division
         const allWorkouts = useStore.getState().workouts
         const previousBests = allWorkouts.filter(
           w => w.name.toLowerCase() === cardioName.toLowerCase()
@@ -305,7 +305,7 @@ export function usePRDetection() {
               value: workout.scoreValue,
               unit: 'seconds',
               date: today(),
-              notes: `${workout.workoutType} PR — ${workout.scoreDisplay || ''}`,
+              notes: `${workout.workoutType} PR  -  ${workout.scoreDisplay || ''}`,
             })
 
             const diff = bestPrevTime - workout.scoreValue
@@ -335,7 +335,7 @@ export function usePRDetection() {
 
   /**
    * Get the current PR for a movement + RM type.
-   * Used for inline display: "Back Squat — PR: 115kg (1RM)"
+   * Used for inline display: "Back Squat  -  PR: 115kg (1RM)"
    */
   const getCurrentPR = useCallback((movementName: string, rmType?: string): MovementPR | null => {
     if (!movementName || movementName.trim().length < 2) return null

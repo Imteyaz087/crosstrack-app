@@ -101,8 +101,8 @@ html {
 
 body {
   font-family: var(--ct-font);
-  background: var(--ct-bg);
-  color: var(--ct-text-1);
+  background: var(--color-ct-bg);
+  color: var(--color-ct-1);
   height: 100dvh;
   overflow: hidden;
   overscroll-behavior: none;
@@ -527,6 +527,26 @@ input[type="number"] { -moz-appearance: textfield; }
 }
 .animate-tab-bounce {
   animation: tabIconBounce 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* === Streak & Readiness Animations === */
+
+/* Streak glow — ambient orange/gold pulse for 30+ day streaks */
+@keyframes streakGlow {
+  0%, 100% { filter: drop-shadow(0 0 0px transparent); }
+  50% { filter: drop-shadow(0 0 6px rgba(249,115,22,0.35)); }
+}
+.animate-streak-glow {
+  animation: streakGlow 2s ease-in-out infinite;
+}
+
+/* Ring pulse — subtle scale bump when weekly target is complete */
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1) rotate(-90deg); }
+  50% { transform: scale(1.04) rotate(-90deg); }
+}
+.animate-ring-pulse {
+  animation: ringPulse 2s ease-in-out infinite;
 }
 
 /* Respect reduced motion preference */

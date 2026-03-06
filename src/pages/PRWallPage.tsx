@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStore } from '../stores/useStore'
-import { Trophy, Dumbbell, Star, TrendingUp, Flame, Award, Zap, Share2, Check } from 'lucide-react'
+import { Trophy, Dumbbell, Star, TrendingUp, Flame, Award, Zap, Share2, Check, Loader2 } from 'lucide-react'
+import { EmptyState } from '../components/EmptyState'
 
 const CATEGORY_CONFIG: Record<string, { label: string; color: string; icon: typeof Dumbbell }> = {
   barbell: { label: 'Barbell', color: '#f97316', icon: Dumbbell },
@@ -25,8 +26,9 @@ export function PRWallPage() {
   const { movementPRs, workouts, loadMovementPRs, loadWorkouts } = useStore()
   const [sharedId, setSharedId] = useState<string | null>(null)
   const [activeCategory, setActiveCategory] = useState<string>('all')
+  const [loading, setLoading] = useState(true)
 
-  useEffect(() => { Promise.allSettled([loadMovementPRs(), loadWorkouts()]) }, [])
+  useEffect(() => { Promise.allSettled([loadMovementPRs(), loadWorkouts()]).finally(() => setLoading(false)) }, [])
 
   const sharePR = async (name: string, display: string, date: string, improvement?: string) => {
     const text = [
@@ -99,7 +101,7 @@ export function PRWallPage() {
     const now = new Date()
     return (now.getTime() - d.getTime()) < 30 * 24 * 60 * 60 * 1000
   }).length
-  // PR streak — weeks in a row with at least one PR
+  // PR streak  -  weeks in a row with at least one PR
   const prStreak = useMemo(() => {
     if (allPRs.length === 0) return 0
     const now = new Date()
@@ -131,23 +133,32 @@ export function PRWallPage() {
     return allPRs[0] || null
   }, [allPRs])
 
-  if (allPRs.length === 0) {
+  if (loading) {
     return (
-      <div className="space-y-3">
+      <div className="space-y-3 stagger-children">
         <h2 className="text-lg font-bold text-ct-1 flex items-center gap-2">
           <Trophy size={20} className="text-yellow-400" /> {t('prWall.title')}
         </h2>
-        <div className="bg-ct-surface rounded-ct-lg p-8 border border-ct-border text-center">
-          <Trophy size={40} className="text-ct-2 mx-auto mb-3" />
-          <p className="text-sm text-ct-2">{t('prWall.noPRsYet')}</p>
-          <p className="text-xs text-ct-2 mt-1">{t('prWall.noPRsDesc')}</p>
+        <div className="flex items-center justify-center py-12">
+          <Loader2 size={24} className="text-cyan-400 animate-spin" />
         </div>
       </div>
     )
   }
 
+  if (allPRs.length === 0) {
+    return (
+      <div className="space-y-3 stagger-children">
+        <h2 className="text-lg font-bold text-ct-1 flex items-center gap-2">
+          <Trophy size={20} className="text-yellow-400" /> {t('prWall.title')}
+        </h2>
+        <EmptyState icon={Trophy} title={t('prWall.noPRsYet')} description={t('prWall.noPRsDesc')} />
+      </div>
+    )
+  }
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 stagger-children">
       <h2 className="text-lg font-bold text-ct-1 flex items-center gap-2">
         <Trophy size={20} className="text-yellow-400" /> {t('prWall.title')}
       </h2>
@@ -262,7 +273,7 @@ export function PRWallPage() {
               return Array.from(byName.entries()).map(([name, movPRs]) => {
                 const best = movPRs[0] // Already sorted by date desc
                 return (
-                  <div key={name} className="flex items-center py-2 border-b border-slate-700/30 last:border-0">
+                  <div key={name} className="flex items-center py-2 border-b border-ct-border/30 last:border-0">
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-ct-1 truncate">{name}</p>
                       <p className="text-[11px] text-ct-2">
@@ -300,14 +311,14 @@ export function PRWallPage() {
         )
       })}
 
-      {/* Timeline — last 10 PRs */}
+      {/* Timeline  -  last 10 PRs */}
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
         <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-3">{t('prWall.timeline')}</p>
         {allPRs.slice(0, 10).map((pr, i) => (
           <div key={pr.id} className="flex items-start gap-3 pb-3 last:pb-0">
             <div className="flex flex-col items-center">
-              <div className={`w-2.5 h-2.5 rounded-full ${i === 0 ? 'bg-yellow-400' : 'bg-slate-600'}`} />
-              {i < Math.min(allPRs.length, 10) - 1 && <div className="w-px h-8 bg-slate-700" />}
+              <div className={`w-2.5 h-2.5 rounded-full ${i === 0 ? 'bg-yellow-400' : 'bg-ct-elevated'}`} />
+              {i < Math.min(allPRs.length, 10) - 1 && <div className="w-px h-8 bg-ct-elevated" />}
             </div>
             <div className="flex-1 -mt-1">
               <div className="flex justify-between items-start">

@@ -1,5 +1,5 @@
 /**
- * PRHighlightCard – Gold PR celebration share card
+ * PRHighlightCard — Gold PR celebration share card
  * Trophy icon, gold gradient border, confetti elements
  */
 
@@ -29,20 +29,14 @@ export function PRHighlightCard({ data, showWatermark }: PRHighlightCardProps) {
     >
       {/* Gold solid border */}
       <div style={{
-        position: 'absolute',
-        inset: 0,
+        position: 'absolute', inset: 0,
         border: '4px solid #d97706',
       }} />
 
       {/* Gold glow effect */}
       <div style={{
-        position: 'absolute',
-        top: '5%',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: 600,
-        height: 600,
-        borderRadius: '50%',
+        position: 'absolute', top: '5%', left: '50%', transform: 'translateX(-50%)',
+        width: 600, height: 600, borderRadius: '50%',
         background: 'radial-gradient(circle, rgba(234,179,8,0.08) 0%, transparent 70%)',
       }} />
 
@@ -55,30 +49,20 @@ export function PRHighlightCard({ data, showWatermark }: PRHighlightCardProps) {
         { bottom: '18%', left: '15%', rot: '30deg', color: '#f59e0b' },
         { bottom: '12%', right: '12%', rot: '-25deg', color: '#eab308' },
       ].map((c, i) => (
-        <div
-          key={i}
-          style={{
-            position: 'absolute',
-            ...Object.fromEntries(Object.entries(c).filter(([k]) => ['top','left','right','bottom'].includes(k))),
-            width: 8,
-            height: 24,
-            borderRadius: 4,
-            background: c.color,
-            opacity: 0.4,
-            transform: `rotate(${c.rot})`,
-          }}
-        />
+        <div key={i} style={{
+          position: 'absolute',
+          ...Object.fromEntries(Object.entries(c).filter(([k]) => ['top','left','right','bottom'].includes(k))),
+          width: 8, height: 24, borderRadius: 4,
+          background: c.color, opacity: 0.4,
+          transform: `rotate(${c.rot})`,
+        }} />
       ))}
 
-      {/* Trophy – gold circle with PR text */}
+      {/* Trophy — gold circle with PR text */}
       <div style={{
-        width: 140,
-        height: 140,
-        borderRadius: '50%',
+        width: 140, height: 140, borderRadius: '50%',
         background: 'radial-gradient(circle, #fbbf24 0%, #eab308 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
         marginBottom: 24,
         boxShadow: '0 0 30px rgba(234,179,8,0.4)',
       }}>
@@ -87,9 +71,7 @@ export function PRHighlightCard({ data, showWatermark }: PRHighlightCardProps) {
 
       {/* NEW PR header */}
       <div style={{
-        fontSize: 36,
-        fontWeight: 900,
-        letterSpacing: 8,
+        fontSize: 36, fontWeight: 900, letterSpacing: 8,
         color: '#eab308',
         marginBottom: 40,
       }}>
@@ -99,41 +81,32 @@ export function PRHighlightCard({ data, showWatermark }: PRHighlightCardProps) {
       {/* Title */}
       <h1 style={{
         fontSize: data.title.length > 20 ? 56 : 72,
-        fontWeight: 900,
-        color: '#f1f5f9',
-        textAlign: 'center',
-        lineHeight: 1.1,
-        margin: '0 0 16px 0',
-        maxWidth: 900,
+        fontWeight: 900, color: '#f1f5f9',
+        textAlign: 'center', lineHeight: 1.1,
+        margin: '0 0 16px 0', maxWidth: 900,
       }}>
         {data.title}
       </h1>
 
       {/* Category + Year */}
       <span style={{
-        fontSize: 22,
-        fontWeight: 700,
-        color: 'rgba(148,163,184,0.5)',
-        letterSpacing: 4,
-        marginBottom: 40,
+        fontSize: 22, fontWeight: 700, color: 'rgba(148,163,184,0.5)',
+        letterSpacing: 4, marginBottom: 40,
       }}>
-        {data.category} {data.year ? ` · ${data.year}` : ''}
+        {data.category}
+        {data.year ? ` · ${data.year}` : ''}
       </span>
 
       {/* Gold divider */}
       <div style={{
-        width: 160,
-        height: 4,
-        borderRadius: 2,
+        width: 160, height: 4, borderRadius: 2,
         background: 'linear-gradient(90deg, transparent, #eab308, transparent)',
         margin: '10px 0 50px 0',
       }} />
 
-      {/* Score – the big hero number */}
+      {/* Score — the big hero number */}
       <div style={{
-        fontSize: 140,
-        fontWeight: 900,
-        lineHeight: 1,
+        fontSize: 140, fontWeight: 900, lineHeight: 1,
         color: '#eab308',
         marginBottom: 24,
         textShadow: '0 0 40px rgba(234,179,8,0.3)',
@@ -143,16 +116,13 @@ export function PRHighlightCard({ data, showWatermark }: PRHighlightCardProps) {
 
       {/* RX badge */}
       <div style={{
-        padding: '12px 36px',
-        borderRadius: 14,
+        padding: '12px 36px', borderRadius: 14,
         background: 'rgba(234,179,8,0.1)',
         border: '2px solid rgba(234,179,8,0.3)',
         marginBottom: 48,
       }}>
         <span style={{
-          fontSize: 28,
-          fontWeight: 800,
-          letterSpacing: 4,
+          fontSize: 28, fontWeight: 800, letterSpacing: 4,
           color: '#eab308',
         }}>
           {data.rxOrScaled}
@@ -161,18 +131,12 @@ export function PRHighlightCard({ data, showWatermark }: PRHighlightCardProps) {
 
       {/* WOD Type + Time Cap */}
       <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 16,
-        marginBottom: 20,
+        display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20,
       }}>
         <span style={{
-          padding: '6px 16px',
-          borderRadius: 8,
+          padding: '6px 16px', borderRadius: 8,
           background: 'rgba(148,163,184,0.06)',
-          fontSize: 18,
-          fontWeight: 700,
-          color: '#64748b',
+          fontSize: 18, fontWeight: 700, color: '#64748b',
         }}>
           {data.wodType === 'ForTime' ? 'FOR TIME' : data.wodType.toUpperCase()}
         </span>
@@ -185,10 +149,7 @@ export function PRHighlightCard({ data, showWatermark }: PRHighlightCardProps) {
 
       {/* Date + Location */}
       <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 8,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
         marginTop: 'auto',
       }}>
         <span style={{ fontSize: 22, color: 'rgba(148,163,184,0.5)', fontWeight: 500 }}>
@@ -204,12 +165,8 @@ export function PRHighlightCard({ data, showWatermark }: PRHighlightCardProps) {
       {/* Watermark */}
       {showWatermark && (
         <div style={{
-          position: 'absolute',
-          bottom: 40,
-          right: 50,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 10,
+          position: 'absolute', bottom: 40, right: 50,
+          display: 'flex', alignItems: 'center', gap: 10,
           opacity: 0.3,
         }}>
           <span style={{ fontSize: 20, fontWeight: 800, color: '#94a3b8', letterSpacing: 2 }}>

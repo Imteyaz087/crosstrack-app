@@ -1,5 +1,5 @@
 // ============================================================
-// TRACKVOLT — CrossFit Event Template Library
+// TRACKVOLT  -  CrossFit Event Template Library
 // Static data: Open 2026, Hero WODs, Girls Benchmarks
 // ============================================================
 
@@ -13,7 +13,7 @@ const OPEN_2026: EventTemplate[] = [
     category: 'open',
     year: 2026,
     number: '26.1',
-    description: 'For Time — Wall-Ball Shots & Box Jump-Overs chipper',
+    description: 'For Time  -  Wall-Ball Shots & Box Jump-Overs chipper',
     wodType: 'ForTime',
     workoutLines: [
       '20 wall-ball shots',
@@ -62,7 +62,7 @@ const HERO_WODS: EventTemplate[] = [
   {
     name: 'Murph',
     category: 'hero',
-    description: 'For Time — 1 mile Run, 100 Pull-ups, 200 Push-ups, 300 Squats, 1 mile Run',
+    description: 'For Time  -  1 mile Run, 100 Pull-ups, 200 Push-ups, 300 Squats, 1 mile Run',
     wodType: 'ForTime',
     workoutLines: [
       '1 mile Run',
@@ -78,7 +78,7 @@ const HERO_WODS: EventTemplate[] = [
   {
     name: 'DT',
     category: 'hero',
-    description: '5 RFT — Deadlifts, Hang Cleans, Push Jerks',
+    description: '5 RFT  -  Deadlifts, Hang Cleans, Push Jerks',
     wodType: 'ForTime',
     workoutLines: [
       '5 rounds for time:',
@@ -92,7 +92,7 @@ const HERO_WODS: EventTemplate[] = [
   {
     name: 'Nate',
     category: 'hero',
-    description: 'AMRAP 20 — Muscle-ups, Handstand Push-ups, Kettlebell Swings',
+    description: 'AMRAP 20  -  Muscle-ups, Handstand Push-ups, Kettlebell Swings',
     wodType: 'AMRAP',
     workoutLines: [
       '20-minute AMRAP:',
@@ -107,7 +107,7 @@ const HERO_WODS: EventTemplate[] = [
   {
     name: 'Michael',
     category: 'hero',
-    description: '3 RFT — Run, Back Extensions, Sit-ups',
+    description: '3 RFT  -  Run, Back Extensions, Sit-ups',
     wodType: 'ForTime',
     workoutLines: [
       '3 rounds for time:',
@@ -121,7 +121,7 @@ const HERO_WODS: EventTemplate[] = [
   {
     name: 'Daniel',
     category: 'hero',
-    description: 'For Time — Thrusters, Pull-ups',
+    description: 'For Time  -  Thrusters, Pull-ups',
     wodType: 'ForTime',
     workoutLines: [
       'For time:',
@@ -139,7 +139,7 @@ const HERO_WODS: EventTemplate[] = [
   {
     name: 'JT',
     category: 'hero',
-    description: '21-15-9 — HSPU, Ring Dips, Push-ups',
+    description: '21-15-9  -  HSPU, Ring Dips, Push-ups',
     wodType: 'ForTime',
     workoutLines: [
       '21-15-9 reps for time:',
@@ -153,7 +153,7 @@ const HERO_WODS: EventTemplate[] = [
   {
     name: 'Chad',
     category: 'hero',
-    description: 'For Time — 1000 Box Step-ups with Vest',
+    description: 'For Time  -  1000 Box Step-ups with Vest',
     wodType: 'ForTime',
     workoutLines: [
       'For time:',
@@ -166,7 +166,7 @@ const HERO_WODS: EventTemplate[] = [
   {
     name: 'Luce',
     category: 'hero',
-    description: '3 RFT — Run, Clean & Jerks',
+    description: '3 RFT  -  Run, Clean & Jerks',
     wodType: 'ForTime',
     workoutLines: [
       '3 rounds for time:',
@@ -179,7 +179,7 @@ const HERO_WODS: EventTemplate[] = [
   {
     name: 'Wittman',
     category: 'hero',
-    description: '7 RFT — KB Swings, Power Cleans, Box Jumps',
+    description: '7 RFT  -  KB Swings, Power Cleans, Box Jumps',
     wodType: 'ForTime',
     workoutLines: [
       '7 rounds for time:',
@@ -193,7 +193,7 @@ const HERO_WODS: EventTemplate[] = [
   {
     name: 'Badger',
     category: 'hero',
-    description: '3 RFT — Squat Cleans, Muscle-ups, Cleans',
+    description: '3 RFT  -  Squat Cleans, Muscle-ups, Cleans',
     wodType: 'ForTime',
     workoutLines: [
       '3 rounds for time:',
@@ -212,7 +212,7 @@ const GIRL_BENCHMARKS: EventTemplate[] = [
   {
     name: 'Fran',
     category: 'girl',
-    description: '21-15-9 — Thrusters & Pull-ups',
+    description: '21-15-9  -  Thrusters & Pull-ups',
     wodType: 'ForTime',
     workoutLines: [
       '21-15-9 reps for time:',
@@ -225,7 +225,7 @@ const GIRL_BENCHMARKS: EventTemplate[] = [
   {
     name: 'Cindy',
     category: 'girl',
-    description: 'AMRAP 20 — Pull-ups, Push-ups, Squats',
+    description: 'AMRAP 20  -  Pull-ups, Push-ups, Squats',
     wodType: 'AMRAP',
     workoutLines: [
       '20-minute AMRAP:',
@@ -240,7 +240,7 @@ const GIRL_BENCHMARKS: EventTemplate[] = [
   {
     name: 'Grace',
     category: 'girl',
-    description: 'For Time — 30 Clean & Jerks',
+    description: 'For Time  -  30 Clean & Jerks',
     wodType: 'ForTime',
     workoutLines: [
       'For time:',
@@ -252,7 +252,7 @@ const GIRL_BENCHMARKS: EventTemplate[] = [
   {
     name: 'Helen',
     category: 'girl',
-    description: '3 RFT — Run, KB Swings, Pull-ups',
+    description: '3 RFT  -  Run, KB Swings, Pull-ups',
     wodType: 'ForTime',
     workoutLines: [
       '3 rounds for time:',
@@ -266,7 +266,7 @@ const GIRL_BENCHMARKS: EventTemplate[] = [
   {
     name: 'Diane',
     category: 'girl',
-    description: '21-15-9 — Deadlifts & HSPU',
+    description: '21-15-9  -  Deadlifts & HSPU',
     wodType: 'ForTime',
     workoutLines: [
       '21-15-9 reps for time:',
@@ -279,7 +279,7 @@ const GIRL_BENCHMARKS: EventTemplate[] = [
   {
     name: 'Isabel',
     category: 'girl',
-    description: 'For Time — 30 Snatches',
+    description: 'For Time  -  30 Snatches',
     wodType: 'ForTime',
     workoutLines: [
       'For time:',
@@ -291,7 +291,7 @@ const GIRL_BENCHMARKS: EventTemplate[] = [
   {
     name: 'Jackie',
     category: 'girl',
-    description: 'For Time — Row, Thrusters, Pull-ups',
+    description: 'For Time  -  Row, Thrusters, Pull-ups',
     wodType: 'ForTime',
     workoutLines: [
       'For time:',
@@ -305,7 +305,7 @@ const GIRL_BENCHMARKS: EventTemplate[] = [
   {
     name: 'Karen',
     category: 'girl',
-    description: 'For Time — 150 Wall-Ball Shots',
+    description: 'For Time  -  150 Wall-Ball Shots',
     wodType: 'ForTime',
     workoutLines: [
       'For time:',
@@ -317,7 +317,7 @@ const GIRL_BENCHMARKS: EventTemplate[] = [
   {
     name: 'Nancy',
     category: 'girl',
-    description: '5 RFT — Run & Overhead Squats',
+    description: '5 RFT  -  Run & Overhead Squats',
     wodType: 'ForTime',
     workoutLines: [
       '5 rounds for time:',
@@ -330,7 +330,7 @@ const GIRL_BENCHMARKS: EventTemplate[] = [
   {
     name: 'Annie',
     category: 'girl',
-    description: '50-40-30-20-10 — Double-Unders & Sit-ups',
+    description: '50-40-30-20-10  -  Double-Unders & Sit-ups',
     wodType: 'ForTime',
     workoutLines: [
       '50-40-30-20-10 reps for time:',

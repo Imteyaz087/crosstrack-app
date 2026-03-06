@@ -1,19 +1,19 @@
 /**
  * Evidence-based macro target calculator
  * Sources: ISSN position stand on diets & body composition (2017),
- * Helms et al. protein recommendations, ACSM guidelines,
- * Mifflin-St Jeor BMR equation (most validated for adults)
+ *          Helms et al. protein recommendations, ACSM guidelines,
+ *          Mifflin-St Jeor BMR equation (most validated for adults)
  */
 
 import type { Goal, Gender } from '../types'
 
-export interface ProfileInput {
+interface ProfileInput {
   weightKg?: number
   heightCm?: number
   age?: number
   gender?: Gender
-  goal?: Goal | string
-  trainingDaysPerWeek?: number
+  goal: Goal
+  trainingDaysPerWeek: number
 }
 
 export interface MacroTargets {
@@ -25,7 +25,7 @@ export interface MacroTargets {
 
 /**
  * Mifflin-St Jeor BMR (kcal/day)
- * Male: 10 × kg + 6.25 × cm − 5 × age + 5
+ * Male:   10 × kg + 6.25 × cm − 5 × age + 5
  * Female: 10 × kg + 6.25 × cm − 5 × age − 161
  */
 function calcBMR(weight: number, height: number, age: number, gender: Gender): number {
@@ -47,14 +47,14 @@ function activityMultiplier(daysPerWeek: number): number {
 
 /**
  * Calorie adjustment by goal
- * - fat_loss: −20 % deficit (evidence-based moderate deficit)
- * - muscle_gain: +10 % surplus (lean bulk)
- * - performance: +5 % slight surplus
- * - recomp: maintenance
+ * - fat_loss:       −20 % deficit (evidence-based moderate deficit)
+ * - muscle_gain:    +10 % surplus (lean bulk)
+ * - performance:    +5 % slight surplus
+ * - recomp:         maintenance
  * - general_health: maintenance
- * - endurance: +10 % (fuel training volume)
+ * - endurance:      +10 % (fuel training volume)
  */
-function goalCalorieMultiplier(goal: Goal | string): number {
+function goalCalorieMultiplier(goal: Goal): number {
   switch (goal) {
     case 'fat_loss': return 0.80
     case 'muscle_gain': return 1.10
@@ -69,14 +69,14 @@ function goalCalorieMultiplier(goal: Goal | string): number {
 /**
  * Protein target in g per kg body weight
  * Based on ISSN position stand & meta-analyses:
- * - fat_loss: 2.2 g/kg (preserve lean mass in deficit)
- * - muscle_gain: 2.0 g/kg (support hypertrophy)
- * - performance: 1.8 g/kg (recovery & power)
- * - recomp: 2.2 g/kg (high protein drives recomp)
+ * - fat_loss:       2.2 g/kg (preserve lean mass in deficit)
+ * - muscle_gain:    2.0 g/kg (support hypertrophy)
+ * - performance:    1.8 g/kg (recovery & power)
+ * - recomp:         2.2 g/kg (high protein drives recomp)
  * - general_health: 1.6 g/kg
- * - endurance: 1.4 g/kg (ACSM guideline)
+ * - endurance:      1.4 g/kg (ACSM guideline)
  */
-function proteinPerKg(goal: Goal | string): number {
+function proteinPerKg(goal: Goal): number {
   switch (goal) {
     case 'fat_loss': return 2.2
     case 'muscle_gain': return 2.0
@@ -94,7 +94,7 @@ function proteinPerKg(goal: Goal | string): number {
  * - endurance: 22 % (prioritize carbs)
  * - others: 25 %
  */
-function fatCaloriePct(goal: Goal | string): number {
+function fatCaloriePct(goal: Goal): number {
   switch (goal) {
     case 'fat_loss': return 0.30
     case 'endurance': return 0.22
@@ -115,18 +115,18 @@ export function calcGoalTargets(profile: ProfileInput | null | undefined): Macro
   const goal = profile?.goal || 'general_health'
   const days = profile?.trainingDaysPerWeek || 3
 
-  // 1. BMR → TDEE → goal-adjusted calories
+  // 1. BMR -> TDEE -> goal-adjusted calories
   const bmr = calcBMR(weight, height, age, gender)
   const tdee = bmr * activityMultiplier(days)
   const calories = Math.round(tdee * goalCalorieMultiplier(goal))
 
-  // 2. Protein (g) — based on body weight
+  // 2. Protein (g)  -  based on body weight
   const protein = Math.round(weight * proteinPerKg(goal))
 
-  // 3. Fat (g) — percentage of total calories (9 kcal/g)
+  // 3. Fat (g)  -  percentage of total calories  (9 kcal/g)
   const fat = Math.round((calories * fatCaloriePct(goal)) / 9)
 
-  // 4. Carbs (g) — remaining calories (4 kcal/g)
+  // 4. Carbs (g)  -  remaining calories  (4 kcal/g)
   const proteinCal = protein * 4
   const fatCal = fat * 9
   const carbs = Math.round(Math.max(0, calories - proteinCal - fatCal) / 4)
@@ -137,7 +137,7 @@ export function calcGoalTargets(profile: ProfileInput | null | undefined): Macro
 /**
  * Friendly label for a Goal type
  */
-export function goalLabel(goal: Goal | string): string {
+export function goalLabel(goal: Goal): string {
   switch (goal) {
     case 'fat_loss': return 'Fat Loss'
     case 'muscle_gain': return 'Muscle Gain'

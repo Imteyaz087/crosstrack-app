@@ -111,7 +111,7 @@ export function MealLogger({
           <ArrowLeft size={20} />
         </button>
         <h1 className="text-2xl font-bold text-ct-1 flex-1">{t('log.logMeal')}</h1>
-        <div className={`tabular-nums px-2.5 py-1 rounded-lg text-sm font-bold shrink-0 ${isOver ? 'bg-red-500/15 text-red-400' : 'bg-slate-800 text-ct-1'}`}>
+        <div className={`tabular-nums px-2.5 py-1 rounded-lg text-sm font-bold shrink-0 ${isOver ? 'bg-red-500/15 text-red-400' : 'bg-ct-surface text-ct-1'}`}>
           {Math.round(targets.calories)}<span className="text-[0.6rem] text-ct-2 font-medium mx-0.5">/</span><span className={isOver ? 'text-red-400' : 'text-cyan-400'}>{Math.round(remainingCal)}</span>
           <span className="text-[0.6rem] text-ct-2 font-medium ml-1">cal</span>
         </div>
@@ -124,13 +124,13 @@ export function MealLogger({
             className={`px-4 py-2 rounded-xl text-[0.8125rem] font-semibold whitespace-nowrap min-h-[40px] transition-all ${
               mealType === mt
                 ? 'bg-cyan-500 text-slate-900 shadow-md shadow-cyan-500/25'
-                : 'bg-slate-800 text-ct-2 border border-slate-700/80 active:bg-slate-700'
+                : 'bg-ct-surface text-ct-2 border border-ct-border active:bg-ct-elevated'
             }`}>{t(`meals.${mt}`)}</button>
         ))}
       </div>
 
       {/* ── Goal & Remaining card ── */}
-      <div className="bg-slate-800/70 rounded-ct-lg border border-ct-border p-3.5">
+      <div className="bg-ct-surface rounded-ct-lg border border-ct-border p-3.5">
         {/* Goal row */}
         <div className="flex items-center justify-between mb-2">
           <span className="text-[11px] text-ct-2 uppercase tracking-wider font-semibold">{goalName} {t('log.goal')}</span>
@@ -155,7 +155,7 @@ export function MealLogger({
             <p className="text-[0.6rem] text-ct-2 uppercase tracking-wider mt-0.5">{t('log.fat')}</p>
           </div>
         </div>
-        <p className="text-[0.625rem] text-slate-600 text-center mt-2">{t('log.remaining')}</p>
+        <p className="text-[0.625rem] text-ct-2 text-center mt-2">{t('log.remaining')}</p>
       </div>
 
       {/* ── Items logged for this meal type ── */}
@@ -163,11 +163,11 @@ export function MealLogger({
         <div className="bg-ct-surface rounded-ct-lg border border-ct-border overflow-hidden">
           <div className="px-4 pt-3 pb-1.5">
             <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 font-semibold">
-              {t(`meals.${mealType}`)} — {mealsForType.length} item{mealsForType.length > 1 ? 's' : ''}
+              {t(`meals.${mealType}`)}  -  {mealsForType.length} item{mealsForType.length > 1 ? 's' : ''}
             </p>
           </div>
           {mealsForType.map(m => (
-            <div key={m.id} className="flex items-center px-4 py-2.5 border-b border-slate-700/30 last:border-0">
+            <div key={m.id} className="flex items-center px-4 py-2.5 border-b border-ct-border last:border-0">
               <div className="flex-1 min-w-0 mr-2">
                 <p className="text-sm text-ct-1 font-medium truncate">{m.foodName}</p>
                 <p className="text-[11px] text-ct-2 tabular-nums">
@@ -187,8 +187,8 @@ export function MealLogger({
               )}
             </div>
           ))}
-          {/* Meal total — grid layout so nothing clips */}
-          <div className="grid grid-cols-4 gap-1 px-4 py-2.5 bg-slate-700/20">
+          {/* Meal total  -  grid layout so nothing clips */}
+          <div className="grid grid-cols-4 gap-1 px-4 py-2.5 bg-ct-elevated/30">
             <div className="text-center">
               <p className="text-xs font-bold text-cyan-400 tabular-nums">{Math.round(mealsForTypeMacros.calories)}</p>
               <p className="text-[0.6rem] text-ct-2">cal</p>
@@ -214,14 +214,14 @@ export function MealLogger({
         <div className="flex gap-2">
           {onOpenScanner && (
             <button onClick={onOpenScanner}
-              className="flex-1 bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 flex items-center justify-center gap-2 active:bg-ct-elevated min-h-[44px]">
+              className="flex-1 bg-ct-surface border border-ct-border rounded-xl py-2.5 px-3 flex items-center justify-center gap-2 active:bg-ct-elevated min-h-[44px]">
               <ScanBarcode size={20} className="text-cyan-400" />
               <span className="text-sm font-semibold text-ct-2">{t('scanner.scan')}</span>
             </button>
           )}
           {onOpenCustomFood && (
             <button onClick={onOpenCustomFood}
-              className="flex-1 bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 flex items-center justify-center gap-2 active:bg-ct-elevated min-h-[44px]">
+              className="flex-1 bg-ct-surface border border-ct-border rounded-xl py-2.5 px-3 flex items-center justify-center gap-2 active:bg-ct-elevated min-h-[44px]">
               <PlusCircle size={20} className="text-green-400" />
               <span className="text-sm font-semibold text-ct-2">{t('customFood.create')}</span>
             </button>
@@ -234,7 +234,7 @@ export function MealLogger({
         <Search size={16} className="absolute left-3 top-3.5 text-ct-2" />
         <input ref={searchRef} type="text" value={foodSearch} onChange={e => { onFoodSearchChange(e.target.value); onShowAllFoodsChange(false) }}
           placeholder={t('log.searchFoods')} aria-label={t('log.searchFoods')}
-          className="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 pl-10 pr-3 text-ct-1 text-sm placeholder:text-ct-2 focus:outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 min-h-[44px]" />
+          className="w-full bg-ct-surface border border-ct-border rounded-xl py-3 pl-10 pr-3 text-ct-1 text-sm placeholder:text-ct-2 focus:outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 min-h-[44px]" />
       </div>
 
       {/* ── Search results: Local Library ── */}
@@ -242,13 +242,13 @@ export function MealLogger({
         <div className="space-y-2">
           {/* Local library results */}
           {searchFiltered.length > 0 && (
-            <div className="bg-slate-800/80 rounded-xl border border-ct-border max-h-48 overflow-y-auto">
+            <div className="bg-ct-surface rounded-xl border border-ct-border max-h-48 overflow-y-auto">
               <div className="px-3 pt-2.5 pb-1">
                 <p className="text-[10px] uppercase tracking-[0.1em] text-ct-2 font-semibold">Your Library</p>
               </div>
               {searchFiltered.slice(0, 8).map(food => (
                 <button key={food.id} onClick={() => onSelectFood(food)}
-                  className="w-full text-left px-4 py-3 border-b border-slate-700/30 last:border-0 active:bg-ct-elevated/50 min-h-[44px]">
+                  className="w-full text-left px-4 py-3 border-b border-ct-border last:border-0 active:bg-ct-elevated/50 min-h-[44px]">
                   <p className="text-sm font-medium text-ct-1">{food.name}</p>
                   <p className="text-[11px] text-ct-2 mt-0.5 tabular-nums">
                     {food.caloriesPer100g} cal · P:{food.proteinPer100g}g · C:{food.carbsPer100g}g · F:{food.fatPer100g}g /100g
@@ -260,7 +260,7 @@ export function MealLogger({
 
           {/* USDA API results */}
           {(apiResults.length > 0 || apiSearching) && (
-            <div className="bg-slate-800/80 rounded-xl border border-cyan-500/20 max-h-56 overflow-y-auto">
+            <div className="bg-ct-surface rounded-xl border border-cyan-500/20 max-h-56 overflow-y-auto">
               <div className="px-3 pt-2.5 pb-1 flex items-center gap-1.5">
                 <Globe size={10} className="text-cyan-400" />
                 <p className="text-[10px] uppercase tracking-[0.1em] text-cyan-400 font-semibold">USDA Database</p>
@@ -268,7 +268,7 @@ export function MealLogger({
               </div>
               {apiResults.map((r, i) => (
                 <button key={r.fdcId || i} onClick={() => onSelectApiResult?.(r)}
-                  className="w-full text-left px-4 py-3 border-b border-slate-700/30 last:border-0 active:bg-ct-elevated/50 min-h-[44px]">
+                  className="w-full text-left px-4 py-3 border-b border-ct-border last:border-0 active:bg-ct-elevated/50 min-h-[44px]">
                   <div className="flex items-start gap-2">
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-ct-1 leading-tight">{r.name}</p>
@@ -293,7 +293,7 @@ export function MealLogger({
 
           {/* No results at all */}
           {searchFiltered.length === 0 && apiResults.length === 0 && !apiSearching && (
-            <div className="bg-slate-800/80 rounded-xl border border-ct-border py-4">
+            <div className="bg-ct-surface rounded-xl border border-ct-border py-4">
               <p className="text-sm text-ct-2 text-center">{t('log.noFoodsFound')}</p>
               {foodSearch.trim().length < 3 && (
                 <p className="text-xs text-ct-2 text-center mt-1">Type 3+ letters to search USDA</p>
@@ -356,7 +356,7 @@ export function MealLogger({
           </div>
           {recentFoods.slice(0, 6).map(({ food, lastGrams, count }) => (
             <button key={food.id} onClick={() => onSelectFood(food, lastGrams)}
-              className="w-full text-left px-4 py-3 border-b border-slate-700/30 last:border-0 active:bg-ct-elevated/50 flex items-center justify-between min-h-[44px]">
+              className="w-full text-left px-4 py-3 border-b border-ct-border last:border-0 active:bg-ct-elevated/50 flex items-center justify-between min-h-[44px]">
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-ct-1 truncate">{food.name}</p>
                 <p className="text-[11px] text-ct-2">{lastGrams}g last time{count > 1 ? ` (${count}x)` : ''}</p>
@@ -371,7 +371,7 @@ export function MealLogger({
       {!foodSearch && !selectedFood && (
         <div className="bg-ct-surface rounded-ct-lg border border-ct-border overflow-hidden">
           <button onClick={() => onShowAllFoodsChange(!showAllFoods)}
-            className="w-full flex items-center justify-between px-4 py-3 active:bg-slate-700/30 min-h-[44px]">
+            className="w-full flex items-center justify-between px-4 py-3 active:bg-ct-elevated/30 min-h-[44px]">
             <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 font-semibold">{t('log.allFoods')} ({foods.length})</p>
             <ChevronDown size={14} className={`text-ct-2 transition-transform ${showAllFoods ? 'rotate-180' : ''}`} />
           </button>
@@ -379,7 +379,7 @@ export function MealLogger({
             <div className="max-h-64 overflow-y-auto">
               {foods.map(food => (
                 <button key={food.id} onClick={() => onSelectFood(food)}
-                  className="w-full text-left px-4 py-3 border-b border-slate-700/30 last:border-0 active:bg-ct-elevated/50 min-h-[44px]">
+                  className="w-full text-left px-4 py-3 border-b border-ct-border last:border-0 active:bg-ct-elevated/50 min-h-[44px]">
                   <p className="text-sm font-medium text-ct-1">{food.name}</p>
                   <p className="text-[11px] text-ct-2 tabular-nums">{food.caloriesPer100g} cal · P:{food.proteinPer100g}g /100g</p>
                 </button>

@@ -68,7 +68,7 @@ export function useWorkoutForm(
   // Store selected benchmark so we can update weights when RX/Scaled changes
   const [selectedBenchmark, setSelectedBenchmark] = useState<BenchmarkWod | null>(null)
 
-  // Share card data — set after save, cleared when user dismisses
+  // Share card data  -  set after save, cleared when user dismisses
   const [pendingShareData, setPendingShareData] = useState<ShareCardData | null>(null)
 
   // ── #2 Previous Result Auto-load ──
@@ -174,7 +174,7 @@ export function useWorkoutForm(
       }
     }
     setWodName(w.name || '')
-    // Strip the "WOD: " prefix that was added during save — extract just the
+    // Strip the "WOD: " prefix that was added during save  -  extract just the
     // WOD part from the stored description (handles both WOD-only and combined)
     const rawDesc = w.description || ''
     const wodLine = rawDesc.split('\n').find(l => l.startsWith('WOD: '))
@@ -208,7 +208,7 @@ export function useWorkoutForm(
       if (tabMatch) setScoreReps(tabMatch[1])
     }
 
-    // Loads → strength fields
+    // Loads -> strength fields
     if (w.loads) {
       if (w.loads['strength_movement']) setStrengthMovement(w.loads['strength_movement'])
       if (w.loads['strength_start']) {
@@ -292,10 +292,10 @@ export function useWorkoutForm(
       parts.push(`Build to ${strengthBuildTarget}`)
     }
     const sw = strengthStartWeight, ew = strengthEndWeight
-    if (sw && ew) parts.push(`${sw}→${ew} ${weightUnit}`)
+    if (sw && ew) parts.push(`${sw}->${ew} ${weightUnit}`)
     else if (ew) parts.push(`${ew} ${weightUnit}`)
     if (strengthPercent) parts.push(`@${strengthPercent}%`)
-    return parts.join(' — ')
+    return parts.join('  -  ')
   }
 
   const resetAll = () => {
@@ -433,7 +433,7 @@ export function useWorkoutForm(
           const parts = [m.name]
           if (m.weight) parts.push(`${m.weight} ${weightUnit}`)
           if (m.detail) parts.push(`(${m.detail})`)
-          shareLines.push(parts.join(' — '))
+          shareLines.push(parts.join('  -  '))
         })
       }
 
@@ -442,7 +442,7 @@ export function useWorkoutForm(
         category: categoryLabel,
         categoryType,
         wodType: workoutType as import('../types').WodType,
-        scoreDisplay: fullScore || '—',
+        scoreDisplay: fullScore || ' - ',
         rxOrScaled: rxScaled,
         prFlag: autoPR,
         date: today(),

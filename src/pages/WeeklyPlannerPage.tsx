@@ -114,30 +114,29 @@ export function WeeklyPlannerPage() {
   }
 
   const plannedCount = weeklyPlans.length
-  const completedCount = weeklyPlans.filter((p: import('../types').WeeklyPlan) => p.completed || loggedDays.has(p.dayIndex)).length
+  const completedCount = weeklyPlans.filter(p => p.completed || loggedDays.has(p.dayIndex)).length
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 stagger-children">
       {toastEl}
       <h2 className="text-lg font-bold text-ct-1 flex items-center gap-2">
-        <Calendar size={20} className="text-cyan-400" />
-        Weekly Planner
+        <Calendar size={20} className="text-cyan-400" /> Weekly Planner
       </h2>
 
       {/* Week navigation */}
       <div className="flex items-center justify-between bg-ct-surface rounded-ct-lg p-3 border border-ct-border">
-        <button onClick={() => setWeekOffset(o => o - 1)} className="p-2 rounded-lg active:bg-ct-elevated/50" aria-label="Previous week">
+        <button onClick={() => setWeekOffset(o => o - 1)} className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg active:bg-ct-elevated/50" aria-label="Previous week">
           <ChevronLeft size={20} className="text-ct-2" />
         </button>
         <div className="text-center">
           <p className="text-sm font-bold text-ct-1">
-            {weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} \u2014 {
+            {weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}  -  {
               (() => { const d = new Date(weekStart); d.setDate(d.getDate() + 6); return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) })()
             }
           </p>
           {isThisWeek && <p className="text-[11px] text-cyan-400 font-bold">This Week</p>}
         </div>
-        <button onClick={() => setWeekOffset(o => o + 1)} className="p-2 rounded-lg active:bg-ct-elevated/50" aria-label="Next week">
+        <button onClick={() => setWeekOffset(o => o + 1)} className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg active:bg-ct-elevated/50" aria-label="Next week">
           <ChevronRight size={20} className="text-ct-2" />
         </button>
       </div>
@@ -157,9 +156,10 @@ export function WeeklyPlannerPage() {
 
       {/* Day cards */}
       {DAYS.map((day, i) => {
-        const dayPlans = weeklyPlans.filter((p: { dayIndex: number }) => p.dayIndex === i)
+        const dayPlans = weeklyPlans.filter(p => p.dayIndex === i)
         const hasLogged = loggedDays.has(i)
         const isToday = i === todayIndex && isThisWeek
+
         return (
           <div key={i} className={`bg-ct-surface rounded-ct-lg p-3 border ${
             isToday ? 'border-cyan-500/50 bg-cyan-500/5' : 'border-ct-border'
@@ -172,7 +172,7 @@ export function WeeklyPlannerPage() {
                 {hasLogged && <Check size={12} className="text-green-400" />}
               </div>
               <button onClick={() => { setEditingDay(i); setEditName(''); setEditDesc('') }}
-                className="p-2 rounded-lg bg-ct-elevated/50 active:bg-slate-600/50" aria-label={`Add workout for ${day}`}>
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg bg-ct-elevated/50 active:bg-ct-elevated/50" aria-label={`Add workout for ${day}`}>
                 <Plus size={14} className="text-ct-2" />
               </button>
             </div>
@@ -181,20 +181,19 @@ export function WeeklyPlannerPage() {
               <p className="text-[11px] text-ct-2 italic">Rest day</p>
             )}
 
-            {dayPlans.map((p: import('../types').WeeklyPlan) => (
-              <div key={p.id} className={`flex items-center gap-2 py-1.5 border-t border-slate-700/30`}>
+            {dayPlans.map((p) => (
+              <div key={p.id} className={`flex items-center gap-2 py-1.5 border-t border-ct-border/30`}>
                 <button onClick={() => handleToggleComplete(p.id!)}
                   className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                    p.completed || hasLogged ? 'bg-green-500/20 border-green-500' : 'border-slate-600'
+                    p.completed || hasLogged ? 'bg-green-500/20 border-green-500' : 'border-ct-border'
                   }`}>
                   {(p.completed || hasLogged) && <Check size={10} className="text-green-400" />}
                 </button>
                 <div className="flex-1 min-w-0">
                   <p className={`text-xs font-semibold ${p.completed ? 'text-ct-2 line-through' : 'text-ct-1'}`}>{p.name}</p>
-                  <p className="text-[11px] text-ct-2">{p.type}{p.description ? ` \u2014 ${p.description}` : ''}</p>
+                  <p className="text-[11px] text-ct-2">{p.type}{p.description ? `  -  ${p.description}` : ''}</p>
                 </div>
-                <button onClick={() => removeWorkout(p.id!)}
-                  className="p-2 rounded-lg active:bg-ct-elevated/50" aria-label={`Remove ${p.name}`}>
+                <button onClick={() => removeWorkout(p.id!)} className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg active:bg-ct-elevated/50" aria-label={`Remove ${p.name}`}>
                   <X size={12} className="text-ct-2" />
                 </button>
               </div>
@@ -205,29 +204,34 @@ export function WeeklyPlannerPage() {
 
       {/* Add workout modal */}
       {editingDay !== null && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-end justify-center" onClick={() => setEditingDay(null)}>
-          <div className="bg-slate-800 rounded-t-2xl p-5 w-full max-w-lg border-t border-slate-700" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-end justify-center" onClick={() => setEditingDay(null)} role="dialog" aria-modal="true" aria-label="Plan workout">
+          <div className="bg-ct-surface rounded-t-2xl p-5 w-full max-w-lg border-t border-ct-border" onClick={e => e.stopPropagation()}>
             <p className="text-sm font-bold text-ct-1 mb-3">Plan {DAYS[editingDay]}'s Workout</p>
             <input
-              type="text" value={editName} onChange={e => setEditName(e.target.value)}
+              type="text"
+              value={editName}
+              onChange={e => setEditName(e.target.value)}
               placeholder="Workout name (e.g. Fran, Back Squat)"
-              className="w-full bg-ct-elevated/50 border border-slate-600/50 rounded-xl py-2.5 px-3 text-sm text-ct-1 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-400 mb-2"
+              className="w-full bg-ct-elevated/50 border border-ct-border/50 rounded-xl py-2.5 px-3 text-sm text-ct-1 placeholder-ct-2 focus:outline-none focus:ring-1 focus:ring-cyan-400 mb-2"
               autoFocus
             />
             <select value={editType} onChange={e => setEditType(e.target.value as WodType)}
-              className="w-full bg-ct-elevated/50 border border-slate-600/50 rounded-xl py-2.5 px-3 text-sm text-ct-1 mb-2 focus:outline-none focus:ring-1 focus:ring-cyan-400">
-              {['AMRAP', 'ForTime', 'EMOM', 'Tabata', 'Chipper', 'Strength', 'StrengthMetcon', 'HYROX', 'Running', 'Cardio', 'Other'].map(t => (
+              className="w-full bg-ct-elevated/50 border border-ct-border/50 rounded-xl py-2.5 px-3 text-sm text-ct-1 mb-2 focus:outline-none focus:ring-1 focus:ring-cyan-400">
+              {['AMRAP', 'ForTime', 'EMOM', 'Tabata', 'Strength', 'StrengthMetcon', 'HYROX', 'Running', 'Cardio', 'Other'].map(t => (
                 <option key={t} value={t}>{t}</option>
               ))}
             </select>
             <input
-              type="text" value={editDesc} onChange={e => setEditDesc(e.target.value)}
+              type="text"
+              value={editDesc}
+              onChange={e => setEditDesc(e.target.value)}
               placeholder="Notes (optional)"
-              className="w-full bg-ct-elevated/50 border border-slate-600/50 rounded-xl py-2.5 px-3 text-sm text-ct-1 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-400 mb-3"
+              className="w-full bg-ct-elevated/50 border border-ct-border/50 rounded-xl py-2.5 px-3 text-sm text-ct-1 placeholder-ct-2 focus:outline-none focus:ring-1 focus:ring-cyan-400 mb-3"
             />
             <div className="flex gap-2">
               <button onClick={() => setEditingDay(null)} className="flex-1 bg-ct-elevated text-ct-2 font-bold py-2.5 rounded-xl text-sm">Cancel</button>
-              <button onClick={addWorkout} disabled={!editName.trim()}
+              <button onClick={addWorkout}
+                disabled={!editName.trim()}
                 className={`flex-1 font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 ${
                   editName.trim() ? 'bg-cyan-500 text-black active:scale-[0.98]' : 'bg-ct-elevated/60 text-ct-2 cursor-not-allowed'
                 }`}>

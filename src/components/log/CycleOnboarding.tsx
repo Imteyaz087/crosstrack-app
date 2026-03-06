@@ -112,7 +112,7 @@ export function CycleOnboarding({ onComplete, onSkip }: CycleOnboardingProps) {
             value={lastPeriodStart}
             onChange={e => setLastPeriodStart(e.target.value)}
             max={new Date().toISOString().split('T')[0]}
-            className="w-full bg-ct-elevated/60 rounded-xl py-4 px-4 text-ct-1 text-center text-lg font-medium focus:outline-none focus:ring-2 focus:ring-violet-400/40 border border-slate-600/30"
+            className="w-full bg-ct-elevated/60 rounded-xl py-4 px-4 text-ct-1 text-center text-lg font-medium focus:outline-none focus:ring-2 focus:ring-violet-400/40 border border-ct-border"
           />
           <button onClick={() => setStep(3)}
             className="w-full bg-violet-500 text-ct-1 font-bold py-4 rounded-xl active:scale-[0.98] transition-transform">
@@ -197,7 +197,7 @@ export function CycleOnboarding({ onComplete, onSkip }: CycleOnboardingProps) {
           </div>
           <div className="flex gap-3">
             <button onClick={() => { setContraceptionType('none'); setStep(6) }}
-              className="flex-1 py-3 text-ct-2 font-medium text-sm rounded-xl active:bg-slate-700/30">
+              className="flex-1 py-3 text-ct-2 font-medium text-sm rounded-xl active:bg-ct-elevated/30">
               {t('cycle.skipLabel')}
             </button>
             <button onClick={() => setStep(6)}
@@ -225,7 +225,7 @@ export function CycleOnboarding({ onComplete, onSkip }: CycleOnboardingProps) {
                 className={`w-full text-left p-4 rounded-xl transition-all ${
                   pregnancyStatus === opt.value
                     ? 'bg-violet-500/15 border border-violet-400/30'
-                    : 'bg-ct-surface border border-slate-700/30'
+                    : 'bg-ct-surface border border-ct-border'
                 }`}>
                 <p className={`text-sm font-bold ${pregnancyStatus === opt.value ? 'text-violet-400' : 'text-ct-1'}`}>{t(opt.labelKey)}</p>
                 <p className="text-[11px] text-ct-2 mt-0.5">{t(opt.descKey)}</p>

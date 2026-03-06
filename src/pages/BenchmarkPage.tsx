@@ -15,8 +15,9 @@ export function BenchmarkPage() {
   ]
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 stagger-children">
       <h1 className="text-xl font-bold text-ct-1">{t('benchmark.title')}</h1>
+
       {categories.map(({ key, label, color }) => {
         const wods = benchmarkWods.filter(w => w.category === key)
         if (wods.length === 0) return null

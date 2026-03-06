@@ -48,7 +48,7 @@ function App() {
   // Show loading while profile is being fetched
   if (isLoading) {
     return (
-      <div className="h-screen-safe bg-slate-950 text-white flex items-center justify-center">
+      <div className="h-screen-safe bg-ct-bg text-white flex items-center justify-center">
         <LoadingSpinner text="Starting TRACKVOLT..." />
       </div>
     )
@@ -57,7 +57,7 @@ function App() {
   // Show error with retry if loading failed
   if (loadError) {
     return (
-      <div className="h-screen-safe bg-slate-950 text-white flex items-center justify-center">
+      <div className="h-screen-safe bg-ct-bg text-white flex items-center justify-center">
         <ErrorRetry message={loadError} onRetry={() => { clearLoadError(); loadProfile() }} />
       </div>
     )
@@ -66,7 +66,7 @@ function App() {
   // Show onboarding if profile doesn't exist or onboarding not complete
   if (!profile || !profile.onboardingComplete) {
     return (
-      <Suspense fallback={<div className="h-screen-safe bg-slate-950 text-white flex items-center justify-center"><LoadingSpinner text="Loading..." /></div>}>
+      <Suspense fallback={<div className="h-screen-safe bg-ct-bg text-white flex items-center justify-center"><LoadingSpinner text="Loading..." /></div>}>
         <OnboardingPage />
       </Suspense>
     )
@@ -81,8 +81,11 @@ function App() {
   }
 
   return (
-    <div className="h-screen-safe bg-slate-950 text-white flex flex-col overflow-hidden">
-      <main ref={mainRef} className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain" role="tabpanel" aria-label={activeTab}>
+    <div className="h-screen-safe bg-ct-bg text-white flex flex-col overflow-hidden">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-[999] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-cyan-500 focus:text-slate-900 focus:rounded-lg focus:text-sm focus:font-bold">
+        Skip to content
+      </a>
+      <main ref={mainRef} id="main-content" className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain" role="tabpanel" aria-label={activeTab}>
         <Suspense fallback={<div className="max-w-lg mx-auto w-full px-4 pt-safe-plus pb-tab-bar"><TodayPageSkeleton /></div>}>
           <div className={`max-w-lg mx-auto w-full px-4 pt-safe-plus pb-tab-bar ${
             slideDirection === 'right' ? 'animate-slide-right' :
@@ -93,6 +96,9 @@ function App() {
           </div>
         </Suspense>
       </main>
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {activeTab === 'today' ? 'Today' : activeTab === 'log' ? 'Log' : activeTab === 'train' ? 'Training' : activeTab === 'eat' ? 'Nutrition' : 'More'} tab selected
+      </div>
       <OfflineBar />
       <TabBar />
       <InstallPrompt />

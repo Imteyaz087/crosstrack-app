@@ -1,9 +1,15 @@
 import { initializeApp, type FirebaseApp } from 'firebase/app'
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut as fbSignOut, onAuthStateChanged, type User } from 'firebase/auth'
-import { getFirestore, doc, setDoc, getDoc, writeBatch, type Firestore } from 'firebase/firestore'
+import {
+  getAuth, signInWithPopup, GoogleAuthProvider, signOut as fbSignOut,
+  onAuthStateChanged, type User
+} from 'firebase/auth'
+import {
+  getFirestore, doc, setDoc, getDoc, writeBatch,
+  type Firestore
+} from 'firebase/firestore'
 
 // ---- Firebase Config ----
-// Priority: env vars (build-time) → localStorage (user-configured at runtime)
+// Priority: env vars (build-time) -> localStorage (user-configured at runtime)
 const CONFIG_KEY = 'trackvolt_firebase_config'
 
 export interface FirebaseConfig {
@@ -29,15 +35,12 @@ export function getFirebaseConfig(): FirebaseConfig | null {
       appId: import.meta.env.VITE_FIREBASE_APP_ID || '',
     }
   }
-
   // Fall back to localStorage for user-configured setups
   try {
     const raw = localStorage.getItem(CONFIG_KEY)
     if (!raw) return null
     return JSON.parse(raw) as FirebaseConfig
-  } catch {
-    return null
-  }
+  } catch { return null }
 }
 
 export function setFirebaseConfig(config: FirebaseConfig) {
@@ -85,7 +88,6 @@ export function getAppFirestore() {
 }
 
 // ---- Auth ----
-
 export async function signInWithGoogle(): Promise<User> {
   try {
     const auth = getAppAuth()
@@ -116,13 +118,11 @@ export function getCurrentUser(): User | null {
   try {
     const auth = getAppAuth()
     return auth.currentUser
-  } catch {
-    return null
-  }
+  } catch { return null }
 }
 
 // ---- Firestore Sync ----
-// Data structure: users/{uid}/data/{tableName} → { items: [...], updatedAt: timestamp }
+// Data structure: users/{uid}/data/{tableName} -> { items: [...], updatedAt: timestamp }
 
 export async function uploadAllData(uid: string, data: Record<string, any[]>): Promise<void> {
   const db = getAppFirestore()
@@ -152,8 +152,8 @@ export async function downloadAllData(uid: string): Promise<Record<string, any[]
     const ref = doc(db, 'users', uid, 'data', tableName)
     const snap = await getDoc(ref)
     if (snap.exists()) {
-      const d = snap.data() as { items?: any[] }
-      result[tableName] = d?.items ?? []
+      const d = snap.data()
+      result[tableName] = Array.isArray(d.items) ? d.items : []
       hasData = true
     }
   }
@@ -165,7 +165,10 @@ export async function getLastSyncTime(uid: string): Promise<string | null> {
   const db = getAppFirestore()
   const ref = doc(db, 'users', uid, 'meta', 'sync')
   const snap = await getDoc(ref)
-  if (snap.exists()) return (snap.data() as { lastSync?: string })?.lastSync ?? null
+  if (snap.exists()) {
+    const lastSync = snap.data().lastSync
+    return typeof lastSync === 'string' ? lastSync : null
+  }
   return null
 }
 

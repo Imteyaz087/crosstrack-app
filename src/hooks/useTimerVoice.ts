@@ -30,7 +30,7 @@ export function useTimerVoice() {
     return voiceRef.current
   }, [getSynth])
 
-  const speak = useCallback((text: string, rate = 1.8, pitch = 1.9) => {
+  const speak = useCallback((text: string, rate = 1.15, pitch = 1.0) => {
     try {
       const synth = getSynth()
       if (!synth) return
@@ -42,16 +42,47 @@ export function useTimerVoice() {
       const voice = getVoice()
       if (voice) utter.voice = voice
       synth.speak(utter)
-    } catch { }
+    } catch {
+      // Speech synthesis not available
+    }
   }, [getSynth, getVoice])
 
-  const speakCountdown = useCallback((num: number) => { speak(String(num), 1.9, 2.0) }, [speak])
-  const speakGo = useCallback(() => { speak('GO!', 2.0, 2.0) }, [speak])
-  const speakTenSecondsRemaining = useCallback(() => { speak('Ten seconds! Push it!', 1.8, 1.8) }, [speak])
-  const speakTimesUp = useCallback(() => { speak("Time! Great effort! Well done!", 1.7, 1.7) }, [speak])
-  const speakGetReady = useCallback(() => { speak("Let's go! Get ready!", 1.8, 1.9) }, [speak])
-  const speakWork = useCallback(() => { speak('WORK! Let\'s go!', 1.9, 2.0) }, [speak])
-  const speakRest = useCallback(() => { speak('Rest! Breathe!', 1.6, 1.6) }, [speak])
+  const speakCountdown = useCallback((num: number) => {
+    speak(String(num), 1.05, 0.95)
+  }, [speak])
 
-  return { speak, speakCountdown, speakGo, speakTenSecondsRemaining, speakTimesUp, speakGetReady, speakWork, speakRest }
+  const speakGo = useCallback(() => {
+    speak('Go', 1.2, 1.0)
+  }, [speak])
+
+  const speakTenSecondsRemaining = useCallback(() => {
+    speak('Ten seconds', 1.08, 0.95)
+  }, [speak])
+
+  const speakTimesUp = useCallback(() => {
+    speak('Time', 1.05, 0.95)
+  }, [speak])
+
+  const speakGetReady = useCallback(() => {
+    speak('Get ready', 1.05, 0.98)
+  }, [speak])
+
+  const speakWork = useCallback(() => {
+    speak('Work', 1.15, 1.0)
+  }, [speak])
+
+  const speakRest = useCallback(() => {
+    speak('Rest', 1.05, 0.95)
+  }, [speak])
+
+  return {
+    speak,
+    speakCountdown,
+    speakGo,
+    speakTenSecondsRemaining,
+    speakTimesUp,
+    speakGetReady,
+    speakWork,
+    speakRest,
+  }
 }

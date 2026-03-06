@@ -362,7 +362,7 @@ export const useStore = create<AppStore>((set, get) => ({
       ) as [string, any[]][]
       if (validEntries.length === 0) throw new Error('No valid data tables found in import file')
 
-      // Use Dexie transaction for atomic import — if anything fails, everything rolls back
+      // Use Dexie transaction for atomic import  -  if anything fails, everything rolls back
       const tableNames = validEntries.map(([key]) => key)
       const tables = tableNames.map(name => (db as any)[name]).filter(Boolean)
       await db.transaction('rw', tables, async () => {
@@ -395,7 +395,7 @@ export const useStore = create<AppStore>((set, get) => ({
       ) as [string, any[]][]
       if (validEntries.length === 0) return
 
-      // Use Dexie transaction for atomic sync import — rolls back on any failure
+      // Use Dexie transaction for atomic sync import  -  rolls back on any failure
       const tables = validEntries.map(([key]) => (db as any)[key]).filter(Boolean)
       await db.transaction('rw', tables, async () => {
         for (const [key, val] of validEntries) {

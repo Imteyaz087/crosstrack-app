@@ -8,7 +8,7 @@ The local source is an EARLIER version. Production (deployment GTeJwY1rw) has:
 - 3 service files in src/services/ (all missing locally)
 - ~15 extra components in src/components/ (all missing locally)
 - 2 serverless functions in api/ (missing locally)
-- Richer page implementations (e.g., 60 achievements vs local’s 12)
+- Richer page implementations (e.g., 60 achievements vs local's 12)
 
 ⚠️ **DO NOT DEPLOY LOCAL CODE** — it would OVERWRITE production with simpler versions!
 
@@ -86,7 +86,7 @@ If production breaks:
 - Org ID: team_S7ukXJeYnSsExx3B9QOmqqMD
 
 ## File Access Notes
-- MCP filesystem tool has direct read/write access to `C:\ClaudeWork\Imu\TrackVolt-App\`
+- MCP filesystem tool has direct read/write access to `C:\\ClaudeWork\\Imu\\TrackVolt-App\\`
 - Bash tool runs in Linux VM — CANNOT access Windows filesystem
 - Vite dev server auto-reloads when files are written via MCP filesystem
 
@@ -94,14 +94,14 @@ If production breaks:
 *Last updated: March 5, 2026 — Session 2*
 
 ## Session Note (2026-03-06)
-- Confirmed working source root: `C:\ClaudeWork\Imu\TrackVolt-App`
+- Confirmed working source root: `C:\\ClaudeWork\\Imu\\TrackVolt-App`
 - Do parity checks against live `https://trackvolt.app` before any deploy discussion
-- Source handoff artifact available: `C:\ClaudeWork\Imu\TrackVolt-App.zip`
+- Source handoff artifact available: `C:\\ClaudeWork\\Imu\\TrackVolt-App.zip`
 
 ## Session Note (2026-03-06, Verification Pass)
-- Workspace root remains `C:\ClaudeWork\Imu\TrackVolt-App`
+- Workspace root remains `C:\\ClaudeWork\\Imu\\TrackVolt-App`
 - Do not start feature implementation from this prompt alone; wait for explicit `CONFIRM BUILD`
-- Current handoff options remain valid: GitHub remote configured and ZIP package present at `C:\ClaudeWork\Imu\TrackVolt-App.zip`
+- Current handoff options remain valid: GitHub remote configured and ZIP package present at `C:\\ClaudeWork\\Imu\\TrackVolt-App.zip`
 
 ## Session Note (2026-03-06, Build Parity Pass)
 - Live `CardioLogger` currently matches local; avoid redundant Run rewrites unless live behavior changes.
@@ -144,3 +144,89 @@ If production breaks:
 - Local `src/data/movements.json` now matches the current live movement picker scale with 165 movements across 7 categories.
 - Local `src/pages/TimerPage.tsx` now uses the live-style WOD timer flow: launcher cards, preset CRUD, config screens, get-ready countdown, voice/beep cues, interval transitions, and progress dots.
 - `npm run build` passed after the parity patch. No deploy was performed.
+
+## Session Note (2026-03-07, Product Audit Coordination)
+- Product/market audits should use current official product pages first, then compare those patterns against `LIVE_APP_AUDIT.md`, local source, and package capabilities.
+- Treat roadmap ideas in three buckets:
+  - parity-critical: needed so TrackVolt does not feel behind category leaders
+  - differentiation bets: hybrid-athlete workflows that major apps split across multiple products
+  - later/nice-to-have: social or AI ideas that do not improve the daily logging loop yet
+- Current audit priority order:
+  1. make the daily logging loop faster and more rewarding
+  2. add better readiness/recovery guidance from existing inputs before chasing complex wearables work
+  3. improve running/HYROX credibility with splits, zones, imports, and share outputs before full GPS mapping
+  4. improve nutrition trust with better search, barcode confidence, and adaptive targets
+
+## Session Note (2026-03-07, Cross-Agent Product Thesis)
+- Shared product thesis for both agents:
+  - `TrackVolt = hybrid athlete operating system`
+  - fastest logging + clearest daily guidance + premium sharing + offline reliability
+- Shared warning:
+  - do not keep expanding page count unless it improves the main athlete loop
+  - prioritize compounding quality in `Today`, `Log`, benchmark history, readiness, running/HYROX depth, and nutrition trust
+
+## Session Note (2026-03-07, iOS Launch Audit)
+- Current App Store status is **not ready**.
+- Confirmed blockers:
+  - public privacy-policy URL or public support URL is not prepared yet
+  - `ios/App/App/Info.plist` is missing native permission strings for camera/photo-based flows
+  - no macOS/Xcode/TestFlight validation has happened
+
+## Session Note (2026-03-07, Build Repair + Cross-Agent Protocol)
+- Repaired the current local build break by fixing `src/pages/TimerPage.tsx` to match its callers again.
+- Verification now passes again:
+  - `npm run build`
+  - `npm run cap:sync`
+- Cross-agent protocol agreed in `CODEX_FINDINGS.md`:
+  - claim high-conflict files before editing them
+  - Codex owns build/config/native/state centralization work
+  - Cowork owns visual audit, presentation, and polish work
+
+## 2026-03-07 - Hook contract update
+- Codex owns `src/hooks/useStreak.ts` and `src/hooks/useReadiness.ts`.
+- Cowork should consume the exported interfaces from `CODEX_FINDINGS.md` before finalizing `StreakRing` and `ReadinessCard`.
+- `useReadiness()` intentionally allows an unavailable state (`score/status/recommendation` can be null when sleep and energy are both missing).
+- Safety unchanged: no deploy, no destructive cleanup, no secrets changes.
+
+## 2026-03-07 - Timer regression restore
+- User explicitly prefers the prior rich CrossFit WOD timer over the simplified replacement.
+- `src/pages/TimerPage.tsx` should stay on the advanced config flow unless the user asks otherwise.
+- If Cowork touches timer-adjacent UI, preserve these restored capabilities:
+  - work duration minutes/seconds
+  - sets
+  - rest-between-sets toggle
+  - rest minutes/seconds
+  - preset add/edit/delete
+- Green build verified after a minimal noUnusedLocals cleanup in `src/components/ReadinessCard.tsx`.
+
+## 2026-03-07 - Timer UI direction update
+- Preserve the richer CrossFit timer setup and keep these AMRAP configuration fields visible and first-class:
+  - work duration minutes
+  - work duration seconds
+  - number of sets
+  - rest-between-sets toggle
+  - rest minutes
+  - rest seconds
+- Current timer presentation is intentionally moving toward a denser, instrument-like setup screen rather than a plain form.
+- If Cowork proposes timer polish, keep the CrossFit field density and sticky start CTA intact.
+
+## 2026-03-07 - Timer active-state and box-cue pass
+- Completed a second WOD timer polish pass focused on the live workout experience rather than setup only.
+- `src/pages/TimerPage.tsx` now uses clearer phase states during active timing:
+  - stronger countdown/work/rest/done visual separation
+  - better current-block and next-cue context
+  - larger center timer stage with ring + progress strip
+- `src/hooks/useTimerAudio.ts`, `src/hooks/useTimerVoice.ts`, and `src/hooks/useTimerEngine.ts` were updated so the timer sounds and spoken prompts feel closer to a real box timer.
+- Build verification remains green with `npm run build`.
+
+## 2026-03-07 - Timer setup visual QA
+- Added a second setup-screen polish pass to `src/pages/TimerPage.tsx` after checking the screen in a real local mobile browser capture.
+- Replaced the corrupted emoji markers with a consistent icon system and fixed the broken start-button label.
+- Added a compact stat strip under the session summary so key timer facts are visible immediately.
+- Verification included a local Chrome mobile screenshot and a green `npm run build`.
+
+## 2026-03-07 - Premium timer protocol pass
+- Added a final design-focused pass to the WOD Timer setup screen after real mobile-browser QA.
+- `src/pages/TimerPage.tsx` now has a more premium protocol-panel feel: stronger header framing, better spec cards, richer footer dock, and more breathing room.
+- `src/components/InstallPrompt.tsx` now suppresses the install banner when full-screen workout tools are open so it does not cheapen the timer experience.
+- Verification: `npm run build` passed and the clean mobile screenshot is `C:/ClaudeWork/Imu/trackvolt-timer-amrap-mobile-final.png`.

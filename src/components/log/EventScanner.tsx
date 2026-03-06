@@ -1,6 +1,7 @@
 /**
- * EventScanner – Camera/upload + Gemini OCR for CrossFit event posters
+ * EventScanner — Camera/upload + Gemini OCR for CrossFit event posters
  */
+
 import { useState, useRef } from 'react'
 import { Camera, Upload, Loader2, AlertCircle } from 'lucide-react'
 import { analyzeImage, hasApiKey, EVENT_SCAN_PROMPT } from '../../services/gemini'
@@ -25,14 +26,21 @@ export function EventScanner({ onScanComplete, onClose }: EventScannerProps) {
     setError(null)
     try {
       const raw = await analyzeImage(base64, EVENT_SCAN_PROMPT)
-      if (!raw) throw new Error('No response from image analysis')
+      if (!raw) {
+        setError('Could not analyze image. Try again or enter manually.')
+        setScanning(false)
+        return
+      }
+      // Parse JSON from response (strip any markdown fences)
       const jsonStr = raw.replace(/```json?\n?/g, '').replace(/```\n?/g, '').trim()
       const result: EventScanResult = JSON.parse(jsonStr)
+
       if (result.error) {
         setError(result.error)
         setScanning(false)
         return
       }
+
       onScanComplete(result, base64)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to scan image. Try again or enter manually.')
@@ -121,7 +129,7 @@ export function EventScanner({ onScanComplete, onClose }: EventScannerProps) {
             <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-3">
               <Loader2 size={32} className="text-cyan-400 animate-spin" />
               <p className="text-sm font-bold text-white">Scanning workout poster...</p>
-              <p className="text-xs text-slate-300">AI is extracting event data</p>
+              <p className="text-xs text-ct-2">AI is extracting event data</p>
             </div>
           )}
         </div>
@@ -138,12 +146,14 @@ export function EventScanner({ onScanComplete, onClose }: EventScannerProps) {
             </div>
           </div>
           <div className="flex gap-2 mt-3">
-            <button onClick={() => { setPreview(null); setError(null) }}
+            <button
+              onClick={() => { setPreview(null); setError(null) }}
               className="flex-1 py-2 bg-ct-surface border border-ct-border rounded-ct-lg text-xs font-semibold text-ct-2 min-h-[36px]"
             >
               Try Again
             </button>
-            <button onClick={onClose}
+            <button
+              onClick={onClose}
               className="flex-1 py-2 bg-ct-surface border border-ct-border rounded-ct-lg text-xs font-semibold text-ct-2 min-h-[36px]"
             >
               Enter Manually

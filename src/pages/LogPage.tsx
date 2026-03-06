@@ -6,6 +6,8 @@ import { useWorkoutForm } from '../hooks/useWorkoutForm'
 import { useMealForm } from '../hooks/useMealForm'
 import { useMetricForm } from '../hooks/useMetricForm'
 import { useAchievementCheck } from '../hooks/useAchievementCheck'
+import { CelebrationOverlay } from '../components/CelebrationOverlay'
+import type { CelebrationData } from '../components/CelebrationOverlay'
 import { LogModeSelector } from '../components/log/LogModeSelector'
 import { MealLogger } from '../components/log/MealLogger'
 import { MetricLogger } from '../components/log/MetricLogger'
@@ -21,7 +23,7 @@ import type { Achievement } from '../data/achievements'
 import type { FoodItem } from '../types'
 import { Loader2 } from 'lucide-react'
 
-// Lazy-load heavy components — WorkoutLogger alone is ~200KB
+// Lazy-load heavy components  -  WorkoutLogger alone is ~200KB
 const WorkoutLogger = lazy(() => import('../components/log/WorkoutLogger').then(m => ({ default: m.WorkoutLogger })))
 const HyroxLogger = lazy(() => import('../components/log/HyroxLogger').then(m => ({ default: m.HyroxLogger })))
 const CardioLogger = lazy(() => import('../components/log/CardioLogger').then(m => ({ default: m.CardioLogger })))
@@ -33,6 +35,7 @@ const WodScanner = lazy(() => import('../components/log/WodScanner').then(m => (
 const WodScanReview = lazy(() => import('../components/log/WodScanReview').then(m => ({ default: m.WodScanReview })))
 const CycleLogger = lazy(() => import('../components/log/CycleLogger').then(m => ({ default: m.CycleLogger })))
 const CycleOnboarding = lazy(() => import('../components/log/CycleOnboarding').then(m => ({ default: m.CycleOnboarding })))
+const CycleCalendar = lazy(() => import('../components/log/CycleCalendar').then(m => ({ default: m.CycleCalendar })))
 
 import type { WodScanResult } from '../components/log/WodScanner'
 
@@ -40,8 +43,9 @@ type LogMode = null | 'workout' | 'hyrox' | 'running' | 'events' | 'meal' | 'wei
 
 function LazyFallback() {
   return (
-    <div className="flex items-center justify-center py-20">
+    <div className="flex flex-col items-center justify-center py-20 gap-3">
       <Loader2 size={24} className="text-cyan-400 animate-spin" />
+      <p className="text-xs text-ct-2 animate-pulse">Loading...</p>
     </div>
   )
 }
@@ -56,6 +60,8 @@ export function LogPage() {
   const { checkNewAchievements } = useAchievementCheck()
   const { detectPRs, getCurrentPR } = usePRDetection()
   const [wodScanResult, setWodScanResult] = useState<WodScanResult | null>(null)
+  const [celebration, setCelebration] = useState<CelebrationData | null>(null)
+  const [showCycleCalendar, setShowCycleCalendar] = useState(false)
 
   const triggerAchievementCheck = useCallback(() => {
     // Small delay to let store update
@@ -68,6 +74,15 @@ export function LogPage() {
   const onToast = (msg: string, type: 'success' | 'error') => {
     setToast({ msg, type })
     triggerAchievementCheck()
+    // Trigger celebration overlay for workout saves
+    if (type === 'success' && msg.includes('logged!')) {
+      const isPR = msg.includes('PR!')
+      setCelebration({
+        type: isPR ? 'pr' : 'save',
+        title: isPR ? 'New Personal Record!' : 'Workout Saved!',
+        subtitle: msg.replace(' PR!', ''),
+      })
+    }
   }
   const closeDone = () => setMode(null)
 
@@ -101,6 +116,19 @@ export function LogPage() {
   const prToastEl = prQueue.length > 0 ? (
     <PRToast key={`pr-${prQueue[0].movementName}-${prQueue[0].newValue}`} pr={prQueue[0]} onDone={() => setPrQueue(q => q.slice(1))} />
   ) : null
+
+  // ---- Global Celebration Overlay (takes over screen for all save types) ----
+  if (celebration) {
+    return (
+      <>
+        {toastEl}{achievementEl}{prToastEl}
+        <CelebrationOverlay
+          celebration={celebration}
+          onDismiss={() => setCelebration(null)}
+        />
+      </>
+    )
+  }
 
   // ---- Barcode Scanner ----
   if (mode === 'scanner') {
@@ -194,7 +222,7 @@ export function LogPage() {
             const scoreDisplay = `${data.distanceValue}${data.distanceUnit} in ${data.durationMin}:${String(data.durationSec).padStart(2, '0')}`
             const cardioLabels: Record<string, string> = { run: 'Run', row: 'Row', bike: 'Bike', ski: 'SkiErg', swim: 'Swim', hike: 'Hike' }
             const label = cardioLabels[data.cardioType] || 'Cardio'
-            const workoutName = `${label} — ${data.distanceValue}${data.distanceUnit}`
+            const workoutName = `${label}  -  ${data.distanceValue}${data.distanceUnit}`
             const scoreValue = data.durationMin * 60 + data.durationSec
             const workoutType = data.cardioType === 'run' ? 'Running' : 'Cardio'
             await saveWorkout({
@@ -260,9 +288,20 @@ export function LogPage() {
             onToast('Cycle log saved!', 'success')
             closeDone()
           }}
-          onOpenCalendar={() => {/* TODO: calendar overlay */}}
+          onOpenCalendar={() => setShowCycleCalendar(true)}
           onClose={closeDone}
         />
+        {showCycleCalendar && (
+          <Suspense fallback={<LazyFallback />}>
+            <CycleCalendar
+              cycleLogs={cycle.cycleLogs}
+              settings={cycle.settings}
+              currentPhase={cycle.currentPhase}
+              cycleDay={cycle.cycleDay}
+              onClose={() => setShowCycleCalendar(false)}
+            />
+          </Suspense>
+        )}
       </Suspense>
     )
   }

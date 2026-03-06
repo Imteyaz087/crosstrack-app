@@ -1,6 +1,6 @@
-// =======================================================
-// TRACKVOLT Achievements / Badges System — 60 achievements
-// =======================================================
+// ============================================================
+// TRACKVOLT Achievements / Badges System  -  60 achievements
+// ============================================================
 
 export interface Achievement {
   id: string

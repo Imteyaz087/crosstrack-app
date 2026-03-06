@@ -107,11 +107,11 @@ export function CustomFoodCreator({ t, onSave, onClose, prefill }: CustomFoodCre
             <ChevronDown size={16} className={`text-ct-2 transition-transform ${showCategoryPicker ? 'rotate-180' : ''}`} />
           </button>
           {showCategoryPicker && (
-            <div className="mt-1 bg-ct-elevated rounded-xl max-h-40 overflow-y-auto border border-slate-600">
+            <div className="mt-1 bg-ct-elevated rounded-xl max-h-40 overflow-y-auto border border-ct-border">
               {FOOD_CATEGORIES.map(cat => (
                 <button key={cat} onClick={() => { setCategory(cat); setShowCategoryPicker(false) }}
-                  className={`w-full text-left px-4 py-2.5 text-sm border-b border-slate-600/50 last:border-0 min-h-[40px] ${
-                    category === cat ? 'text-cyan-400 bg-cyan-400/10' : 'text-ct-2 active:bg-slate-600'
+                  className={`w-full text-left px-4 py-2.5 text-sm border-b border-ct-border last:border-0 min-h-[40px] ${
+                    category === cat ? 'text-cyan-400 bg-cyan-400/10' : 'text-ct-2 active:bg-ct-elevated'
                   }`}>{cat}</button>
               ))}
             </div>

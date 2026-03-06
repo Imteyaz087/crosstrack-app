@@ -176,12 +176,12 @@ export function PhotoLogPage() {
     return (
       <div className="space-y-3">
         {toastEl}
-        <button onClick={() => { setMode('capture'); setCapturedImage(null) }} className="text-cyan-400 text-sm px-2 py-1 -ml-2 rounded-lg active:bg-ct-surface" aria-label="Back to capture">&larr; Back</button>
+        <button onClick={() => { setMode('capture'); setCapturedImage(null) }} className="text-cyan-400 text-sm px-2 py-1 -ml-2 rounded-lg active:bg-ct-surface min-h-[44px] flex items-center" aria-label="Back to capture">&larr; Back</button>
 
         {capturedImage && (
           <div className="relative rounded-xl overflow-hidden">
             <img src={capturedImage} alt="Whiteboard" className="w-full h-40 object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-ct-bg/80 to-transparent" />
             {parsing ? (
               <div className="absolute bottom-2 left-3 flex items-center gap-2">
                 <Loader2 size={12} className="text-violet-400 animate-spin" />
@@ -220,12 +220,12 @@ export function PhotoLogPage() {
               <input type="text" value={m.name} onChange={e => updateMovement(idx, 'name', e.target.value)}
                 placeholder="Thrusters" aria-label="Movement name" className="flex-1 bg-ct-elevated text-ct-1 rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400" />
               {movements.length > 1 && (
-                <button onClick={() => removeMovement(idx)} className="p-1.5 text-red-400/50 active:text-red-400 rounded-lg" aria-label="Remove movement"><Trash2 size={14} /></button>
+                <button onClick={() => removeMovement(idx)} className="min-h-[44px] min-w-[44px] flex items-center justify-center text-red-400/50 active:text-red-400 rounded-lg" aria-label="Remove movement"><Trash2 size={14} /></button>
               )}
             </div>
           ))}
           <button onClick={addMovement}
-            className="w-full bg-slate-800/40 border border-dashed border-slate-600/50 text-ct-2 rounded-lg py-2 text-xs flex items-center justify-center gap-1">
+            className="w-full bg-ct-surface/40 border border-dashed border-ct-border/50 text-ct-2 rounded-lg py-2 text-xs flex items-center justify-center gap-1">
             <Plus size={12} /> Add Movement
           </button>
         </div>
@@ -263,7 +263,7 @@ export function PhotoLogPage() {
 
   // Capture mode (default)
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 stagger-children">
       {toastEl}
       <h1 className="text-xl font-bold text-ct-1">Photo to Log</h1>
       <p className="text-xs text-ct-2">
@@ -271,7 +271,7 @@ export function PhotoLogPage() {
       </p>
 
       <button onClick={startCamera}
-        className="w-full bg-ct-surface border-2 border-dashed border-cyan-500/30 rounded-ct-lg py-12 flex flex-col items-center gap-3 active:bg-slate-800/80">
+        className="w-full bg-ct-surface border-2 border-dashed border-cyan-500/30 rounded-ct-lg py-12 flex flex-col items-center gap-3 active:bg-ct-surface/80">
         <div className="w-16 h-16 bg-cyan-500/10 rounded-ct-lg flex items-center justify-center">
           <Camera size={28} className="text-cyan-400" />
         </div>

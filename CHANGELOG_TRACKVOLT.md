@@ -3,6 +3,45 @@
 
 ---
 
+## 2026-03-07 — Session: Visual QA Pass + Empty State System
+
+**Why:** New users opening TrackVolt saw dashes, spinners, and no guidance. The app felt broken on first launch. Settings had undersized touch targets and hardcoded English strings. A CSS variable bug meant the body text color was undefined.
+
+**What changed:**
+
+### TodayPage.tsx
+- Added `dataReady` loading state — shows `TodayPageSkeleton` shimmer while 8 data sources load
+- Added first-time welcome hero card (gradient, Target icon, CTA) for users with zero data
+- Body metrics grid: replaced ugly " - " dashes with dashed-border empty tiles showing "+" / "Add" — makes it obvious they're tappable
+- Imported `TodayPageSkeleton` and `Target` icon
+
+### NutritionPage.tsx
+- Added page-level empty state hero (orange gradient, UtensilsCrossed icon) when zero meals logged
+- Previously showed 5 identical empty meal sections with no guidance
+
+### SettingsPage.tsx
+- Training day buttons: `w-9 h-9` (36px) → `w-11 h-11` (44px) — meets touch target minimum
+- Language buttons: `min-h-[32px]` → `min-h-[44px]`
+- Firebase setup/save buttons: added `min-h-[44px]`
+- Gemini save key button: added `min-h-[44px]`
+- 3 hardcoded English strings → i18n with fallbacks: `apiKeySaved`, `invalidKeyFormat`, `firebaseSaved`
+
+### index.css
+- Fixed `var(--ct-text-1)` → `var(--color-ct-1)` — body text color was referencing undefined variable
+- Fixed `var(--ct-bg)` → `var(--color-ct-bg)` — body background was referencing undefined variable
+
+### LogPage.tsx
+- Enhanced `LazyFallback` — added "Loading..." text below spinner for better perceived performance
+
+### Documentation
+- Migrated all docs from `TRACKVOLT/` subfolder to project root per new memory structure
+- Created subfolders: `AI_SYNC/`, `AUDITS/`, `FINDINGS/`, `ROADMAP/`
+
+**Build:** tsc + vite build both pass. PWA 73 entries precached.
+**Deploy:** NOT deployed.
+
+---
+
 ## 2026-03-05 — Session 4: TypeScript Build Fixes
 
 **Why:** `npm run build` was failing with 36+ TypeScript errors. Needed to fix all errors so build passes.
@@ -11,11 +50,11 @@
 - **AchievementsPage** — Removed unused `useStore`
 - **AICoachPage** — `w.isPR` → `w.prFlag`, `w.isRX` → `w.rxOrScaled === 'RX'`, removed unused `consecutiveDays` state
 - **BenchmarkPage** — Removed unused `useTranslation`
-- **BodyMeasurementsPage** — Removed `useStore`, `getMeasurementsForDate`, `getTrendForMetric`; added `percent` to `getLatestAndFirstForMetric`
+- **BodyMeasurementsPage** — Removed unused `useStore`, `getMeasurementsForDate`, `getTrendForMetric`; added `percent` to `getLatestAndFirstForMetric`
 - **CloudSyncPage** — Replaced `addToast` usage; `db.meals` → `db.mealLogs`, `db.prLogs` → `db.movementPRs`; fixed `<style jsx>` → `<style>`
 - **HeartRatePage** — Removed unused `useTranslation`
-- **MealPrepPage** — `db.foods` → `db.foodLibrary`, `db.meals` → `db.mealLogs`; use store’s `addMealFromTemplate`; fixed FoodItem API (`proteinPer100g` etc.) and `fat` vs `fats`
-- **MovementPRPage** — Removed unused `useTranslation`
+- **MealPrepPage** — `db.foods` → `db.foodLibrary`, `db.meals` → `db.mealLogs`; use store's `addMealFromTemplate`; fixed FoodItem API (`proteinPer100g` etc.) and `fat` vs `fats`
+- **MovementPRPage** — Removed unused `useTranslation`; converted to inline styles
 - **PhotoLogPage** — Removed unused `useTranslation`; fixed `<style jsx>` → `<style>`
 - **PRWallPage** — Removed unused `db`, `Calendar`, type imports
 - **WeeklyPlannerPage** — Fixed `ProgramDay` typing; cast for `db.programDays` queries
@@ -405,3 +444,206 @@
 **Next steps:**
 1. Manual local QA of the CrossFit `WOD Only` flow with the now-full movement dataset
 2. Compare any remaining CrossFit deltas against live screenshots before touching `WorkoutLogger.tsx` again
+
+## 2026-03-07 - Session 18: Deep Product and Market Audit
+
+**Why:** User requested a strategy-grade audit of live `trackvolt.app` against category leaders in functional fitness, running, nutrition, recovery, and health ecosystems.
+
+**What changed:**
+- Researched current official product pages across the benchmark set and synthesized the shared success patterns:
+  - fastest possible logging/capture
+  - visible progress and streak loops
+  - personalized coaching or plan adaptation
+  - premium share/community outputs
+  - strong trust signals around data quality and insights
+- Audited TrackVolt against those patterns using:
+  - live app references
+  - `LIVE_APP_AUDIT.md`
+  - local source/code capability scan
+  - current build/package footprint
+- Captured the main product direction in `TRACKVOLT_MASTER_DOC.md` and coordination guidance in `AGENTS.md`
+- Logged the most actionable roadmap findings for the parallel agent in `CODEX_FINDINGS.md`
+
+**Key conclusions:**
+- TrackVolt already has rare breadth for a hybrid-athlete PWA and should lean harder into that "one app instead of five" position.
+- The next wins are product quality, habit loops, and insight quality, not new surface-area sprawl.
+- Highest-value gaps are:
+  - faster/rewarding daily logging loop
+  - stronger readiness/recovery scoring from existing inputs
+  - more credible running/HYROX analytics and imports
+  - more trustworthy nutrition search/barcode/adaptive targets
+
+**Deploy:** NOT deployed.
+
+**Next steps:**
+1. Convert the audit into a ranked build backlog
+2. Ship quick wins around clarity, reward loops, and insight surfaces
+3. Then tackle the first serious competitive layer: readiness + running/HYROX + nutrition trust
+
+## 2026-03-07 - Session 19: Cross-Agent Strategy Handoff
+
+**Why:** User asked for the audit findings and product judgment to be written back to the shared memory so Claude Cowork and Codex operate from the same "world-class TrackVolt" plan.
+
+**What changed:**
+- Added a direct cross-agent strategy memo to `CODEX_FINDINGS.md`
+- Expanded `TRACKVOLT_MASTER_DOC.md` with the world-class product direction
+- Captured the core product thesis:
+  - TrackVolt should be built as the `hybrid athlete operating system`
+  - the path is not "more pages"; it is a faster daily loop, stronger guidance, better depth in running/HYROX/nutrition, then stronger momentum/share/community layers
+
+**Key guidance for both agents:**
+1. Preserve live parity first
+2. Make daily logging frictionless
+3. Turn existing data into clear daily guidance
+4. Deepen trust in specialist areas before expanding surface area
+5. Build premium shareability and retention loops after the core is excellent
+
+**Deploy:** NOT deployed.
+
+**Next steps:**
+1. Turn the strategy memo into a ranked implementation backlog
+2. Start with quick wins on Today, logging, and post-save reward/share moments
+
+## 2026-03-07 - Session 20: Strict iOS Launch Readiness Audit
+
+**Why:** User clarified that the immediate goal is App Store launch readiness, not general roadmap planning.
+
+**What was verified:**
+- Re-checked the actual native project files in `ios/`, not just prior notes
+- Confirmed Capacitor/iOS wrapper exists, including:
+  - `capacitor.config.ts`
+  - `ios/App/App/Info.plist`
+  - icon asset catalog
+  - launch storyboard
+- Re-ran local verification:
+  - `npm run build`
+  - `npm run cap:sync`
+
+**What was found:**
+- Launch readiness is **NOT complete**
+- Current blocking issues:
+  1. local build is failing again
+  2. `cap:sync` fails because the build fails
+  3. native camera/photo permission strings are missing from `Info.plist`
+  4. no public privacy-policy URL is prepared
+  5. no public support URL is prepared
+  6. no macOS/Xcode/TestFlight validation has been done
+
+**Important notes:**
+- The in-app privacy page exists in source, but that is not the same as a public URL usable in App Store Connect
+- Screenshot base assets already exist and are a good starting point for App Store submission assets
+
+**Deploy:** NOT deployed.
+
+**Next steps:**
+1. Restore `npm run build` to green
+2. Add native permission metadata
+3. Prepare public privacy/support URLs
+4. Then move to Xcode/TestFlight validation
+
+## 2026-03-07 - Session 21: Cowork Letter Response + Build Repair
+
+**Why:** User asked Codex to read the direct Cowork letter in `CODEX_FINDINGS.md`, answer all five questions, and fix the broken build before anything else.
+
+**What changed:**
+- Read the full cross-agent letter and appended a direct reply under:
+  - `### Codex Response to Cowork (2026-03-07)`
+- Added explicit answers covering:
+  - agreement/disagreement on priorities
+  - current build diagnosis
+  - ownership boundaries
+  - proposed division of labor
+  - a simple file-claim protocol for high-conflict files
+- Repaired the active build regression in `src/pages/TimerPage.tsx`
+  - restored optional `onClose` prop expected by `TodayPage.tsx` and `MorePage.tsx`
+  - removed stale unused imports/state
+  - replaced `NodeJS.Timeout` typing with `ReturnType<typeof setInterval>`
+  - corrected workout save `scoreUnit` to `time`
+
+**Verification:**
+- `npm run build` passed
+- `npm run cap:sync` passed
+
+**Important note:**
+- One earlier `vite` out-dir permission failure happened only because `build` and `cap:sync` were run in parallel against the same `dist/` folder during verification. Sequential checks are clean.
+
+**Deploy:** NOT deployed.
+
+**Next steps:**
+1. Add native iOS permission strings
+2. Prepare public privacy/support URLs
+3. Then choose whether to start streak/readiness centralization or continue launch blockers first
+
+## 2026-03-07
+- Added `src/hooks/useStreak.ts` and `src/hooks/useReadiness.ts` to centralize Today-page streak/readiness logic for upcoming UI work.
+- Published the exact TypeScript hook interfaces back to `CODEX_FINDINGS.md` so Cowork can finalize `StreakRing` and `ReadinessCard` against stable contracts.
+- Confirmed `npm run build` passes after the new hooks.
+- Next: wire the hooks into `TodayPage.tsx` after Cowork finishes the presentational components.
+
+## 2026-03-07
+- Restored `src/pages/TimerPage.tsx` from the simplified timer back to the richer CrossFit WOD timer flow after the user rejected the stripped-down version.
+- The restored timer again supports advanced AMRAP/For Time config (minutes, seconds, sets, rest toggle, rest minutes/seconds), EMOM/Tabata config, preset CRUD, and the active timer states.
+- Kept `onClose` optional so Today/More entry points still compile.
+- Also removed two unused locals from `src/components/ReadinessCard.tsx` so the project remains buildable under strict TypeScript.
+- Verified `npm run build` passes.
+
+## 2026-03-07
+- Polished `src/pages/TimerPage.tsx` so the WOD Timer setup feels more premium while preserving the exact CrossFit AMRAP details the user requires.
+- Main UI changes:
+  - better hierarchy in the setup header
+  - session summary strip
+  - redesigned adjuster cards
+  - stronger rest toggle block
+  - sticky bottom summary + start action above the tab bar
+  - slightly richer active timer presentation
+- Also fixed `src/services/firebase.ts` type narrowing so the project still builds under strict TypeScript.
+- Verified `npm run build` passes.
+
+## 2026-03-07
+- Finished the WOD timer active-state pass after the earlier setup polish.
+- Updated `src/pages/TimerPage.tsx` so countdown/work/rest/done now feel more premium and easier to read while training: stronger phase identity, larger timer stage, clearer status blocks, and a progress strip under the ring.
+- Tuned `src/hooks/useTimerAudio.ts`, `src/hooks/useTimerVoice.ts`, and `src/hooks/useTimerEngine.ts` so cues feel more like a real box timer with shorter spoken commands and cleaner go/rest/done patterns.
+- Applied a minimal enum-casing fix in `src/hooks/useCelebrationShare.ts` to unblock build verification.
+- Verified `npm run build` passes.
+
+## 2026-03-07
+- Ran a real local mobile-browser QA pass on the WOD Timer setup screen and captured `C:/ClaudeWork/Imu/trackvolt-timer-amrap-mobile-check.png`.
+- Improved `src/pages/TimerPage.tsx` again to make the setup look more elite and readable:
+  - replaced broken `??` markers with a consistent icon system
+  - added a compact work / sets / rest stat row
+  - improved session summary wording for single-effort modes
+  - fixed the start button label and strengthened footer copy
+- Applied a minimal `src/pages/TodayPage.tsx` prop fix so the build stays green.
+- Verified `npm run build` passes.
+
+## 2026-03-07
+- Added a premium UI/UX pass to the WOD Timer setup screen in `src/pages/TimerPage.tsx`.
+- Changes focused on wow factor without removing the CrossFit fields:
+  - `Timer Protocol` hero framing
+  - clearer spec-card treatment for work / sets / rest
+  - richer sticky CTA dock and stronger spacing
+  - full-screen timer states now mark themselves so global overlays can back off
+- Updated `src/components/InstallPrompt.tsx` so the install banner suppresses itself when a full-screen workout tool is open.
+- Verified with a clean mobile-browser capture at `C:/ClaudeWork/Imu/trackvolt-timer-amrap-mobile-final.png`.
+- Verified `npm run build` passes.
+
+## 2026-03-07
+- Ran a broader external innovation scan across official health/fitness companies plus some Reddit user-sentiment threads.
+- Converted the results into a 60-idea TrackVolt innovation bank inside `CODEX_FINDINGS.md` so Claude can review and choose what is worth shipping.
+- Highest-leverage themes from the scan:
+  - readiness / daily decision layer
+  - event and benchmark intelligence
+  - session-aware fueling
+  - women�s physiology + privacy trust
+  - coachable share cards
+  - cross-domain timeline and explainable scores
+
+## 2026-03-07
+- Performed a deeper local audit to separate immediate engineering/product issues from later strategic improvements.
+- Main findings saved to `CODEX_FINDINGS.md`:
+  - lint currently fails badly even though build passes
+  - `useStore.ts` remains over-centralized and loosely typed in sync/import paths
+  - several critical files are already too large for safe iteration
+  - test coverage is nearly absent
+  - iOS/App Store blockers still remain outside the web build
+- Recommended order remains: stabilize engineering quality, clear launch blockers, then improve the Today decision layer and event/benchmark retention surfaces.

@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useStore } from '../stores/useStore'
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
-import { Ruler, TrendingDown, TrendingUp, Minus, Save } from 'lucide-react'
+import { Ruler, TrendingDown, TrendingUp, Minus, Save, Loader2 } from 'lucide-react'
 import { useSaveToast } from '../components/SaveToast'
 
 type MeasurementKey = 'weightKg' | 'bodyFatPct' | 'chestCm' | 'waistCm' | 'hipsCm' | 'armCm' | 'thighCm'
@@ -21,10 +21,9 @@ export function BodyMeasurementsPage() {
   const { showToast, toastEl } = useSaveToast()
   const [activeMeasurement, setActiveMeasurement] = useState<MeasurementKey>('weightKg')
   const [formValues, setFormValues] = useState<Record<string, string>>({})
+  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    Promise.allSettled([loadAllDailyLogs(), loadTodayLog()])
-  }, [])
+  useEffect(() => { Promise.allSettled([loadAllDailyLogs(), loadTodayLog()]).finally(() => setLoading(false)) }, [])
 
   // Pre-fill form with today's values
   useEffect(() => {
@@ -88,15 +87,27 @@ export function BodyMeasurementsPage() {
     showToast('Measurements saved!')
   }
 
+  if (loading) {
+    return (
+      <div className="space-y-3 stagger-children">
+        <h2 className="text-lg font-bold text-ct-1 flex items-center gap-2">
+          <Ruler size={20} className="text-cyan-400" /> Body Measurements
+        </h2>
+        <div className="flex items-center justify-center py-12">
+          <Loader2 size={24} className="text-cyan-400 animate-spin" />
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 stagger-children">
       {toastEl}
       <h2 className="text-lg font-bold text-ct-1 flex items-center gap-2">
-        <Ruler size={20} className="text-cyan-400" />
-        Body Measurements
+        <Ruler size={20} className="text-cyan-400" /> Body Measurements
       </h2>
 
-      {/* Measurement selector */}
+      {/* Measurement selector — scrollable chips */}
       <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1 no-scrollbar">
         {MEASUREMENTS.map(m => (
           <button
@@ -132,6 +143,7 @@ export function BodyMeasurementsPage() {
             </div>
           )}
         </div>
+
         {chartData.length > 1 ? (
           <ResponsiveContainer width="100%" height={160}>
             <LineChart data={chartData}>
@@ -157,17 +169,18 @@ export function BodyMeasurementsPage() {
             <div key={m.key} className="relative">
               <label className="text-[11px] text-ct-2 block mb-0.5">{m.label} ({m.unit})</label>
               <input
-                type="text" inputMode="decimal" pattern="[0-9.]*"
+                type="text"
+                inputMode="decimal"
+                pattern="[0-9.]*"
                 value={formValues[m.key] || ''}
                 onChange={e => setFormValues(prev => ({ ...prev, [m.key]: e.target.value.replace(/[^\d.]/g, '') }))}
                 placeholder="—"
-                className="w-full bg-ct-elevated/50 border border-slate-600/50 rounded-xl py-2 px-3 text-sm text-ct-1 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-400"
+                className="w-full bg-ct-elevated/50 border border-ct-border/50 rounded-xl py-2 px-3 text-sm text-ct-1 placeholder-ct-2 focus:outline-none focus:ring-1 focus:ring-cyan-400"
               />
             </div>
           ))}
         </div>
-        <button
-          onClick={handleSave}
+        <button onClick={handleSave}
           className="mt-3 w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 active:scale-[0.97] transition-transform">
           <Save size={16} /> Save Measurements
         </button>
@@ -197,7 +210,7 @@ export function BodyMeasurementsPage() {
                   .reverse()
                   .slice(0, 10)
                   .map(l => (
-                    <tr key={l.id} className="border-b border-slate-700/30 text-ct-2">
+                    <tr key={l.id} className="border-b border-ct-border/30 text-ct-2">
                       <td className="py-1.5 pr-2 text-ct-2">{l.date.slice(5)}</td>
                       <td className="text-right px-1">{l.weightKg ?? '—'}</td>
                       <td className="text-right px-1">{l.bodyFatPct ?? '—'}</td>

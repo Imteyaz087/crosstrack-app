@@ -1,5 +1,5 @@
 /**
- * OverlayCard – Transparent/semi-transparent overlay card (Strava-style)
+ * OverlayCard — Transparent/semi-transparent overlay card (Strava-style)
  * User can layer this on top of their own photo
  * Semi-transparent dark gradient at bottom, score + workout info overlaid
  */
@@ -37,38 +37,26 @@ export function OverlayCard({ data, showWatermark }: OverlayCardProps) {
         overflow: 'hidden',
       }}
     >
-      {/* Top subtle gradient – keeps top transparent for photo */}
+      {/* Top subtle gradient — keeps top transparent for photo */}
       <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: 300,
+        position: 'absolute', top: 0, left: 0, right: 0, height: 300,
         background: 'linear-gradient(180deg, rgba(0,0,0,0.35) 0%, transparent 100%)',
       }} />
 
-      {/* Top bar – category + date */}
+      {/* Top bar — category + date */}
       <div style={{
-        position: 'absolute',
-        top: 50,
-        left: 60,
-        right: 60,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        position: 'absolute', top: 50, left: 60, right: 60,
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       }}>
         <span style={{
-          fontSize: 22,
-          fontWeight: 800,
-          letterSpacing: 4,
+          fontSize: 22, fontWeight: 800, letterSpacing: 4,
           color: 'rgba(255,255,255,0.85)',
           textShadow: '0 2px 8px rgba(0,0,0,0.5)',
         }}>
           {data.category}
         </span>
         <span style={{
-          fontSize: 20,
-          fontWeight: 600,
+          fontSize: 20, fontWeight: 600,
           color: 'rgba(255,255,255,0.6)',
           textShadow: '0 2px 8px rgba(0,0,0,0.5)',
         }}>
@@ -76,7 +64,7 @@ export function OverlayCard({ data, showWatermark }: OverlayCardProps) {
         </span>
       </div>
 
-      {/* Bottom solid overlay – holds all the info */}
+      {/* Bottom solid overlay — holds all the info */}
       <div style={{
         background: 'rgba(0,0,0,0.75)',
         padding: '80px 60px 60px 60px',
@@ -96,11 +84,9 @@ export function OverlayCard({ data, showWatermark }: OverlayCardProps) {
           {data.title}
         </h1>
 
-        {/* Score row – the hero number */}
+        {/* Score row — the hero number */}
         <div style={{
-          display: 'flex',
-          alignItems: 'baseline',
-          gap: 20,
+          display: 'flex', alignItems: 'baseline', gap: 20,
           marginTop: 8,
           marginBottom: 12,
         }}>
@@ -114,21 +100,21 @@ export function OverlayCard({ data, showWatermark }: OverlayCardProps) {
             {data.scoreDisplay || '—'}
           </span>
 
-          {/* RX badge – solid background */}
+          {/* RX badge — solid background */}
           <span style={{
             padding: '8px 20px',
             borderRadius: 10,
-            background: data.rxOrScaled === 'RX' ? 'rgba(16,185,129,0.4)'
-              : data.rxOrScaled === 'Elite' ? 'rgba(234,179,8,0.4)'
-              : 'rgba(34,211,238,0.4)',
+            background: data.rxOrScaled === 'RX'
+              ? 'rgba(16,185,129,0.4)'
+              : data.rxOrScaled === 'Elite'
+                ? 'rgba(234,179,8,0.4)'
+                : 'rgba(34,211,238,0.4)',
             border: `1px solid ${
               data.rxOrScaled === 'RX' ? 'rgba(16,185,129,0.6)'
               : data.rxOrScaled === 'Elite' ? 'rgba(234,179,8,0.6)'
               : 'rgba(34,211,238,0.6)'
             }`,
-            fontSize: 24,
-            fontWeight: 800,
-            letterSpacing: 2,
+            fontSize: 24, fontWeight: 800, letterSpacing: 2,
             color: data.rxOrScaled === 'RX' ? '#10b981'
               : data.rxOrScaled === 'Elite' ? '#fbbf24'
               : '#22d3ee',
@@ -141,15 +127,11 @@ export function OverlayCard({ data, showWatermark }: OverlayCardProps) {
         {/* PR flag */}
         {data.prFlag && (
           <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
+            display: 'flex', alignItems: 'center', gap: 10,
             marginBottom: 4,
           }}>
             <span style={{
-              fontSize: 22,
-              fontWeight: 800,
-              color: '#fbbf24',
+              fontSize: 22, fontWeight: 800, color: '#fbbf24',
               letterSpacing: 2,
               textShadow: '0 1px 4px rgba(0,0,0,0.6)',
             }}>
@@ -160,18 +142,12 @@ export function OverlayCard({ data, showWatermark }: OverlayCardProps) {
 
         {/* WOD Type + Time Cap */}
         <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-          marginBottom: 12,
+          display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12,
         }}>
           <span style={{
-            padding: '6px 14px',
-            borderRadius: 8,
+            padding: '6px 14px', borderRadius: 8,
             background: 'rgba(255,255,255,0.15)',
-            fontSize: 16,
-            fontWeight: 700,
-            color: 'rgba(255,255,255,0.8)',
+            fontSize: 16, fontWeight: 700, color: 'rgba(255,255,255,0.8)',
             textShadow: '0 1px 3px rgba(0,0,0,0.5)',
           }}>
             {data.wodType === 'ForTime' ? 'FOR TIME' : data.wodType.toUpperCase()}
@@ -194,17 +170,14 @@ export function OverlayCard({ data, showWatermark }: OverlayCardProps) {
               {displayLines.slice(0, 5).map((line, i) => {
                 const isHeader = /^\d+[-–]\d+/.test(line) || /^round/i.test(line) || line.endsWith(':')
                 return (
-                  <div
-                    key={i}
-                    style={{
-                      fontSize: isHeader ? 18 : 16,
-                      fontWeight: isHeader ? 700 : 500,
-                      color: isHeader ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.7)',
-                      lineHeight: 1.5,
-                      paddingLeft: isHeader ? 0 : 12,
-                      textShadow: '0 1px 3px rgba(0,0,0,0.5)',
-                    }}
-                  >
+                  <div key={i} style={{
+                    fontSize: isHeader ? 18 : 16,
+                    fontWeight: isHeader ? 700 : 500,
+                    color: isHeader ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.7)',
+                    lineHeight: 1.5,
+                    paddingLeft: isHeader ? 0 : 12,
+                    textShadow: '0 1px 3px rgba(0,0,0,0.5)',
+                  }}>
                     {line}
                   </div>
                 )
@@ -216,8 +189,7 @@ export function OverlayCard({ data, showWatermark }: OverlayCardProps) {
         {/* RX Standard display */}
         {data.rxStandard && (
           <div style={{
-            marginTop: 8,
-            padding: '8px 12px',
+            marginTop: 8, padding: '8px 12px',
             background: 'rgba(16,185,129,0.15)',
             borderLeft: '3px solid rgba(16,185,129,0.5)',
             borderRadius: '0 4px 4px 0',
@@ -234,16 +206,11 @@ export function OverlayCard({ data, showWatermark }: OverlayCardProps) {
         {/* Watermark */}
         {showWatermark && (
           <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            marginTop: 12,
-            opacity: 0.4,
+            display: 'flex', alignItems: 'center', gap: 8,
+            marginTop: 12, opacity: 0.4,
           }}>
             <span style={{
-              fontSize: 16,
-              fontWeight: 800,
-              color: '#ffffff',
+              fontSize: 16, fontWeight: 800, color: '#ffffff',
               letterSpacing: 2,
               textShadow: '0 1px 4px rgba(0,0,0,0.5)',
             }}>

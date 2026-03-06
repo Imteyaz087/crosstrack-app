@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { db } from '../db/database'
 import type { CycleSettings, CycleLog, CyclePhase, CycleMood, CycleEnergy, FlowLevel } from '../types'
+import { E } from '../utils/emoji'
 
 // Phase colors for UI
 export const PHASE_COLORS = {
-  menstrual: { bg: '#EF4444', text: '#FCA5A5', label: 'Menstrual', emoji: '🔴' },
-  follicular: { bg: '#4ADE80', text: '#BBF7D0', label: 'Follicular', emoji: '🟢' },
-  ovulation: { bg: '#FFD700', text: '#FEF08A', label: 'Ovulation', emoji: '🟡' },
-  luteal: { bg: '#60A5FA', text: '#BFDBFE', label: 'Luteal', emoji: '🔵' },
+  menstrual: { bg: '#EF4444', text: '#FCA5A5', label: 'Menstrual', emoji: E.red_circle },
+  follicular: { bg: '#4ADE80', text: '#BBF7D0', label: 'Follicular', emoji: E.green_circle },
+  ovulation: { bg: '#FFD700', text: '#FEF08A', label: 'Ovulation', emoji: E.yellow_circle },
+  luteal: { bg: '#60A5FA', text: '#BFDBFE', label: 'Luteal', emoji: E.blue_circle },
 } as const
 
 // Training recommendations by phase (Dr. Stacy Sims research)
@@ -25,7 +26,7 @@ export const PHASE_TRAINING: Record<CyclePhase, {
 }> = {
   menstrual: {
     title: 'Rest & Recovery Phase',
-    subtitle: 'Your body is shedding — focus on light movement',
+    subtitle: 'Your body is shedding  -  focus on light movement',
     recommended: ['Yoga', 'Walking', 'Light cardio', 'Mobility work', 'Swimming'],
     avoid: ['Heavy 1RM attempts', 'Max effort WODs', 'High-volume training'],
     nutrition: [
@@ -34,17 +35,17 @@ export const PHASE_TRAINING: Record<CyclePhase, {
       'Extra magnesium (dark chocolate, nuts, seeds)',
     ],
     hydration: 'Increase water intake by 20%',
-    sleep: 'Aim for 8+ hours — your body needs extra rest',
+    sleep: 'Aim for 8+ hours  -  your body needs extra rest',
     strengthPotential: 'low',
     recoveryCapacity: 'reduced',
   },
   follicular: {
-    title: 'Power Phase — Your Strongest Days!',
+    title: 'Power Phase  -  Your Strongest Days!',
     subtitle: 'Estrogen rising = more energy, better recovery',
     recommended: ['Heavy lifting', 'Intense WODs', 'PR attempts', 'Sprint intervals', 'Benchmark WODs'],
     avoid: [],
     nutrition: [
-      'Normal macros — focus on protein for muscle building',
+      'Normal macros  -  focus on protein for muscle building',
       'Carb loading works best in this phase',
       'Creatine supplementation most effective now',
     ],
@@ -54,7 +55,7 @@ export const PHASE_TRAINING: Record<CyclePhase, {
     recoveryCapacity: 'high',
   },
   ovulation: {
-    title: 'Peak Performance — Watch Your Joints',
+    title: 'Peak Performance  -  Watch Your Joints',
     subtitle: 'Highest energy but ACL injury risk elevated',
     recommended: ['Strength + power training', 'High-intensity work', 'Complex movements'],
     avoid: ['Sudden direction changes without warm-up', 'Skipping warm-up'],
@@ -69,7 +70,7 @@ export const PHASE_TRAINING: Record<CyclePhase, {
     recoveryCapacity: 'high',
   },
   luteal: {
-    title: 'Endurance Phase — Steady State',
+    title: 'Endurance Phase  -  Steady State',
     subtitle: 'Progesterone rising = higher body temp, more fatigue',
     recommended: ['Moderate intensity', 'Endurance work', 'Steady-state cardio', 'Higher rep / lighter weight'],
     avoid: ['Extreme high-intensity repeatedly', 'Under-fueling'],
@@ -78,7 +79,7 @@ export const PHASE_TRAINING: Record<CyclePhase, {
       'Magnesium before bed (helps sleep + cramps)',
       'Increase protein slightly for recovery',
     ],
-    hydration: 'Increase water — higher body temperature',
+    hydration: 'Increase water  -  higher body temperature',
     sleep: 'May need 30-60 min extra sleep',
     strengthPotential: 'moderate',
     recoveryCapacity: 'reduced',
@@ -301,7 +302,7 @@ export function useCycleTracking() {
     return Math.max(0, diff)
   }, [nextPeriod, today])
 
-  // RED-S risk flags — per IOC 2023 consensus: use 6-month (180-day) window
+  // RED-S risk flags  -  per IOC 2023 consensus: use 6-month (180-day) window
   const redsFlags = useMemo(() => {
     if (!settings?.enabled) return null
     const last180Days = cycleLogs.filter(l => {

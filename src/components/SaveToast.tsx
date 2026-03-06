@@ -12,6 +12,7 @@ export function SaveToast({ message, type = 'success', onDone }: Props) {
   const [visible, setVisible] = useState(true)
 
   useEffect(() => {
+    // Haptic on toast appear
     haptic(type === 'success' ? 'heavy' : 'error')
     const timer = setTimeout(() => {
       setVisible(false)
@@ -44,6 +45,7 @@ export function SaveToast({ message, type = 'success', onDone }: Props) {
   )
 }
 
+// Reusable toast hook
 export function useSaveToast() {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
 

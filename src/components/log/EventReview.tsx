@@ -1,5 +1,5 @@
 /**
- * EventReview — Review OCR-scanned event data before saving
+ * EventReview  -  Review OCR-scanned event data before saving
  * Shows confidence badges, editable fields, warnings
  */
 
@@ -35,7 +35,7 @@ function ConfidenceBadge({ score }: { score: number }) {
   )
 }
 
-const WOD_TYPE_OPTIONS: WodType[] = ['ForTime', 'AMRAP', 'EMOM', 'Tabata', 'Chipper', 'Strength', 'StrengthMetcon', 'HYROX', 'Running', 'Cardio', 'Other']
+const WOD_TYPE_OPTIONS: WodType[] = ['ForTime', 'AMRAP', 'EMOM', 'Chipper', 'Other']
 const CATEGORY_OPTIONS: { value: EventCategory; label: string }[] = [
   { value: 'open', label: 'Open' },
   { value: 'hero', label: 'Hero' },
@@ -69,7 +69,7 @@ export function EventReview({ result, sourceImage, onConfirm, onRetry, onCancel 
                 <p key={i} className="text-[11px] text-ct-2 mt-0.5">• {w}</p>
               ))}
               {hasLowConfidence && (
-                <p className="text-[11px] text-ct-2 mt-0.5">• Some fields have low confidence — please verify</p>
+                <p className="text-[11px] text-ct-2 mt-0.5">• Some fields have low confidence  -  please verify</p>
               )}
             </div>
           </div>
@@ -103,7 +103,7 @@ export function EventReview({ result, sourceImage, onConfirm, onRetry, onCancel 
             autoFocus
           />
         ) : (
-          <p className="text-sm font-bold text-ct-1">{edited.eventTitle || '—'}</p>
+          <p className="text-sm font-bold text-ct-1">{edited.eventTitle || ' - '}</p>
         )}
       </ReviewField>
 
@@ -132,7 +132,7 @@ export function EventReview({ result, sourceImage, onConfirm, onRetry, onCancel 
               ))}
             </div>
           ) : (
-            <p className="text-sm text-ct-1 capitalize">{edited.eventType || '—'}</p>
+            <p className="text-sm text-ct-1 capitalize">{edited.eventType || ' - '}</p>
           )}
         </ReviewField>
 
@@ -159,7 +159,7 @@ export function EventReview({ result, sourceImage, onConfirm, onRetry, onCancel 
               ))}
             </div>
           ) : (
-            <p className="text-sm text-ct-1">{edited.wodType === 'ForTime' ? 'For Time' : edited.wodType || '—'}</p>
+            <p className="text-sm text-ct-1">{edited.wodType === 'ForTime' ? 'For Time' : edited.wodType || ' - '}</p>
           )}
         </ReviewField>
       </div>
@@ -225,7 +225,7 @@ export function EventReview({ result, sourceImage, onConfirm, onRetry, onCancel 
               autoFocus
             />
           ) : (
-            <p className="text-sm text-ct-1 truncate">{edited.rxStandard || '—'}</p>
+            <p className="text-sm text-ct-1 truncate">{edited.rxStandard || ' - '}</p>
           )}
         </ReviewField>
       </div>
@@ -247,7 +247,7 @@ export function EventReview({ result, sourceImage, onConfirm, onRetry, onCancel 
               autoFocus
             />
           ) : (
-            <p className="text-sm text-ct-1">{edited.scaledStandard || '—'}</p>
+            <p className="text-sm text-ct-1">{edited.scaledStandard || ' - '}</p>
           )}
         </ReviewField>
       )}
@@ -344,7 +344,7 @@ function ReviewField({
     }`}>
       <div className="flex items-center justify-between mb-1.5">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] uppercase tracking-wider text-ct-3 font-semibold">{label}</span>
+          <span className="text-[10px] uppercase tracking-wider text-ct-2 font-semibold">{label}</span>
           {confidence !== undefined && <ConfidenceBadge score={confidence} />}
         </div>
         <button

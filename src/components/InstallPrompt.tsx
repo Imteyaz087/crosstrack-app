@@ -9,6 +9,7 @@ interface BeforeInstallPromptEvent extends Event {
 export function InstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [dismissed, setDismissed] = useState(false)
+  const [suppressed, setSuppressed] = useState(false)
 
   useEffect(() => {
     // Check if already dismissed this session
@@ -25,7 +26,20 @@ export function InstallPrompt() {
     return () => window.removeEventListener('beforeinstallprompt', handler)
   }, [])
 
-  if (!deferredPrompt || dismissed) return null
+  useEffect(() => {
+    const syncSuppressedState = () => {
+      setSuppressed(Boolean(document.querySelector('[data-fullscreen-tool="true"]')))
+    }
+
+    syncSuppressedState()
+
+    const observer = new MutationObserver(syncSuppressedState)
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true })
+
+    return () => observer.disconnect()
+  }, [])
+
+  if (!deferredPrompt || dismissed || suppressed) return null
 
   const handleInstall = async () => {
     await deferredPrompt.prompt()

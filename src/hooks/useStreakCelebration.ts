@@ -1,5 +1,5 @@
 /**
- * useStreakCelebration — Detects streak milestones and triggers celebrations
+ * useStreakCelebration  -  Detects streak milestones and triggers celebrations
  *
  * Milestones: 3, 7, 14, 30, 60, 90, 180, 365 days
  * Each milestone is celebrated only ONCE (tracked in localStorage)
@@ -7,6 +7,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
+import { E } from '../utils/emoji'
 
 const MILESTONES = [3, 7, 14, 30, 60, 90, 180, 365] as const
 const STORAGE_KEY = 'trackvolt_streak_celebrations'
@@ -19,14 +20,14 @@ type MilestoneInfo = {
 }
 
 const MILESTONE_MESSAGES: Record<number, { title: string; subtitle: string }> = {
-  3: { title: '3-Day Streak!', subtitle: "You're building a habit 💪" },
-  7: { title: '1 Week Strong!', subtitle: 'Consistency is everything' },
-  14: { title: '2 Weeks!', subtitle: "You're in the rhythm now" },
-  30: { title: '30 Days!', subtitle: 'One month of dedication 🔥' },
-  60: { title: '60 Days!', subtitle: "You're unstoppable" },
-  90: { title: '90 Days!', subtitle: 'Quarter of a year. Legend.' },
-  180: { title: 'Half a Year!', subtitle: '180 days. Truly dedicated.' },
-  365: { title: '365 Days!', subtitle: 'One full year. Incredible.' },
+  3:   { title: '3-Day Streak!',   subtitle: `You're building a habit ${E.muscle}` },
+  7:   { title: '1 Week Strong!',  subtitle: 'Consistency is everything' },
+  14:  { title: '2 Weeks!',        subtitle: "You're in the rhythm now" },
+  30:  { title: '30 Days!',        subtitle: `One month of dedication ${E.trophy}` },
+  60:  { title: '60 Days!',        subtitle: "You're unstoppable" },
+  90:  { title: '90 Days!',        subtitle: 'Quarter of a year. Legend.' },
+  180: { title: 'Half a Year!',    subtitle: '180 days. Truly dedicated.' },
+  365: { title: '365 Days!',       subtitle: 'One full year. Incredible.' },
 }
 
 function getCelebratedMilestones(): Set<number> {
@@ -90,8 +91,7 @@ export function getStreakFreezeStatus(): { usedThisWeek: boolean; freezeAvailabl
     if (data.weekId === currentWeekId) {
       return { usedThisWeek: data.used, freezeAvailable: !data.used }
     }
-
-    // New week — freeze resets
+    // New week  -  freeze resets
     return { usedThisWeek: false, freezeAvailable: true }
   } catch {
     return { usedThisWeek: false, freezeAvailable: true }

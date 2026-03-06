@@ -1,7 +1,8 @@
 /**
- * WodScanReview — Review OCR-scanned WOD data before filling form
+ * WodScanReview  -  Review OCR-scanned WOD data before filling form
  * Shows confidence badges, editable fields
  */
+
 import { useState } from 'react'
 import { CheckCircle, AlertTriangle, AlertCircle, Edit3 } from 'lucide-react'
 import type { WodScanResult } from './WodScanner'
@@ -32,7 +33,7 @@ function ConfidenceBadge({ score }: { score: number }) {
   )
 }
 
-const WOD_TYPES: WodType[] = ['ForTime', 'AMRAP', 'EMOM', 'Tabata', 'Chipper', 'Strength', 'StrengthMetcon', 'HYROX', 'Running', 'Cardio', 'Other']
+const WOD_TYPES: WodType[] = ['ForTime', 'AMRAP', 'EMOM', 'Tabata', 'Chipper', 'Other']
 
 export function WodScanReview({ result, onConfirm, onRetry, onCancel }: WodScanReviewProps) {
   const [edited, setEdited] = useState<WodScanResult>({ ...result })
@@ -66,9 +67,11 @@ export function WodScanReview({ result, onConfirm, onRetry, onCancel }: WodScanR
       )}
 
       {/* WOD Name */}
-      <ReviewField label="WOD Name" confidence={conf.wodName} editing={editingField === 'wodName'} onEdit={() => setEditingField(editingField === 'wodName' ? null : 'wodName')}>
+      <ReviewField label="WOD Name" confidence={conf.wodName}
+        editing={editingField === 'wodName'} onEdit={() => setEditingField(editingField === 'wodName' ? null : 'wodName')}>
         {editingField === 'wodName' ? (
-          <input type="text" value={edited.wodName ?? ''} onChange={e => update('wodName', e.target.value || null)}
+          <input type="text" value={edited.wodName ?? ''}
+            onChange={e => update('wodName', e.target.value || null)}
             className="w-full px-3 py-2 bg-ct-surface border border-cyan-400/40 rounded-ct-lg text-sm text-ct-1 min-h-[40px]"
             placeholder="WOD name (optional)" autoFocus />
         ) : (
@@ -77,15 +80,15 @@ export function WodScanReview({ result, onConfirm, onRetry, onCancel }: WodScanR
       </ReviewField>
 
       {/* WOD Type */}
-      <ReviewField label="Type" confidence={conf.wodType} editing={editingField === 'wodType'} onEdit={() => setEditingField(editingField === 'wodType' ? null : 'wodType')}>
+      <ReviewField label="Type" confidence={conf.wodType}
+        editing={editingField === 'wodType'} onEdit={() => setEditingField(editingField === 'wodType' ? null : 'wodType')}>
         {editingField === 'wodType' ? (
           <div className="flex flex-wrap gap-1.5">
             {WOD_TYPES.map(t => (
-              <button key={t} onClick={() => { update('wodType', t); setEditingField(null) }}
+              <button key={t}
+                onClick={() => { update('wodType', t); setEditingField(null) }}
                 className={`px-2.5 py-1.5 rounded-ct-lg text-[11px] font-semibold transition-all min-h-[32px] ${
-                  edited.wodType === t
-                    ? 'bg-cyan-400/15 text-cyan-400 border border-cyan-400/30'
-                    : 'bg-ct-surface text-ct-2 border border-ct-border'
+                  edited.wodType === t ? 'bg-cyan-400/15 text-cyan-400 border border-cyan-400/30' : 'bg-ct-surface text-ct-2 border border-ct-border'
                 }`}>
                 {t === 'ForTime' ? 'For Time' : t}
               </button>
@@ -97,21 +100,28 @@ export function WodScanReview({ result, onConfirm, onRetry, onCancel }: WodScanR
       </ReviewField>
 
       {/* Description */}
-      <ReviewField label="Workout" confidence={conf.description} editing={editingField === 'description'} onEdit={() => setEditingField(editingField === 'description' ? null : 'description')}>
+      <ReviewField label="Workout" confidence={conf.description}
+        editing={editingField === 'description'} onEdit={() => setEditingField(editingField === 'description' ? null : 'description')}>
         {editingField === 'description' ? (
-          <textarea value={edited.description} onChange={e => update('description', e.target.value)} rows={3}
-            className="w-full px-3 py-2 bg-ct-surface border border-cyan-400/40 rounded-ct-lg text-sm text-ct-1 resize-none" autoFocus />
+          <textarea value={edited.description}
+            onChange={e => update('description', e.target.value)}
+            rows={3}
+            className="w-full px-3 py-2 bg-ct-surface border border-cyan-400/40 rounded-ct-lg text-sm text-ct-1 resize-none"
+            autoFocus />
         ) : (
-          <p className="text-sm text-ct-1">{edited.description || '—'}</p>
+          <p className="text-sm text-ct-1">{edited.description || ' - '}</p>
         )}
       </ReviewField>
 
       {/* Movements */}
-      <ReviewField label="Movements" confidence={conf.movements} editing={editingField === 'movements'} onEdit={() => setEditingField(editingField === 'movements' ? null : 'movements')}>
+      <ReviewField label="Movements" confidence={conf.movements}
+        editing={editingField === 'movements'} onEdit={() => setEditingField(editingField === 'movements' ? null : 'movements')}>
         {editingField === 'movements' ? (
-          <textarea value={edited.movements.join('\n')} onChange={e => update('movements', e.target.value.split('\n').filter(l => l.trim()))}
+          <textarea value={edited.movements.join('\n')}
+            onChange={e => update('movements', e.target.value.split('\n').filter(l => l.trim()))}
             rows={Math.max(3, edited.movements.length + 1)}
-            className="w-full px-3 py-2 bg-ct-surface border border-cyan-400/40 rounded-ct-lg text-sm text-ct-1 resize-none font-mono" autoFocus />
+            className="w-full px-3 py-2 bg-ct-surface border border-cyan-400/40 rounded-ct-lg text-sm text-ct-1 resize-none font-mono"
+            autoFocus />
         ) : (
           <div className="flex flex-wrap gap-1.5">
             {edited.movements.map((m, i) => (
@@ -123,35 +133,43 @@ export function WodScanReview({ result, onConfirm, onRetry, onCancel }: WodScanR
 
       {/* Time Cap + RX row */}
       <div className="grid grid-cols-2 gap-3">
-        <ReviewField label="Time Cap" confidence={conf.timeCapMinutes} compact editing={editingField === 'timeCap'} onEdit={() => setEditingField(editingField === 'timeCap' ? null : 'timeCap')}>
+        <ReviewField label="Time Cap" confidence={conf.timeCapMinutes} compact
+          editing={editingField === 'timeCap'} onEdit={() => setEditingField(editingField === 'timeCap' ? null : 'timeCap')}>
           {editingField === 'timeCap' ? (
-            <input type="number" value={edited.timeCapMinutes ?? ''} onChange={e => update('timeCapMinutes', e.target.value ? Number(e.target.value) : null)}
-              placeholder="min" className="w-full px-3 py-2 bg-ct-surface border border-cyan-400/40 rounded-ct-lg text-sm text-ct-1 min-h-[36px]" autoFocus />
+            <input type="number" value={edited.timeCapMinutes ?? ''}
+              onChange={e => update('timeCapMinutes', e.target.value ? Number(e.target.value) : null)}
+              placeholder="min" className="w-full px-3 py-2 bg-ct-surface border border-cyan-400/40 rounded-ct-lg text-sm text-ct-1 min-h-[36px]"
+              autoFocus />
           ) : (
             <p className="text-sm text-ct-1">{edited.timeCapMinutes ? `${edited.timeCapMinutes} min` : 'None'}</p>
           )}
         </ReviewField>
-
-        <ReviewField label="RX Weights" confidence={conf.rxWeights} compact editing={editingField === 'rxWeights'} onEdit={() => setEditingField(editingField === 'rxWeights' ? null : 'rxWeights')}>
+        <ReviewField label="RX Weights" confidence={conf.rxWeights} compact
+          editing={editingField === 'rxWeights'} onEdit={() => setEditingField(editingField === 'rxWeights' ? null : 'rxWeights')}>
           {editingField === 'rxWeights' ? (
-            <input type="text" value={edited.rxWeights ?? ''} onChange={e => update('rxWeights', e.target.value || null)}
-              className="w-full px-3 py-2 bg-ct-surface border border-cyan-400/40 rounded-ct-lg text-sm text-ct-1 min-h-[36px]" autoFocus />
+            <input type="text" value={edited.rxWeights ?? ''}
+              onChange={e => update('rxWeights', e.target.value || null)}
+              className="w-full px-3 py-2 bg-ct-surface border border-cyan-400/40 rounded-ct-lg text-sm text-ct-1 min-h-[36px]"
+              autoFocus />
           ) : (
-            <p className="text-sm text-ct-1 truncate">{edited.rxWeights || '—'}</p>
+            <p className="text-sm text-ct-1 truncate">{edited.rxWeights || ' - '}</p>
           )}
         </ReviewField>
       </div>
 
       {/* Actions */}
       <div className="flex gap-3 pt-2">
-        <button onClick={onRetry} className="flex-1 py-3 bg-ct-surface border border-ct-border rounded-ct-lg text-sm font-semibold text-ct-2 min-h-[44px]">
+        <button onClick={onRetry}
+          className="flex-1 py-3 bg-ct-surface border border-ct-border rounded-ct-lg text-sm font-semibold text-ct-2 min-h-[44px]">
           Rescan
         </button>
-        <button onClick={() => onConfirm(edited)} className="flex-[2] py-3 bg-cyan-500 rounded-ct-lg text-sm font-bold text-slate-900 btn-press min-h-[44px]">
+        <button onClick={() => onConfirm(edited)}
+          className="flex-[2] py-3 bg-cyan-500 rounded-ct-lg text-sm font-bold text-slate-900 btn-press min-h-[44px]">
           Use This WOD
         </button>
       </div>
-      <button onClick={onCancel} className="w-full py-3 bg-ct-surface border border-ct-border rounded-ct-lg text-sm font-semibold text-ct-2 min-h-[44px]">
+      <button onClick={onCancel}
+        className="w-full py-3 bg-ct-surface border border-ct-border rounded-ct-lg text-sm font-semibold text-ct-2 min-h-[44px]">
         Cancel
       </button>
     </div>
@@ -169,7 +187,7 @@ function ReviewField({ label, confidence, editing, onEdit, compact, children }: 
     }`}>
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] uppercase tracking-wider text-ct-3 font-semibold">{label}</span>
+          <span className="text-[10px] uppercase tracking-wider text-ct-2 font-semibold">{label}</span>
           {confidence !== undefined && <ConfidenceBadge score={confidence} />}
         </div>
         <button onClick={onEdit} className="p-1 min-w-[24px] min-h-[24px] flex items-center justify-center">

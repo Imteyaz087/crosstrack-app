@@ -1,7 +1,7 @@
 /**
- * ShareCardExporter \u2014 Template picker + export to PNG + share
+ * ShareCardExporter  -  Template picker + export to PNG + share
  * 4 templates: Minimal, Poster, PR Highlight, Overlay (transparent)
- * Output: 1080\u00d71920 PNG (9:16 story format)
+ * Output: 1080×1920 PNG (9:16 story format)
  *
  * FIX: Uses off-screen full-size rendering for reliable capture.
  * The preview uses CSS scale(0.3) for display, but capture happens
@@ -10,6 +10,7 @@
  * FIX: Mobile download uses blob URL opened in new tab (iOS PWA
  * blocks programmatic <a>.click() downloads).
  */
+
 import { useState, useRef, useCallback } from 'react'
 import { Download, Share2, Loader2, Check, Image, X, Layers } from 'lucide-react'
 import { toPng } from 'html-to-image'
@@ -50,6 +51,7 @@ export function ShareCardExporter({ data, onClose, onToast }: ShareCardExporterP
   const [exporting, setExporting] = useState(false)
   const [exported, setExported] = useState(false)
   const captureRef = useRef<HTMLDivElement>(null)
+
   const canShare = typeof navigator.share === 'function'
 
   // For overlay template, show a checkerboard background in preview
@@ -63,7 +65,7 @@ export function ShareCardExporter({ data, onClose, onToast }: ShareCardExporterP
       requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 100)))
     })
 
-    // Retry up to 3 times
+    // Retry up to 3 times  -  first attempt sometimes captures blank on mobile
     let lastErr: unknown
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
@@ -99,7 +101,7 @@ export function ShareCardExporter({ data, onClose, onToast }: ShareCardExporterP
         const file = new File([blob], filename, { type: 'image/png' })
         await navigator.share({
           files: [file],
-          title: `${data.title} \u2014 ${data.scoreDisplay}`,
+          title: `${data.title}  -  ${data.scoreDisplay}`,
           text: `${data.title} ${data.scoreDisplay} ${data.rxOrScaled}`,
         })
         haptic('success')
@@ -107,6 +109,7 @@ export function ShareCardExporter({ data, onClose, onToast }: ShareCardExporterP
       } else {
         // Download: create blob URL
         const url = URL.createObjectURL(blob)
+
         // Try programmatic download first (works on desktop browsers)
         try {
           const a = document.createElement('a')
@@ -115,6 +118,7 @@ export function ShareCardExporter({ data, onClose, onToast }: ShareCardExporterP
           a.style.display = 'none'
           document.body.appendChild(a)
           a.click()
+
           // Small delay then clean up
           setTimeout(() => {
             document.body.removeChild(a)
@@ -125,13 +129,14 @@ export function ShareCardExporter({ data, onClose, onToast }: ShareCardExporterP
           window.open(url, '_blank')
           setTimeout(() => URL.revokeObjectURL(url), 60000)
         }
+
         haptic('success')
         onToast('Image saved!', 'success')
       }
       setExported(true)
     } catch (e) {
       if (e instanceof Error && e.name === 'AbortError') {
-        // User cancelled share sheet
+        // User cancelled share sheet  -  no toast needed
       } else {
         console.error('Share card export failed:', e)
         onToast('Export failed. Try again.', 'error')
@@ -150,7 +155,7 @@ export function ShareCardExporter({ data, onClose, onToast }: ShareCardExporterP
         </button>
       </div>
 
-      {/* Template picker */}
+      {/* Template picker  -  2×2 grid for 4 templates */}
       <div className="grid grid-cols-4 gap-2">
         {TEMPLATES.map(t => (
           <button
@@ -178,13 +183,15 @@ export function ShareCardExporter({ data, onClose, onToast }: ShareCardExporterP
         isOverlay ? 'bg-checkerboard' : 'bg-ct-surface'
       }`}>
         <div className="w-full" style={{ aspectRatio: '9/16' }}>
-          <div style={{
-            transform: 'scale(0.3)',
-            transformOrigin: 'top left',
-            width: 1080,
-            height: 1920,
-            pointerEvents: 'none',
-          }}>
+          <div
+            style={{
+              transform: 'scale(0.3)',
+              transformOrigin: 'top left',
+              width: 1080,
+              height: 1920,
+              pointerEvents: 'none',
+            }}
+          >
             <CardContent template={template} data={data} showWatermark={showWatermark} />
           </div>
         </div>
@@ -194,7 +201,7 @@ export function ShareCardExporter({ data, onClose, onToast }: ShareCardExporterP
         </div>
       </div>
 
-      {/* Off-screen capture node */}
+      {/* Off-screen capture node  -  positioned way off-screen, full size, no transforms */}
       <div
         style={{
           position: 'fixed',
@@ -205,6 +212,8 @@ export function ShareCardExporter({ data, onClose, onToast }: ShareCardExporterP
           overflow: 'hidden',
           pointerEvents: 'none',
           zIndex: -1,
+          // NO opacity:0 or visibility:hidden  -  those prevent the browser from painting
+          // position:fixed + left:-9999 is enough to hide it off-screen
         }}
         aria-hidden="true"
       >
@@ -217,7 +226,7 @@ export function ShareCardExporter({ data, onClose, onToast }: ShareCardExporterP
       {isOverlay && (
         <div className="bg-violet-500/10 border border-violet-400/20 rounded-ct-lg px-4 py-2.5">
           <p className="text-[11px] text-violet-300 font-medium">
-            Transparent background \u2014 layer this on your gym photo in IG Stories or any photo editor.
+            Transparent background  -  layer this on your gym photo in IG Stories or any photo editor.
           </p>
         </div>
       )}

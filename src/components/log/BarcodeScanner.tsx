@@ -96,7 +96,7 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
         }
       }, 300)
     } else {
-      // BarcodeDetector not supported — fall back to manual entry
+      // BarcodeDetector not supported  -  fall back to manual entry
       stopCamera()
       setError('Camera barcode scanning not supported on this device. Enter the number manually.')
       setMode('manual')
@@ -191,7 +191,7 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
         <div className="space-y-3">
           <p className="text-sm text-ct-2">{t('scanner.chooseMethod')}</p>
           <button onClick={startCamera}
-            className="w-full bg-slate-800 border border-slate-700 rounded-ct-lg p-5 flex items-center gap-4 active:bg-ct-elevated min-h-[72px]">
+            className="w-full bg-ct-surface border border-ct-border rounded-ct-lg p-5 flex items-center gap-4 active:bg-ct-elevated min-h-[72px]">
             <div className="w-12 h-12 rounded-xl bg-cyan-500/15 flex items-center justify-center shrink-0">
               <Camera size={24} className="text-cyan-400" />
             </div>
@@ -201,7 +201,7 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
             </div>
           </button>
           <button onClick={() => setMode('manual')}
-            className="w-full bg-slate-800 border border-slate-700 rounded-ct-lg p-5 flex items-center gap-4 active:bg-ct-elevated min-h-[72px]">
+            className="w-full bg-ct-surface border border-ct-border rounded-ct-lg p-5 flex items-center gap-4 active:bg-ct-elevated min-h-[72px]">
             <div className="w-12 h-12 rounded-xl bg-orange-500/15 flex items-center justify-center shrink-0">
               <Barcode size={24} className="text-orange-400" />
             </div>
@@ -241,7 +241,7 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
           )}
           <p className="text-xs text-ct-2 text-center">{t('scanner.pointAtBarcode')}</p>
           <button onClick={() => { stopCamera(); setMode('manual') }}
-            className="w-full bg-slate-800 text-ct-2 font-semibold py-3 rounded-xl text-sm min-h-[44px]">
+            className="w-full bg-ct-surface text-ct-2 font-semibold py-3 rounded-xl text-sm min-h-[44px]">
             {t('scanner.enterManually')}
           </button>
         </div>
@@ -271,7 +271,7 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
         </div>
       )}
 
-      {/* Result found — quick view */}
+      {/* Result found  -  quick view */}
       {mode === 'result' && product && (
         <div className="space-y-3">
           <div className="bg-ct-surface rounded-ct-lg p-4 border border-green-500/30">
@@ -283,7 +283,7 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
               </div>
               <div className="flex flex-col items-end gap-1 ml-2">
                 {qualityBadge(product.dataQuality)}
-                {fromCache && <span className="text-[0.6rem] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400">Cached</span>}
+                {fromCache && <span className="text-[0.6rem] px-1.5 py-0.5 rounded bg-ct-elevated text-ct-2">Cached</span>}
               </div>
             </div>
 
@@ -318,7 +318,7 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
             {t('scanner.addToLibrary')}
           </button>
           <button onClick={openReview}
-            className="w-full bg-slate-800 border border-slate-700 text-ct-1 font-semibold py-3 rounded-xl text-sm min-h-[44px] flex items-center justify-center gap-2">
+            className="w-full bg-ct-surface border border-ct-border text-ct-1 font-semibold py-3 rounded-xl text-sm min-h-[44px] flex items-center justify-center gap-2">
             <Edit3 size={16} /> Review & Edit Before Saving
           </button>
           <button onClick={() => { setMode('choose'); setBarcode(''); setProduct(null) }}
@@ -391,7 +391,7 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
             <p className="text-sm text-ct-2">{t('scanner.notFoundDesc')}</p>
             {barcode && <p className="text-xs text-ct-2 mt-2 font-mono tabular-nums">{barcode}</p>}
             {isOffline && (
-              <p className="text-xs text-orange-400 mt-2">You're offline — try again when connected</p>
+              <p className="text-xs text-orange-400 mt-2">You're offline  -  try again when connected</p>
             )}
           </div>
           {onCreateCustom && (
@@ -401,7 +401,7 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
             </button>
           )}
           <button onClick={() => { setMode('choose'); setBarcode('') }}
-            className="w-full bg-slate-800 text-ct-2 font-semibold py-3 rounded-xl text-sm min-h-[44px]">
+            className="w-full bg-ct-surface text-ct-2 font-semibold py-3 rounded-xl text-sm min-h-[44px]">
             {t('scanner.tryAgain')}
           </button>
         </div>

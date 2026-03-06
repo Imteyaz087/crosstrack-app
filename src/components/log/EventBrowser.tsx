@@ -1,5 +1,5 @@
 /**
- * EventBrowser — Browse CrossFit Event templates
+ * EventBrowser  -  Browse CrossFit Event templates
  * Categories: Open | Hero | Girls | Custom
  */
 
@@ -32,7 +32,7 @@ const WOD_TYPE_BADGE: Record<string, string> = {
   AMRAP: 'bg-cyan-500/20 text-cyan-400',
   EMOM: 'bg-violet-500/20 text-violet-400',
   Chipper: 'bg-orange-500/20 text-orange-400',
-  Other: 'bg-slate-500/20 text-slate-400',
+  Other: 'bg-ct-elevated/30 text-ct-2',
 }
 
 export function EventBrowser({ onSelectEvent, onCreateCustom }: EventBrowserProps) {
@@ -80,7 +80,7 @@ export function EventBrowser({ onSelectEvent, onCreateCustom }: EventBrowserProp
       {/* Create Custom button */}
       <button
         onClick={onCreateCustom}
-        className="w-full flex items-center gap-3 p-4 bg-ct-surface border border-dashed border-ct-border rounded-ct-lg active:scale-[0.98] transition-transform min-h-[56px]"
+        className="w-full flex items-center gap-3 p-4 bg-ct-surface border border-dashed border-ct-border rounded-ct-lg card-press min-h-[56px]"
       >
         <div className="w-10 h-10 rounded-xl bg-violet-500/15 flex items-center justify-center">
           <Plus size={20} className="text-violet-400" />
@@ -102,7 +102,7 @@ export function EventBrowser({ onSelectEvent, onCreateCustom }: EventBrowserProp
           <button
             key={`${event.name}-${idx}`}
             onClick={() => onSelectEvent(event)}
-            className="w-full text-left bg-ct-surface border border-ct-border rounded-ct-lg p-4 active:scale-[0.98] transition-transform card-press"
+            className="w-full text-left bg-ct-surface border border-ct-border rounded-ct-lg p-4 card-press"
           >
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">

@@ -100,7 +100,7 @@ export function WaterTracker({ t, currentWaterMl, waterTarget, onSave, onClose }
         </p>
       </div>
 
-      {/* Glasses grid — tap to fill/unfill */}
+      {/* Glasses grid  -  tap to fill/unfill */}
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
         <div className="flex items-center justify-between mb-3">
           <p className="text-[11px] text-ct-2 uppercase tracking-wider font-semibold">

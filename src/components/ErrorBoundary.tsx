@@ -1,28 +1,28 @@
 import { Component, type ReactNode, type ErrorInfo } from 'react'
 import { RefreshCw, AlertTriangle } from 'lucide-react'
 
-// Lightweight i18n fallback — ErrorBoundary can't use hooks
+// Lightweight i18n fallback  -  ErrorBoundary can't use hooks
 const STRINGS: Record<string, Record<string, string>> = {
   en: {
     title: 'Something went wrong',
-    desc: 'The app ran into an unexpected error. Your data is safe \u2014 try refreshing the page.',
+    desc: 'The app ran into an unexpected error. Your data is safe — try refreshing the page.',
     details: 'Error Details',
     tryAgain: 'Try Again',
     reload: 'Reload App',
   },
   'zh-TW': {
-    title: '\u51fa\u4e86\u9ede\u554f\u984c',
-    desc: '\u61c9\u7528\u7a0b\u5f0f\u767c\u751f\u610f\u5916\u932f\u8aa4\u3002\u60a8\u7684\u8cc7\u6599\u5b89\u5168\u7121\u865e \u2014 \u8acb\u5617\u8a66\u91cd\u65b0\u6574\u7406\u3002',
-    details: '\u932f\u8aa4\u8a73\u60c5',
-    tryAgain: '\u518d\u8a66\u4e00\u6b21',
-    reload: '\u91cd\u65b0\u8f09\u5165',
+    title: '出了點問題',
+    desc: '應用程式發生意外錯誤。您的資料安全無虞 — 請嘗試重新整理。',
+    details: '錯誤詳情',
+    tryAgain: '再試一次',
+    reload: '重新載入',
   },
   'zh-CN': {
-    title: '\u51fa\u4e86\u70b9\u95ee\u9898',
-    desc: '\u5e94\u7528\u7a0b\u5e8f\u53d1\u751f\u610f\u5916\u9519\u8bef\u3002\u60a8\u7684\u6570\u636e\u5b89\u5168\u65e0\u865e \u2014 \u8bf7\u5c1d\u8bd5\u91cd\u65b0\u52a0\u8f7d\u3002',
-    details: '\u9519\u8bef\u8be6\u60c5',
-    tryAgain: '\u518d\u8bd5\u4e00\u6b21',
-    reload: '\u91cd\u65b0\u52a0\u8f7d',
+    title: '出了点问题',
+    desc: '应用程序发生意外错误。您的数据安全无虞 — 请尝试重新加载。',
+    details: '错误详情',
+    tryAgain: '再试一次',
+    reload: '重新加载',
   },
 }
 

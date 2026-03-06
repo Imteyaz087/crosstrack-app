@@ -44,10 +44,16 @@ function isUnlocked(a: Achievement, stats: Stats): boolean {
   return key ? stats[key] >= a.condition.value : false
 }
 
+/**
+ * Returns a function that computes current stats from the store,
+ * checks for newly unlocked achievements, and returns them.
+ * Call this after any save operation.
+ */
 export function useAchievementCheck() {
   const { workouts, allDailyLogs, movementPRs } = useStore()
 
   const checkNewAchievements = useCallback((): Achievement[] => {
+    // Compute stats (same logic as AchievementsPage)
     const workoutCount = workouts.length
     const hyroxCount = workouts.filter(w => w.workoutType === 'HYROX').length
     const benchmarkCount = workouts.filter(w => w.isBenchmark).length
@@ -66,8 +72,10 @@ export function useAchievementCheck() {
       else break
     }
 
-    const mealCount = allDailyLogs.length * 3
+    const mealCount = allDailyLogs.length * 3 // approximate
+
     const weightLogged = allDailyLogs.filter(l => l.weightKg).length
+
     const cardioDistance = workouts
       .filter(w => w.distanceValue)
       .reduce((sum, w) => {
@@ -85,10 +93,15 @@ export function useAchievementCheck() {
     }
 
     const stats: Stats = { workoutCount, hyroxCount, benchmarkCount, prCount, streakDays, mealCount, weightLogged, cardioDistance, waterStreak }
+
+    // Find all currently unlocked
     const currentUnlocked = ACHIEVEMENTS.filter(a => isUnlocked(a, stats))
     const seen = getSeenIds()
+
+    // Find new ones
     const newOnes = currentUnlocked.filter(a => !seen.has(a.id))
 
+    // Mark all current as seen
     if (newOnes.length > 0) {
       for (const a of currentUnlocked) seen.add(a.id)
       saveSeenIds(seen)

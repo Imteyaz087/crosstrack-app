@@ -20,7 +20,6 @@ export function WorkoutTemplatesPage() {
   useEffect(() => { loadBenchmarkWods() }, [])
 
   const allWods = BENCHMARK_WODS
-
   const filtered = allWods.filter(w => {
     if (category !== 'all' && w.category !== category) return false
     if (search && !w.name.toLowerCase().includes(search.toLowerCase())) return false
@@ -32,9 +31,13 @@ export function WorkoutTemplatesPage() {
     if (!score.trim()) { showToast('Enter a score', 'error'); return }
     if (saving) return
     setSaving(true)
+
     try {
       const now = new Date().toISOString()
-      const scoreNum = selectedWod.scoreUnit === 'time' ? parseTimeToSeconds(score) : parseFloat(score)
+      const scoreNum = selectedWod.scoreUnit === 'time'
+        ? parseTimeToSeconds(score)
+        : parseFloat(score)
+
       await saveWorkout({
         date: now.split('T')[0],
         workoutType: selectedWod.wodType,
@@ -48,11 +51,12 @@ export function WorkoutTemplatesPage() {
         prFlag: false,
         notes: `${selectedWod.rxStandard}`,
       })
+
       showToast(`Logged ${selectedWod.name}!`, 'success')
       setSelectedWod(null)
       setScore('')
     } catch {
-      showToast('Failed to save – try again', 'error')
+      showToast('Failed to save  -  try again', 'error')
     } finally {
       setSaving(false)
     }
@@ -69,7 +73,7 @@ export function WorkoutTemplatesPage() {
     girl: 'bg-pink-500/15 text-pink-400',
     hero: 'bg-red-500/15 text-red-400',
     open: 'bg-blue-500/15 text-blue-400',
-    custom: 'bg-slate-500/15 text-ct-2',
+    custom: 'bg-ct-elevated/30 text-ct-2',
   }
 
   // Log modal
@@ -78,7 +82,6 @@ export function WorkoutTemplatesPage() {
       <div className="space-y-4">
         {toastEl}
         <button onClick={() => setSelectedWod(null)} className="text-cyan-400 text-sm">&larr; Back</button>
-
         <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
           <div className="flex items-start justify-between mb-3">
             <div>
@@ -99,7 +102,7 @@ export function WorkoutTemplatesPage() {
               className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${
                 rxScaled === opt
                   ? opt === 'RX' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
-                  : 'bg-ct-surface text-ct-2 border border-slate-700/30'
+                  : 'bg-ct-surface text-ct-2 border border-ct-border/30'
               }`}>{opt}</button>
           ))}
         </div>
@@ -110,7 +113,9 @@ export function WorkoutTemplatesPage() {
             Your Score ({selectedWod.scoreUnit === 'time' ? 'MM:SS' : selectedWod.scoreUnit})
           </p>
           <input
-            type="text" value={score} onChange={e => setScore(e.target.value)}
+            type="text"
+            value={score}
+            onChange={e => setScore(e.target.value)}
             placeholder={selectedWod.scoreUnit === 'time' ? '12:30' : '150'}
             className="w-full bg-ct-elevated text-ct-1 rounded-xl py-3 px-4 text-lg font-bold focus:outline-none focus:ring-1 focus:ring-cyan-400"
           />
@@ -128,17 +133,21 @@ export function WorkoutTemplatesPage() {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 stagger-children">
       {toastEl}
       <h1 className="text-xl font-bold text-ct-1">Benchmark WODs</h1>
-      <p className="text-xs text-ct-2">{allWods.length} workouts – Girls, Heroes, Open</p>
+      <p className="text-xs text-ct-2">{allWods.length} workouts  -  Girls, Heroes, Open</p>
 
       {/* Search */}
       <div className="relative">
         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ct-2" />
-        <input type="text" value={search} onChange={e => setSearch(e.target.value)}
+        <input
+          type="text"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
           placeholder="Search WODs..."
-          className="w-full bg-ct-surface border border-ct-border text-ct-1 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400" />
+          className="w-full bg-ct-surface border border-ct-border text-ct-1 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400"
+        />
       </div>
 
       {/* Category filter */}
@@ -154,7 +163,9 @@ export function WorkoutTemplatesPage() {
       {/* WOD list */}
       <div className="space-y-2">
         {filtered.map(w => (
-          <button key={w.name} onClick={() => setSelectedWod(w)}
+          <button
+            key={w.name}
+            onClick={() => setSelectedWod(w)}
             className="w-full bg-ct-surface rounded-ct-lg p-3 border border-ct-border flex items-center gap-3 active:bg-ct-elevated/50 transition-colors text-left"
           >
             <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${

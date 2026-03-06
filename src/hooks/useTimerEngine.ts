@@ -110,28 +110,18 @@ export function useTimerEngine(config: TimerConfig) {
               beepGo(); voice.speakWork(); setCurrentRound(r => r + 1); setPhase('work'); return tabataWork
             }
           }
-
           if (mode === 'emom') {
             if (currentRound >= emomTotalRounds) {
               beepDone(); voice.speakTimesUp(); setIsRunning(false); setPhase('done'); return 0
             }
-            beepGo(); setCurrentRound(r => r + 1); return emomInterval * 60
+            beepGo(); voice.speakWork(); setCurrentRound(r => r + 1); return emomInterval * 60
           }
-
           if (phase === 'work') {
-            if (hasRest && currentSet < sets) {
-              beepRest(); voice.speakRest(); setPhase('rest'); return totalRestSeconds
-            } else if (currentSet < sets) {
-              beepGo(); voice.speakWork(); setCurrentSet(s => s + 1); return totalWorkSeconds
-            } else {
-              beepDone(); voice.speakTimesUp(); setIsRunning(false); setPhase('done'); return 0
-            }
+            if (hasRest && currentSet < sets) { beepRest(); voice.speakRest(); setPhase('rest'); return totalRestSeconds }
+            else if (currentSet < sets) { beepGo(); voice.speakWork(); setCurrentSet(s => s + 1); return totalWorkSeconds }
+            else { beepDone(); voice.speakTimesUp(); setIsRunning(false); setPhase('done'); return 0 }
           }
-
-          if (phase === 'rest') {
-            beepGo(); voice.speakWork(); setCurrentSet(s => s + 1); setPhase('work'); return totalWorkSeconds
-          }
-
+          if (phase === 'rest') { beepGo(); voice.speakWork(); setCurrentSet(s => s + 1); setPhase('work'); return totalWorkSeconds }
           setIsRunning(false); setPhase('done'); return 0
         }
         if (prev <= 4 && prev > 1) beepCountdown()
@@ -140,7 +130,9 @@ export function useTimerEngine(config: TimerConfig) {
     }, 1000)
 
     return () => clearInterval(intervalRef.current)
-  }, [isRunning, phase, mode, currentRound, currentSet, sets, hasRest, totalWorkSeconds, totalRestSeconds, tabataWork, tabataRest, tabataRounds, emomInterval, emomTotalRounds])
+  }, [isRunning, phase, mode, currentRound, currentSet, sets, hasRest,
+    totalWorkSeconds, totalRestSeconds, tabataWork, tabataRest, tabataRounds,
+    emomInterval, emomTotalRounds])
 
   // Progress
   let progress = 0

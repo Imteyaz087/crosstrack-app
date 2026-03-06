@@ -31,7 +31,7 @@ export function OfflineBar() {
           : 'bg-amber-500/20 border border-amber-500/30 text-amber-400'
       }`}>
         {isOnline ? <Wifi size={12} /> : <WifiOff size={12} />}
-        {isOnline ? 'Back online' : 'Offline — your data is safe'}
+        {isOnline ? 'Back online' : 'Offline  -  your data is safe'}
       </div>
     </div>
   )

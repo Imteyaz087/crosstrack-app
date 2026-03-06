@@ -1,8 +1,8 @@
 import React, { useState, lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ShoppingCart, BarChart3, Settings, ChevronRight, Timer, Calculator, BookOpen, Target, Trophy, ChefHat, Dumbbell, Brain, Cloud, Camera, Heart, History, Ruler, CalendarDays, Award, Loader2 } from 'lucide-react'
+import { ShoppingCart, BarChart3, Settings, ChevronRight, Timer, Calculator, BookOpen, Target, Trophy, ChefHat, Dumbbell, Brain, Cloud, Camera, Heart, History, Ruler, CalendarDays, Award, Loader2, Shield } from 'lucide-react'
 
-// Lazy-load ALL sub-pages — cuts MorePage chunk from 800KB to ~5KB
+// Lazy-load ALL sub-pages  -  cuts MorePage chunk from 800KB to ~5KB
 const GroceryPage = lazy(() => import('./GroceryPage').then(m => ({ default: m.GroceryPage })))
 const ProgressPage = lazy(() => import('./ProgressPage').then(m => ({ default: m.ProgressPage })))
 const SettingsPage = lazy(() => import('./SettingsPage').then(m => ({ default: m.SettingsPage })))
@@ -21,8 +21,9 @@ const WorkoutHistoryPage = lazy(() => import('./WorkoutHistoryPage').then(m => (
 const BodyMeasurementsPage = lazy(() => import('./BodyMeasurementsPage').then(m => ({ default: m.BodyMeasurementsPage })))
 const WeeklyPlannerPage = lazy(() => import('./WeeklyPlannerPage').then(m => ({ default: m.WeeklyPlannerPage })))
 const PRWallPage = lazy(() => import('./PRWallPage').then(m => ({ default: m.PRWallPage })))
+const PrivacyPolicyPage = lazy(() => import('./PrivacyPolicyPage').then(m => ({ default: m.PrivacyPolicyPage })))
 
-type SubPage = 'menu' | 'grocery' | 'progress' | 'settings' | 'timer' | 'calc' | 'benchmarks' | 'movementPRs' | 'achievements' | 'wodTemplates' | 'mealPrep' | 'aiCoach' | 'cloudSync' | 'photoLog' | 'heartRate' | 'workoutHistory' | 'bodyMeasurements' | 'weeklyPlanner' | 'prWall'
+type SubPage = 'menu' | 'grocery' | 'progress' | 'settings' | 'timer' | 'calc' | 'benchmarks' | 'movementPRs' | 'achievements' | 'wodTemplates' | 'mealPrep' | 'aiCoach' | 'cloudSync' | 'photoLog' | 'heartRate' | 'workoutHistory' | 'bodyMeasurements' | 'weeklyPlanner' | 'prWall' | 'privacy'
 
 function LoadingFallback() {
   return (
@@ -58,6 +59,7 @@ export function MorePage() {
       bodyMeasurements: <div>{back}<BodyMeasurementsPage /></div>,
       weeklyPlanner: <div>{back}<WeeklyPlannerPage /></div>,
       prWall: <div>{back}<PRWallPage /></div>,
+      privacy: <div>{back}<PrivacyPolicyPage /></div>,
     }
     return <Suspense fallback={<LoadingFallback />}>{pageMap[subPage]}</Suspense>
   }
@@ -107,14 +109,14 @@ export function MorePage() {
       items: [
         { id: 'cloudSync', icon: Cloud, label: t('more.cloudSync'), desc: t('more.cloudSyncDesc'), color: 'text-sky-400' },
         { id: 'settings', icon: Settings, label: t('settings.title'), desc: t('more.profileDesc'), color: 'text-ct-2' },
+        { id: 'privacy', icon: Shield, label: t('privacy.linkLabel'), desc: t('privacy.linkDesc'), color: 'text-cyan-400' },
       ],
     },
   ]
 
   return (
-    <div className="space-y-5 pb-20">
+    <div className="space-y-5 pb-20 stagger-children">
       <h1 className="text-xl font-bold text-ct-1">{t('tabs.more')}</h1>
-
       {sections.map(section => (
         <div key={section.title}>
           <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 font-semibold mb-2 px-1">{section.title}</p>

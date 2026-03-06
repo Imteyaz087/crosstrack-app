@@ -15,6 +15,7 @@ export function verifyCals(protein: number, carbs: number, fat: number): number 
   return Math.round(protein * 4 + carbs * 4 + fat * 9)
 }
 
+// ===== 1RM Calculator (Epley) =====
 export function calc1RM(weight: number, reps: number): number {
   if (reps <= 0) return 0
   if (reps === 1) return weight
@@ -27,11 +28,11 @@ export function calcPercentage(oneRepMax: number, pct: number): number {
 
 export function getPercentageChart(oneRepMax: number) {
   return [100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50].map(p => ({
-    pct: p,
-    weight: calcPercentage(oneRepMax, p),
+    pct: p, weight: calcPercentage(oneRepMax, p),
   }))
 }
 
+// ===== Auto Nutrition Targets =====
 export function calcNutritionTargets(
   weightKg: number, goal: Goal, gender?: Gender,
 ): { protein: number; carbs: number; fat: number; calories: number; water: number } {
@@ -42,6 +43,7 @@ export function calcNutritionTargets(
     case 'performance': pM = 2.0; cM = 4.0; fM = 0.9; break
     case 'recomp': pM = 2.2; cM = 2.5; fM = 0.8; break
     case 'endurance': pM = 1.6; cM = 5.0; fM = 0.8; break
+    case 'hyrox': pM = 2.0; cM = 4.5; fM = 0.9; break
     case 'general_health': pM = 1.6; cM = 3.0; fM = 0.8; break
   }
   if (gender === 'female') { cM *= 0.85; fM *= 1.1 }
@@ -63,11 +65,13 @@ export function parseTime(str: string): number {
   return parseInt(str)
 }
 
+/** Returns today's date as YYYY-MM-DD in the user's LOCAL timezone (not UTC). */
 export function today(): string {
   const d = new Date()
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
+/** Converts any Date to YYYY-MM-DD in LOCAL timezone. */
 export function toLocalDateStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
@@ -76,16 +80,7 @@ export function getDayOfWeek(date?: string): number {
   return date ? new Date(date).getDay() : new Date().getDay()
 }
 
-export function getCurrentWeek(): { weekNumber: number; phase?: string } {
-  const now = new Date()
-  const start = new Date(now.getFullYear(), 0, 1)
-  const diff = now.getTime() - start.getTime()
-  const weekNumber = Math.ceil((diff / 86400000 + start.getDay() + 1) / 7)
-  const phases: Record<number, string> = { 1: 'Base', 2: 'Load', 3: 'Intensity', 4: 'Deload' }
-  const phase = phases[(weekNumber % 4) || 4]
-  return { weekNumber, phase }
-}
-
+/** Calculate consecutive-day streak from a set of YYYY-MM-DD date strings. */
 export function calcStreak(dateSet: Set<string>): number {
   let streak = 0
   const d = new Date()

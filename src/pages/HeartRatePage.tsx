@@ -48,7 +48,6 @@ export function HeartRatePage() {
       if (characteristic) {
         charRef.current = characteristic
         await characteristic.startNotifications()
-
         const handler = (event: Event) => {
           const value = (event.target as BT).value
           if (value) {
@@ -119,7 +118,7 @@ export function HeartRatePage() {
 
   if (!isSupported) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 stagger-children">
         <h1 className="text-xl font-bold text-ct-1">Heart Rate Monitor</h1>
         <div className="bg-ct-surface rounded-ct-lg p-6 border border-ct-border text-center">
           <Bluetooth size={32} className="text-ct-2 mx-auto mb-3" />
@@ -131,14 +130,13 @@ export function HeartRatePage() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 stagger-children">
       <h1 className="text-xl font-bold text-ct-1">Heart Rate Monitor</h1>
       <p className="text-xs text-ct-2">Connect a Bluetooth HR strap or watch</p>
 
       {/* Connection */}
       {!connected ? (
-        <button
-          onClick={connect}
+        <button onClick={connect}
           className="w-full bg-red-500/10 border-2 border-dashed border-red-500/30 rounded-ct-lg py-8 flex flex-col items-center gap-3 active:bg-red-500/20">
           <div className="w-14 h-14 bg-red-500/15 rounded-ct-lg flex items-center justify-center animate-pulse">
             <Heart size={24} className="text-red-400" />
@@ -154,6 +152,7 @@ export function HeartRatePage() {
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
               <p className="text-[11px] text-green-400 font-semibold">{device?.name || 'Connected'}</p>
             </div>
+
             {currentHR ? (
               <>
                 <div className="flex items-center justify-center gap-3 my-4">
@@ -165,7 +164,7 @@ export function HeartRatePage() {
                   const zone = getZone(currentHR)
                   return (
                     <p className={`text-xs font-bold ${zone.color}`}>
-                      Zone {zone.zone} \u2014 {zone.name}
+                      Zone {zone.zone} — {zone.name}
                     </p>
                   )
                 })()}
@@ -226,7 +225,7 @@ export function HeartRatePage() {
           )}
 
           {/* HR Zone guide */}
-          <div className="bg-slate-800/40 rounded-xl p-3 border border-slate-700/30">
+          <div className="bg-ct-surface/40 rounded-xl p-3 border border-ct-border/30">
             <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-2">HR Zones</p>
             <div className="space-y-1">
               {[

@@ -1,8 +1,8 @@
 /**
- * WeeklySummary — "Your Week" recap card shown on Mondays
+ * WeeklySummary  -  "Your Week" recap card shown on Mondays
  *
  * Shows: workouts done, PRs hit, avg calories, streak status
- * Dismissible — stores dismissed week in localStorage
+ * Dismissible  -  stores dismissed week in localStorage
  * Appears at the top of TodayPage on Mondays (or first open of the week)
  */
 
@@ -74,7 +74,7 @@ export function WeeklySummary({ workouts, streak, avgCalories, onDismiss }: Week
   if (stats.count === 0 && streak === 0) return null
 
   return (
-    <div className={`bg-gradient-to-br from-cyan-500/10 via-slate-800/60 to-violet-500/10 rounded-ct-lg p-4 border border-cyan-500/20 transition-all duration-250 ${
+    <div className={`bg-gradient-to-br from-cyan-500/10 via-ct-surface/60 to-violet-500/10 rounded-ct-lg p-4 border border-cyan-500/20 transition-all duration-250 ${
       fading ? 'opacity-0 scale-95' : 'opacity-100 scale-100 animate-spring-in'
     }`}>
       {/* Header */}
@@ -126,22 +126,18 @@ export function WeeklySummary({ workouts, streak, avgCalories, onDismiss }: Week
           <div className="w-10 h-10 mx-auto bg-green-500/15 rounded-xl flex items-center justify-center mb-1">
             <TrendingUp size={18} className="text-green-400" />
           </div>
-          <p className="text-lg font-bold text-ct-1 tabular-nums">{avgCalories > 0 ? Math.round(avgCalories) : '—'}</p>
+          <p className="text-lg font-bold text-ct-1 tabular-nums">{avgCalories > 0 ? Math.round(avgCalories) : ' - '}</p>
           <p className="text-[9px] text-ct-2 uppercase">{t('weeklySummary.avgCal')}</p>
         </div>
       </div>
 
       {/* Encouragement message */}
       <p className="text-xs text-ct-2 text-center mt-3">
-        {stats.count >= 5
-          ? t('weeklySummary.encourageGreat')
-          : stats.count >= 3
-            ? t('weeklySummary.encourageGood')
-            : stats.count >= 1
-              ? t('weeklySummary.encourageOk')
-              : streak > 0
-                ? t('weeklySummary.encourageStreak')
-                : t('weeklySummary.encourageStart')}
+        {stats.count >= 5 ? t('weeklySummary.encourageGreat') :
+         stats.count >= 3 ? t('weeklySummary.encourageGood') :
+         stats.count >= 1 ? t('weeklySummary.encourageOk') :
+         streak > 0 ? t('weeklySummary.encourageStreak') :
+         t('weeklySummary.encourageStart')}
       </p>
     </div>
   )

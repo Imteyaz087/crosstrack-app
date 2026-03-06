@@ -9,8 +9,8 @@ interface Props {
 
 export function EmptyState({ icon: Icon, title, description, action }: Props) {
   return (
-    <div className="bg-slate-800/40 rounded-ct-lg p-8 border border-slate-700/40 border-dashed text-center animate-empty-in">
-      <div className="w-14 h-14 bg-slate-700/40 rounded-ct-lg flex items-center justify-center mx-auto mb-4">
+    <div className="bg-ct-surface rounded-ct-lg p-8 border border-ct-border border-dashed text-center animate-empty-in">
+      <div className="w-14 h-14 bg-ct-elevated rounded-ct-lg flex items-center justify-center mx-auto mb-4">
         <Icon size={28} className="text-ct-2" />
       </div>
       <p className="text-[0.9375rem] font-medium text-ct-2">{title}</p>
@@ -20,7 +20,7 @@ export function EmptyState({ icon: Icon, title, description, action }: Props) {
       {action && (
         <button
           onClick={action.onClick}
-          className="mt-4 px-4 py-2 bg-cyan-500/15 border border-cyan-500/25 text-cyan-400 rounded-xl text-xs font-semibold active:scale-95 transition-transform"
+          className="mt-4 px-4 py-2 bg-cyan-500/15 border border-cyan-500/25 text-cyan-400 rounded-xl text-xs font-semibold card-press"
         >
           {action.label}
         </button>

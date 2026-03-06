@@ -222,7 +222,7 @@ export function EventLogger({ onDone, onToast }: EventLoggerProps) {
       {step === 'custom' && (
         <div className="space-y-4 animate-fade-in">
           <div>
-            <label className="text-[11px] uppercase tracking-wider text-ct-3 font-semibold">Event Name</label>
+            <label className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold">Event Name</label>
             <input
               type="text"
               value={customTitle}
@@ -233,9 +233,9 @@ export function EventLogger({ onDone, onToast }: EventLoggerProps) {
           </div>
 
           <div>
-            <label className="text-[11px] uppercase tracking-wider text-ct-3 font-semibold">Workout Type</label>
+            <label className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold">Workout Type</label>
             <div className="flex gap-2 mt-1 flex-wrap">
-              {(['ForTime', 'AMRAP', 'EMOM', 'Tabata', 'Chipper', 'Strength', 'StrengthMetcon', 'HYROX', 'Running', 'Cardio', 'Other'] as WodType[]).map(type => (
+              {(['ForTime', 'AMRAP', 'EMOM', 'Chipper', 'Other'] as WodType[]).map(type => (
                 <button
                   key={type}
                   onClick={() => setCustomWodType(type)}
@@ -252,7 +252,7 @@ export function EventLogger({ onDone, onToast }: EventLoggerProps) {
           </div>
 
           <div>
-            <label className="text-[11px] uppercase tracking-wider text-ct-3 font-semibold">Workout Lines</label>
+            <label className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold">Workout Lines</label>
             <textarea
               value={customLines}
               onChange={(e) => setCustomLines(e.target.value)}
@@ -263,7 +263,7 @@ export function EventLogger({ onDone, onToast }: EventLoggerProps) {
           </div>
 
           <div>
-            <label className="text-[11px] uppercase tracking-wider text-ct-3 font-semibold">Time Cap (minutes, optional)</label>
+            <label className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold">Time Cap (minutes, optional)</label>
             <input
               type="number"
               value={customTimeCap}

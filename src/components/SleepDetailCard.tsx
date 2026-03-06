@@ -16,10 +16,10 @@ function fmtHours(h: number): string {
 
 /** Color based on sleep score */
 function scoreColor(score: number): string {
-  if (score >= 80) return '#22d3ee'   // excellent → cyan
-  if (score >= 60) return '#a855f7'   // good → purple
-  if (score >= 40) return '#f59e0b'   // fair → amber
-  return '#ef4444'                     // poor → red
+  if (score >= 80) return '#22d3ee'  // excellent — cyan
+  if (score >= 60) return '#a855f7'  // good — purple
+  if (score >= 40) return '#f59e0b'  // fair — amber
+  return '#ef4444'                    // poor — red
 }
 
 export function SleepDetailCard({ log }: SleepDetailCardProps) {
@@ -28,12 +28,12 @@ export function SleepDetailCard({ log }: SleepDetailCardProps) {
   // Only render if we have AutoSleep detailed data
   if (!log.sleepDeepHours && !log.sleepScore && !log.sleepHRV) return null
 
-  const total = log.sleepHours || 0
-  const score = log.sleepScore
-  const deep = log.sleepDeepHours || 0
-  const rem = log.sleepRemHours || 0
-  const light = log.sleepLightHours || 0
-  const awake = log.sleepAwakeHours || 0
+  const total   = log.sleepHours       || 0
+  const score   = log.sleepScore
+  const deep    = log.sleepDeepHours   || 0
+  const rem     = log.sleepRemHours    || 0
+  const light   = log.sleepLightHours  || 0
+  const awake   = log.sleepAwakeHours  || 0
   const stageTotal = deep + rem + light + awake
 
   // SVG ring constants
@@ -43,13 +43,14 @@ export function SleepDetailCard({ log }: SleepDetailCardProps) {
   const dashOffset = circ * (1 - pct)
 
   // Stage bar widths (% of total sleep time)
-  const deepPct = stageTotal > 0 ? (deep / stageTotal) * 100 : 0
-  const remPct = stageTotal > 0 ? (rem / stageTotal) * 100 : 0
+  const deepPct  = stageTotal > 0 ? (deep  / stageTotal) * 100 : 0
+  const remPct   = stageTotal > 0 ? (rem   / stageTotal) * 100 : 0
   const lightPct = stageTotal > 0 ? (light / stageTotal) * 100 : 0
   const awakePct = stageTotal > 0 ? (awake / stageTotal) * 100 : 0
 
   return (
     <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border space-y-3.5">
+
       {/* Header row */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -74,6 +75,7 @@ export function SleepDetailCard({ log }: SleepDetailCardProps) {
 
       {/* Main row: score ring + total + stats */}
       <div className="flex items-center gap-4">
+
         {/* Score ring */}
         {score !== undefined ? (
           <div className="relative shrink-0 w-[72px] h-[72px]">
@@ -85,7 +87,12 @@ export function SleepDetailCard({ log }: SleepDetailCardProps) {
                 </linearGradient>
               </defs>
               {/* Track */}
-              <circle cx="36" cy="36" r={R} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="7" />
+              <circle
+                cx="36" cy="36" r={R}
+                fill="none"
+                stroke="rgba(255,255,255,0.07)"
+                strokeWidth="7"
+              />
               {/* Progress */}
               <circle
                 cx="36" cy="36" r={R}
@@ -107,7 +114,7 @@ export function SleepDetailCard({ log }: SleepDetailCardProps) {
             </div>
           </div>
         ) : (
-          /* No score → just show moon icon placeholder */
+          /* No score — just show moon icon placeholder */
           <div className="w-[72px] h-[72px] shrink-0 bg-indigo-500/10 rounded-full flex items-center justify-center">
             <Moon size={28} className="text-indigo-400" />
           </div>
@@ -151,7 +158,10 @@ export function SleepDetailCard({ log }: SleepDetailCardProps) {
         <div className="space-y-2">
           <div className="h-2.5 flex rounded-full overflow-hidden" style={{ gap: '2px' }}>
             {deepPct > 0 && (
-              <div className="rounded-l-full" style={{ width: `${deepPct}%`, backgroundColor: '#7c3aed', minWidth: 4 }} />
+              <div
+                className="rounded-l-full"
+                style={{ width: `${deepPct}%`, backgroundColor: '#7c3aed', minWidth: 4 }}
+              />
             )}
             {remPct > 0 && (
               <div style={{ width: `${remPct}%`, backgroundColor: '#6366f1', minWidth: 4 }} />
@@ -160,9 +170,13 @@ export function SleepDetailCard({ log }: SleepDetailCardProps) {
               <div style={{ width: `${lightPct}%`, backgroundColor: '#22d3ee', minWidth: 4 }} />
             )}
             {awakePct > 0 && (
-              <div className="rounded-r-full" style={{ width: `${awakePct}%`, backgroundColor: '#475569', minWidth: 4 }} />
+              <div
+                className="rounded-r-full"
+                style={{ width: `${awakePct}%`, backgroundColor: '#475569', minWidth: 4 }}
+              />
             )}
           </div>
+
           {/* Stage labels */}
           <div className="flex flex-wrap gap-x-3 gap-y-1">
             {deep > 0 && (

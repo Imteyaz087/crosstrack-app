@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStore } from '../stores/useStore'
 import { ACHIEVEMENTS, type Achievement } from '../data/achievements'
-import { Trophy, Flame, Target, Star, Medal, Zap, Crown, Shield, Award, Heart, Lock } from 'lucide-react'
+import { Trophy, Flame, Target, Star, Medal, Zap, Crown, Shield, Award, Heart, Lock, Loader2 } from 'lucide-react'
 
 const ICON_MAP: Record<string, typeof Trophy> = {
   Trophy, Flame, Target, Star, Medal, Zap, Crown, Shield, Award, Heart,
@@ -10,17 +10,16 @@ const ICON_MAP: Record<string, typeof Trophy> = {
 
 const TIER_COLORS = {
   bronze: { bg: 'bg-amber-900/20', border: 'border-amber-700/40', text: 'text-amber-400', icon: 'text-amber-400' },
-  silver: { bg: 'bg-slate-400/10', border: 'border-slate-400/30', text: 'text-ct-2', icon: 'text-ct-2' },
+  silver: { bg: 'bg-ct-elevated/20', border: 'border-ct-border/30', text: 'text-ct-2', icon: 'text-ct-2' },
   gold: { bg: 'bg-yellow-500/15', border: 'border-yellow-500/40', text: 'text-yellow-400', icon: 'text-yellow-400' },
 }
 
 export function AchievementsPage() {
   const { t } = useTranslation()
   const { workouts, allDailyLogs, movementPRs, loadWorkouts, loadAllDailyLogs, loadMovementPRs } = useStore()
+  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    Promise.allSettled([loadWorkouts(), loadAllDailyLogs(), loadMovementPRs()])
-  }, [])
+  useEffect(() => { Promise.allSettled([loadWorkouts(), loadAllDailyLogs(), loadMovementPRs()]).finally(() => setLoading(false)) }, [])
 
   // Calculate user stats for achievement checking
   const stats = useMemo(() => {
@@ -110,8 +109,19 @@ export function AchievementsPage() {
     { id: 'milestone', label: 'Milestones' },
   ]
 
+  if (loading) {
+    return (
+      <div className="space-y-4 stagger-children">
+        <h1 className="text-[1.75rem] font-bold text-ct-1">{t('achievements.title')}</h1>
+        <div className="flex items-center justify-center py-12">
+          <Loader2 size={24} className="text-cyan-400 animate-spin" />
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 stagger-children">
       <h1 className="text-[1.75rem] font-bold text-ct-1">{t('achievements.title')}</h1>
 
       {/* Summary */}
@@ -140,7 +150,6 @@ export function AchievementsPage() {
       {categories.map(cat => {
         const catAchievements = ACHIEVEMENTS.filter(a => a.category === cat.id)
         if (catAchievements.length === 0) return null
-
         return (
           <div key={cat.id} className="space-y-2">
             <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">{cat.label}</p>
@@ -150,13 +159,12 @@ export function AchievementsPage() {
                 const progress = getProgress(a)
                 const tier = TIER_COLORS[a.tier]
                 const IconComp = achieved ? (ICON_MAP[a.icon] || Trophy) : Lock
-
                 return (
                   <div key={a.id} className={`rounded-xl p-3 border flex items-center gap-3 ${
-                    achieved ? `${tier.bg} ${tier.border}` : 'bg-slate-800/30 border-slate-700/30'
+                    achieved ? `${tier.bg} ${tier.border}` : 'bg-ct-surface/30 border-ct-border/30'
                   }`}>
                     <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
-                      achieved ? tier.bg : 'bg-slate-700/40'
+                      achieved ? tier.bg : 'bg-ct-elevated/40'
                     }`}>
                       <IconComp size={20} className={achieved ? tier.icon : 'text-ct-2'} />
                     </div>

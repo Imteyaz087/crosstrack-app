@@ -1,19 +1,19 @@
 /**
- * Nutrition API Client – Offline-first with IndexedDB caching
+ * Nutrition API Client  -  Offline-first with IndexedDB caching
  *
- * Flow: Check cache → (miss) → fetch /api/* → cache response → return
- * Fallback: If offline or API fails → search local foodLibrary
+ * Flow: Check cache -> (miss) -> fetch /api/* -> cache response -> return
+ * Fallback: If offline or API fails -> search local foodLibrary
  */
 
 import { db } from '../db/database'
 import type { NutritionResult, NutritionCache, FoodItem } from '../types'
 
 // Cache TTLs
-const SEARCH_CACHE_TTL = 7 * 24 * 60 * 60 * 1000    // 7 days for search results
-const BARCODE_FOUND_TTL = 30 * 24 * 60 * 60 * 1000   // 30 days for found barcodes
-const BARCODE_MISS_TTL = 7 * 24 * 60 * 60 * 1000     // 7 days for not-found barcodes
+const SEARCH_CACHE_TTL = 7 * 24 * 60 * 60 * 1000   // 7 days for search results
+const BARCODE_FOUND_TTL = 30 * 24 * 60 * 60 * 1000  // 30 days for found barcodes
+const BARCODE_MISS_TTL = 7 * 24 * 60 * 60 * 1000    // 7 days for not-found barcodes
 
-// ——— Fetch with timeout + exponential backoff retry ———
+// ─── Fetch with timeout + exponential backoff retry ───
 
 interface FetchOptions extends RequestInit {
   timeout?: number
@@ -36,7 +36,7 @@ async function fetchWithRetry(url: string, options: FetchOptions = {}): Promise<
         return res
       }
 
-      // 429 or 5xx → retry with backoff
+      // 429 or 5xx  -  retry with backoff
       if (attempt < retries) {
         const delay = Math.min(1000 * Math.pow(2, attempt), 4000) // 1s, 2s, 4s cap
         await new Promise(r => setTimeout(r, delay))
@@ -46,8 +46,10 @@ async function fetchWithRetry(url: string, options: FetchOptions = {}): Promise<
       return res // Return last response even if failed
     } catch (err) {
       clearTimeout(timer)
+
       // On last attempt, throw
       if (attempt >= retries) throw err
+
       // Backoff before retry
       const delay = Math.min(1000 * Math.pow(2, attempt), 4000)
       await new Promise(r => setTimeout(r, delay))
@@ -58,13 +60,13 @@ async function fetchWithRetry(url: string, options: FetchOptions = {}): Promise<
   throw new Error('Fetch failed after retries')
 }
 
-// ——— Cache Helpers ———
+// ─── Cache Helpers ───
 
 async function getCached(cacheKey: string): Promise<NutritionCache | undefined> {
   try {
     const entry = await db.nutritionCache.where('cacheKey').equals(cacheKey).first()
     if (entry && entry.expiresAt > Date.now()) return entry
-    // Expired → delete it
+    // Expired  -  delete it
     if (entry?.id) db.nutritionCache.delete(entry.id).catch(() => {})
     return undefined
   } catch {
@@ -84,11 +86,11 @@ async function setCache(cacheKey: string, source: 'usda' | 'off', data: Nutritio
       createdAt: new Date().toISOString(),
     })
   } catch {
-    // Non-critical — cache write failures are OK
+    // Non-critical  -  cache write failures are OK
   }
 }
 
-// ——— Local Food Library Search ———
+// ─── Local Food Library Search ───
 
 async function searchLocalLibrary(query: string): Promise<NutritionResult[]> {
   try {
@@ -123,7 +125,7 @@ function foodItemToResult(f: FoodItem): NutritionResult {
   }
 }
 
-// ——— Public API: Search Foods ———
+// ─── Public API: Search Foods ───
 
 export async function searchFood(query: string): Promise<{
   localResults: NutritionResult[]
@@ -147,7 +149,7 @@ export async function searchFood(query: string): Promise<{
     }
   }
 
-  // If offline → local only
+  // If offline -> local only
   if (!navigator.onLine) {
     return { localResults, apiResults: [], fromCache: false }
   }
@@ -162,7 +164,7 @@ export async function searchFood(query: string): Promise<{
     })
 
     if (!res.ok) {
-      // Rate limited or error → return local only
+      // Rate limited or error  -  return local only
       return { localResults, apiResults: [], fromCache: false }
     }
 
@@ -176,12 +178,12 @@ export async function searchFood(query: string): Promise<{
 
     return { localResults, apiResults, fromCache: false }
   } catch {
-    // Network error → return local only
+    // Network error  -  return local only
     return { localResults, apiResults: [], fromCache: false }
   }
 }
 
-// ——— Public API: Barcode Lookup ———
+// ─── Public API: Barcode Lookup ───
 
 export interface BarcodeLookupResult {
   product: NutritionResult | null
@@ -207,7 +209,7 @@ export async function lookupBarcode(code: string): Promise<BarcodeLookupResult> 
     }
   }
 
-  // If offline → no result
+  // If offline -> no result
   if (!navigator.onLine) {
     return { product: null, found: false, fromCache: false, source: 'offline' }
   }
@@ -241,7 +243,7 @@ export async function lookupBarcode(code: string): Promise<BarcodeLookupResult> 
   }
 }
 
-// ——— Convert API result → FoodItem for saving to library ———
+// ─── Convert API result -> FoodItem for saving to library ───
 
 export function resultToFoodItem(result: NutritionResult): FoodItem {
   return {
