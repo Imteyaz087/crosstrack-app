@@ -336,6 +336,22 @@ export function WorkoutLogger({
     setShowMovementDetails(true)
   }
 
+  const handleStrengthQuickWeight = (weight: number) => {
+    const nextWeight = String(weight)
+
+    if (strengthSchemeType === 'build') {
+      onStrengthEndWeightChange(nextWeight)
+      return
+    }
+
+    if (!strengthStartWeight) {
+      onStrengthStartWeightChange(nextWeight)
+      return
+    }
+
+    onStrengthEndWeightChange(nextWeight)
+  }
+
   // === STEP 1: Class Format Selection ===
   if (workoutStep === 1) {
     return (
@@ -667,10 +683,12 @@ export function WorkoutLogger({
 
             {/* Quick weight buttons */}
             <div className="flex gap-1 overflow-x-auto pb-0.5">
-              {(weightUnit === 'kg' ? [40, 50, 60, 70, 80, 90, 100, 110, 120] : [95, 115, 135, 155, 185, 205, 225, 275, 315]).map(w => (
-                <button key={w} onClick={() => onStrengthEndWeightChange(String(w))}
+              {(weightUnit === 'kg' ? [40, 50, 60, 70, 80, 90, 100, 110, 120] : [45, 65, 95, 115, 135, 155, 185, 205, 225, 275, 315]).map(w => (
+                <button key={w} onClick={() => handleStrengthQuickWeight(w)}
                   className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
-                    strengthEndWeight === String(w) ? 'bg-purple-500/20 text-purple-400 border border-purple-400/30' : 'bg-ct-elevated/50 text-ct-2 border border-transparent'
+                    (strengthEndWeight === String(w) || strengthStartWeight === String(w))
+                      ? 'bg-purple-500/20 text-purple-400 border border-purple-400/30'
+                      : 'bg-ct-elevated/50 text-ct-2 border border-transparent'
                   }`}>{w}</button>
               ))}
             </div>
