@@ -5,6 +5,7 @@ import { LoadingSpinner } from './components/LoadingSpinner'
 import { ErrorRetry } from './components/ErrorRetry'
 import { TodayPageSkeleton } from './components/SkeletonCard'
 import { InstallPrompt } from './components/InstallPrompt'
+import { UpdatePrompt } from './components/UpdatePrompt'
 import { OfflineBar } from './components/OfflineBar'
 import { OnboardingTour } from './components/OnboardingTour'
 import { ErrorBoundary } from './components/ErrorBoundary'
@@ -23,6 +24,7 @@ function App() {
   const { activeTab, profile, isLoading, loadProfile, loadError, clearLoadError } = useStore()
   const mainRef = useRef<HTMLElement>(null)
   const [prevTab, setPrevTab] = useState(activeTab)
+  const [isUpdatePromptVisible, setIsUpdatePromptVisible] = useState(false)
 
   // Tab order for directional transitions
   const TAB_ORDER = ['today', 'log', 'train', 'eat', 'more']
@@ -102,9 +104,10 @@ function App() {
       <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
         {activeTab === 'today' ? 'Today' : activeTab === 'log' ? 'Log' : activeTab === 'train' ? 'Training' : activeTab === 'eat' ? 'Nutrition' : 'More'} tab selected
       </div>
+      <UpdatePrompt onVisibilityChange={setIsUpdatePromptVisible} />
       <OfflineBar />
       <TabBar />
-      <InstallPrompt />
+      <InstallPrompt blocked={isUpdatePromptVisible} />
       <OnboardingTour />
       <SleepImportHandler />
     </div>

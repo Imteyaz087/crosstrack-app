@@ -6,7 +6,11 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
 }
 
-export function InstallPrompt() {
+interface InstallPromptProps {
+  blocked?: boolean
+}
+
+export function InstallPrompt({ blocked = false }: InstallPromptProps) {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [dismissed, setDismissed] = useState(() => {
     // Lazy initialization - check storage on mount
@@ -22,7 +26,7 @@ export function InstallPrompt() {
     return () => window.removeEventListener('beforeinstallprompt', handler)
   }, [])
 
-  if (!deferredPrompt || dismissed) return null
+  if (!deferredPrompt || dismissed || blocked) return null
 
   const handleInstall = async () => {
     await deferredPrompt.prompt()
