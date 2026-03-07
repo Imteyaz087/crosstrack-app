@@ -5,27 +5,27 @@
 @theme {
   /* Brand Colors → bg-ct-brand, text-ct-brand, border-ct-brand */
   --color-ct-brand: #ff7a1a;
-  --color-ct-brand-dark: #c45400;
-  --color-ct-brand-light: #ff9f5a;
+  --color-ct-brand-dark: #e86400;
+  --color-ct-brand-light: #ffb273;
 
   /* Semantic → bg-ct-success, text-ct-error, etc. */
-  --color-ct-success: #4ade80;
+  --color-ct-success: #22c55e;
   --color-ct-warning: #f59e0b;
-  --color-ct-error: #f87171;
-  --color-ct-info: #a78bfa;
+  --color-ct-error: #ef4444;
+  --color-ct-info: #4b647d;
 
   /* Surfaces → bg-ct-bg, bg-ct-surface, bg-ct-elevated */
-  --color-ct-bg: #020617;
-  --color-ct-surface: rgba(15,23,42,0.60);
-  --color-ct-surface-high: rgba(15,23,42,0.80);
-  --color-ct-surface-solid: #0f172a;
-  --color-ct-elevated: #1e293b;
-  --color-ct-border: rgba(51,65,85,0.50);
+  --color-ct-bg: #0b0f14;
+  --color-ct-surface: rgba(18,25,34,0.68);
+  --color-ct-surface-high: rgba(18,25,34,0.84);
+  --color-ct-surface-solid: #121922;
+  --color-ct-elevated: #18212c;
+  --color-ct-border: rgba(71,85,105,0.35);
 
   /* Text → text-ct-1, text-ct-2, text-ct-3 */
-  --color-ct-1: #f1f5f9;
-  --color-ct-2: #94a3b8;
-  --color-ct-3: #64748b;
+  --color-ct-1: #f3f4f6;
+  --color-ct-2: #98a2b3;
+  --color-ct-3: #667085;
 
   /* Data Accents → bg-ct-protein, text-ct-water, etc. */
   --color-ct-protein: #4ade80;
@@ -77,12 +77,12 @@
   --ct-touch-gym: 56px;
 
   /* Shadows */
-  --ct-shadow-fab: 0 8px 24px rgba(255,122,26,0.28);
+  --ct-shadow-fab: 0 10px 28px rgba(255,122,26,0.22), 0 0 20px rgba(232,100,0,0.12);
 
   /* Brand Gradient — ember bolt accent */
   --ct-gradient: linear-gradient(135deg, #ff7a1a 0%, #ff4d00 100%);
-  --ct-gradient-subtle: linear-gradient(135deg, rgba(255,122,26,0.18) 0%, rgba(255,77,0,0.10) 100%);
-  --ct-glow: 0 0 18px rgba(255,122,26,0.24), 0 0 36px rgba(255,77,0,0.10);
+  --ct-gradient-subtle: linear-gradient(135deg, rgba(255,122,26,0.16) 0%, rgba(255,77,0,0.08) 100%);
+  --ct-glow: 0 0 16px rgba(255,122,26,0.18), 0 0 30px rgba(232,100,0,0.08);
 
   /* Durations */
   --ct-fast: 100ms;
@@ -160,8 +160,8 @@ input[type="number"] { -moz-appearance: textfield; }
 
 /* Gradient glow pulse — breathing accent for hero elements */
 @keyframes glowPulse {
-  0%, 100% { box-shadow: 0 0 12px rgba(34,211,238,0.3), 0 0 24px rgba(168,85,247,0.1); }
-  50% { box-shadow: 0 0 20px rgba(34,211,238,0.5), 0 0 40px rgba(168,85,247,0.2); }
+  0%, 100% { box-shadow: 0 0 10px rgba(255,122,26,0.18), 0 0 20px rgba(232,100,0,0.08); }
+  50% { box-shadow: 0 0 16px rgba(255,122,26,0.28), 0 0 32px rgba(232,100,0,0.12); }
 }
 .animate-glow-pulse { animation: glowPulse 3s ease-in-out infinite; }
 
@@ -356,7 +356,7 @@ input[type="number"] { -moz-appearance: textfield; }
 /* Loading spinner glow breathe — more refined than basic pulse */
 @keyframes logoBreathe {
   0%, 100% { opacity: 1; filter: brightness(1) drop-shadow(0 0 0px transparent); }
-  50% { opacity: 0.85; filter: brightness(1.1) drop-shadow(0 0 8px rgba(68,136,255,0.3)); }
+  50% { opacity: 0.9; filter: brightness(1.08) drop-shadow(0 0 8px rgba(255,122,26,0.24)); }
 }
 .animate-logo-breathe {
   animation: logoBreathe 2s ease-in-out infinite;
@@ -491,8 +491,8 @@ input[type="number"] { -moz-appearance: textfield; }
   left: -40px;
   right: -40px;
   height: 180px;
-  background: radial-gradient(ellipse at 30% 0%, rgba(34,211,238,0.06) 0%, transparent 60%),
-              radial-gradient(ellipse at 70% 20%, rgba(168,85,247,0.04) 0%, transparent 50%);
+  background: radial-gradient(ellipse at 30% 0%, rgba(255,122,26,0.08) 0%, transparent 62%),
+              radial-gradient(ellipse at 78% 18%, rgba(75,100,125,0.08) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
 }
@@ -500,10 +500,10 @@ input[type="number"] { -moz-appearance: textfield; }
 
 /* Glass card variant — enhanced frosted surface for hero cards */
 .glass-card {
-  background: rgba(15,23,42,0.50);
+  background: rgba(18,25,34,0.7);
   backdrop-filter: blur(12px) saturate(150%);
   -webkit-backdrop-filter: blur(12px) saturate(150%);
-  border: 1px solid rgba(51,65,85,0.40);
+  border: 1px solid rgba(71,85,105,0.28);
   box-shadow: 0 1px 2px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
@@ -557,3 +557,4 @@ input[type="number"] { -moz-appearance: textfield; }
     transition-duration: 0.01ms !important;
   }
 }
+
