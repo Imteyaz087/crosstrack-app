@@ -377,18 +377,19 @@ export function WorkoutLogger({
 
         {/* â”€â”€ Hero: Full Class â”€â”€ */}
         <button onClick={() => { onClassFormatChange('full'); onWorkoutStepChange(2) }}
-          className="w-full relative overflow-hidden bg-gradient-to-br from-cyan-500/15 via-ct-surface to-ct-surface border border-cyan-400/30 rounded-2xl p-5 text-left active:scale-[0.97] transition-all duration-200 shadow-lg shadow-cyan-500/5 group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-cyan-400/8 to-transparent rounded-bl-full" />
+          className="w-full relative overflow-hidden rounded-2xl border border-[rgba(255,122,26,0.24)] bg-[linear-gradient(135deg,rgba(255,122,26,0.16),rgba(19,19,30,0.98)_28%,rgba(11,15,24,0.98))] p-5 text-left active:scale-[0.97] transition-all duration-200 shadow-[0_18px_40px_rgba(255,122,26,0.10)] backdrop-blur-xl group">
+          <div className="absolute top-0 right-0 w-36 h-36 bg-[radial-gradient(circle_at_top_right,rgba(255,159,90,0.18),transparent_62%)] rounded-bl-full" />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent_42%)]" />
           <div className="flex items-center gap-4 relative z-10">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/25 to-cyan-400/10 border border-cyan-400/20 flex items-center justify-center transition-transform duration-200 group-active:scale-90">
-              <Dumbbell size={28} strokeWidth={1.8} className="text-cyan-400 drop-shadow-sm" />
+            <div className="w-14 h-14 rounded-2xl bg-[linear-gradient(135deg,rgba(255,122,26,0.22),rgba(255,77,0,0.12))] border border-[rgba(255,159,90,0.24)] flex items-center justify-center transition-transform duration-200 group-active:scale-90 shadow-[0_10px_24px_rgba(255,122,26,0.14)]">
+              <Dumbbell size={28} strokeWidth={1.8} className="text-orange-300 drop-shadow-sm" />
             </div>
             <div className="flex-1">
               <p className="text-lg font-bold text-ct-1 tracking-tight">{t('workout.fullClass')}</p>
               <p className="text-[12px] text-ct-2 mt-0.5">{t('workout.fullClassDesc')}</p>
             </div>
-            <div className="w-8 h-8 rounded-full bg-cyan-400/10 flex items-center justify-center">
-              <ChevronLeft size={16} className="text-cyan-400/70 rotate-180" />
+            <div className="w-8 h-8 rounded-full bg-[rgba(255,122,26,0.12)] flex items-center justify-center border border-[rgba(255,159,90,0.18)]">
+              <ChevronLeft size={16} className="text-orange-300/80 rotate-180" />
             </div>
           </div>
         </button>
@@ -1074,13 +1075,14 @@ export function WorkoutLogger({
 
       {/* Save + Delete buttons */}
       <div className="sticky-save space-y-2">
-        <div className="rounded-2xl border border-cyan-500/10 bg-gradient-to-r from-cyan-500/[0.06] to-transparent px-4 py-3">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-cyan-300 font-semibold">Ready to save</p>
+        <div className="relative overflow-hidden rounded-2xl border border-[rgba(255,122,26,0.18)] bg-[linear-gradient(180deg,rgba(18,25,34,0.96),rgba(11,15,24,0.98))] px-4 py-3 shadow-[0_18px_42px_rgba(0,0,0,0.28)]">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-[radial-gradient(circle_at_top,rgba(255,122,26,0.14),transparent_68%)]" />
+          <p className="relative text-[10px] uppercase tracking-[0.22em] text-orange-300/90 font-semibold">Ready to save</p>
           <p className="text-sm font-semibold text-ct-1 mt-1">{saveSummary}</p>
           <p className="text-[11px] text-ct-2 mt-1">Review score, tags, and notes, then save this workout.</p>
         </div>
         <button onClick={onSaveWorkout}
-          className="w-full bg-cyan-400 text-slate-950 font-bold py-4 rounded-xl btn-press text-base shadow-lg shadow-cyan-500/20 border border-cyan-300/30">
+          className="w-full bg-v21 text-slate-950 font-bold py-4 rounded-xl btn-press text-base shadow-v21 border border-[rgba(255,159,90,0.26)]">
           {editingWorkoutId ? t('workout.updateWorkout') : t('workout.saveWorkout')}
         </button>
         {editingWorkoutId && (

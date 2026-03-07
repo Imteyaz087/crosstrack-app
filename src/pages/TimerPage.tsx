@@ -800,12 +800,13 @@ export function TimerPage({ onClose }: TimerPageProps) {
 
         <div className="sticky bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] z-20 mt-6">
           <div className="relative">
-            <div className="pointer-events-none absolute inset-x-6 -bottom-2 h-10 rounded-full bg-cyan-500/20 blur-2xl" />
+            <div className="pointer-events-none absolute inset-x-6 -bottom-2 h-10 rounded-full bg-[rgba(255,122,26,0.18)] blur-2xl" />
           </div>
-          <div className="rounded-[30px] border border-cyan-400/16 bg-[linear-gradient(180deg,rgba(7,12,30,0.9),rgba(5,9,24,0.98))] px-4 py-3 shadow-[0_22px_60px_rgba(0,0,0,0.48)] backdrop-blur-xl">
+          <div className="relative overflow-hidden rounded-[30px] border border-[rgba(255,122,26,0.18)] bg-[linear-gradient(180deg,rgba(7,12,30,0.9),rgba(5,9,24,0.98))] px-4 py-3 shadow-[0_22px_60px_rgba(0,0,0,0.48)] backdrop-blur-xl">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-[radial-gradient(circle_at_top,rgba(255,122,26,0.16),transparent_72%)]" />
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.18em] text-cyan-300/75 font-semibold">Ready to Run</p>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-orange-300/90 font-semibold">Ready to Run</p>
                 <p className="mt-1 text-sm font-semibold text-ct-1">{sessionSummary}</p>
                 <p className="mt-0.5 text-[11px] text-ct-2">
                   {mode === 'tabata'
@@ -824,7 +825,7 @@ export function TimerPage({ onClose }: TimerPageProps) {
               <button
                 onClick={handleSavePreset}
                 disabled={!presetName.trim()}
-                className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-base font-bold transition-all min-h-[52px] mb-2.5 ${presetName.trim() ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-900 active:scale-[0.98]' : 'bg-white/[0.06] text-ct-2'}`}
+                className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-base font-bold transition-all min-h-[52px] mb-2.5 ${presetName.trim() ? 'bg-v21 text-slate-950 shadow-v21 border border-[rgba(255,159,90,0.22)] active:scale-[0.98]' : 'bg-white/[0.06] text-ct-2'}`}
               >
                 <Save size={20} />
                 {editingPreset ? t('timer.updatePreset') : t('timer.savePreset')}
@@ -833,7 +834,7 @@ export function TimerPage({ onClose }: TimerPageProps) {
 
             <button
               onClick={engine.startTimer}
-              className="relative w-full inline-flex items-center justify-center gap-2 overflow-hidden rounded-[22px] bg-[linear-gradient(135deg,#22d3ee,#10b9dd)] text-slate-900 font-black py-4 text-lg active:scale-[0.98] transition-transform min-h-[58px] shadow-[0_16px_36px_rgba(34,211,238,0.32)]"
+              className="relative w-full inline-flex items-center justify-center gap-2 overflow-hidden rounded-[22px] bg-v21 text-slate-950 font-black py-4 text-lg active:scale-[0.98] transition-transform min-h-[58px] shadow-v21 border border-[rgba(255,159,90,0.24)]"
             >
               <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.22),transparent_45%)]" />
               <Play size={20} className="fill-current" />
