@@ -4,7 +4,7 @@ import { useStore } from '../stores/useStore'
 import { MacroBar } from '../components/MacroBar'
 import {
   Dumbbell, Moon, Droplets, Zap, TrendingUp, Timer, Calculator,
-  Activity, ShoppingCart, ChevronRight, Plus, Sun, CloudMoon, Sparkles,
+  Activity, ShoppingCart, ChevronRight, Plus, Sun, CloudMoon,
   Trophy, Clock, Shield, Brain, Target
 } from 'lucide-react'
 import { TimerPage } from './TimerPage'
@@ -27,6 +27,55 @@ import { SleepDetailCard } from '../components/SleepDetailCard'
 import { TodayPageSkeleton } from '../components/SkeletonCard'
 
 type Overlay = null | 'timer' | 'calc'
+type DecisionTone = 'cyan' | 'green' | 'yellow' | 'red'
+
+interface TodayDecision {
+  tone: DecisionTone
+  icon: typeof Target
+  eyebrow: string
+  title: string
+  body: string
+  cta: string
+  targetTab: 'log' | 'train' | 'eat' | 'more'
+  facts: string[]
+}
+
+const DECISION_STYLES: Record<DecisionTone, {
+  shell: string
+  iconShell: string
+  icon: string
+  badge: string
+  button: string
+}> = {
+  cyan: {
+    shell: 'bg-cyan-500/10 border-cyan-500/20',
+    iconShell: 'bg-cyan-500/15',
+    icon: 'text-cyan-400',
+    badge: 'text-cyan-300',
+    button: 'bg-cyan-500 text-slate-900',
+  },
+  green: {
+    shell: 'bg-green-500/10 border-green-500/20',
+    iconShell: 'bg-green-500/15',
+    icon: 'text-green-400',
+    badge: 'text-green-300',
+    button: 'bg-green-500 text-slate-900',
+  },
+  yellow: {
+    shell: 'bg-yellow-500/10 border-yellow-500/20',
+    iconShell: 'bg-yellow-500/15',
+    icon: 'text-yellow-400',
+    badge: 'text-yellow-300',
+    button: 'bg-yellow-500 text-slate-900',
+  },
+  red: {
+    shell: 'bg-red-500/10 border-red-500/20',
+    iconShell: 'bg-red-500/15',
+    icon: 'text-red-400',
+    badge: 'text-red-300',
+    button: 'bg-red-500 text-white',
+  },
+}
 
 function getGreetingKey(): { key: string; icon: typeof Sun } {
   const h = new Date().getHours()
@@ -124,11 +173,158 @@ export function TodayPage() {
     return null
   }, [todayWorkout, workouts, profile])
 
+  const todayDecision = useMemo<TodayDecision>(() => {
+    const sessionsLeft = Math.max(0, streakData.weeklyTarget - streakData.weeklyDone)
+    const fuelBehind = mealsCount === 0 || calCurrent < calTarget * 0.3
+    const hydrationBehind = waterPct < 35
+
+    if (cycle.redsFlags?.isAtRisk) {
+      return {
+        tone: 'red',
+        icon: Shield,
+        eyebrow: t('today.focusRedFlags', { defaultValue: 'Today focus' }),
+        title: t('today.protectRecoveryTitle', { defaultValue: 'Protect recovery today' }),
+        body: t('today.protectRecoveryBody', {
+          defaultValue: 'Recovery signals are low. Keep training easy and prioritize food, hydration, and rest.',
+        }),
+        cta: t('today.openLog', { defaultValue: 'Open log' }),
+        targetTab: 'log',
+        facts: [
+          t('today.redsRisk', { defaultValue: 'RED-S risk flagged' }),
+          hydrationBehind ? t('today.waterNeedsAttention', { defaultValue: 'Water intake is behind' }) : t('today.recoveryFirst', { defaultValue: 'Keep intensity controlled' }),
+        ],
+      }
+    }
+
+    if (todayWorkout) {
+      if (readiness.isAvailable && readiness.status === 'red') {
+        return {
+          tone: 'red',
+          icon: Shield,
+          eyebrow: t('today.focusWorkout', { defaultValue: 'Today focus' }),
+          title: t('today.scaleSessionTitle', { defaultValue: 'Scale today’s session' }),
+          body: t('today.scaleSessionBody', {
+            defaultValue: 'Your workout is set, but readiness is low. Keep quality high and intensity controlled.',
+          }),
+          cta: t('today.viewWorkout', { defaultValue: 'View workout' }),
+          targetTab: 'train',
+          facts: [
+            todayWorkout.name,
+            readiness.recommendation || t('today.lowReadiness', { defaultValue: 'Low readiness' }),
+          ],
+        }
+      }
+
+      if (readiness.isAvailable && readiness.status === 'yellow') {
+        return {
+          tone: 'yellow',
+          icon: Activity,
+          eyebrow: t('today.focusWorkout', { defaultValue: 'Today focus' }),
+          title: t('today.measuredSessionTitle', { defaultValue: 'Train with measured intensity' }),
+          body: t('today.measuredSessionBody', {
+            defaultValue: 'You are ready to train, but keep the session controlled and focus on quality execution.',
+          }),
+          cta: t('today.viewWorkout', { defaultValue: 'View workout' }),
+          targetTab: 'train',
+          facts: [
+            todayWorkout.name,
+            fuelBehind ? t('today.fuelBeforeSession', { defaultValue: 'Fuel before or after training' }) : todayWorkout.workoutType,
+          ],
+        }
+      }
+
+      return {
+        tone: 'green',
+        icon: Dumbbell,
+        eyebrow: t('today.focusWorkout', { defaultValue: 'Today focus' }),
+        title: t('today.readySessionTitle', { defaultValue: 'You are ready for today’s session' }),
+        body: t('today.readySessionBody', {
+          defaultValue: 'Your plan is clear. Train with intent and log the result right after class.',
+        }),
+        cta: t('today.viewWorkout', { defaultValue: 'View workout' }),
+        targetTab: 'train',
+        facts: [
+          todayWorkout.name,
+          sessionsLeft > 0
+            ? t('today.sessionsLeft', { count: sessionsLeft, defaultValue: `${sessionsLeft} sessions left this week` })
+            : t('today.weekTargetHit', { defaultValue: 'Weekly target is on track' }),
+        ],
+      }
+    }
+
+    if (readiness.isAvailable && readiness.status === 'red') {
+      return {
+        tone: 'red',
+        icon: Shield,
+        eyebrow: t('today.focusRecovery', { defaultValue: 'Today focus' }),
+        title: t('today.recoveryDayTitle', { defaultValue: 'Make this a recovery day' }),
+        body: t('today.recoveryDayBody', {
+          defaultValue: 'Favor mobility, easy cardio, or technique work. Get your basics right first.',
+        }),
+        cta: fuelBehind ? t('today.logMealCta', { defaultValue: 'Log a meal' }) : t('today.openLog', { defaultValue: 'Open log' }),
+        targetTab: fuelBehind ? 'eat' : 'log',
+        facts: [
+          readiness.recommendation || t('today.lowReadiness', { defaultValue: 'Low readiness' }),
+          hydrationBehind ? t('today.waterNeedsAttention', { defaultValue: 'Water intake is behind' }) : t('today.energyProtect', { defaultValue: 'Protect energy today' }),
+        ],
+      }
+    }
+
+    if (suggestion) {
+      return {
+        tone: 'cyan',
+        icon: Target,
+        eyebrow: t('today.focusPlan', { defaultValue: 'Today focus' }),
+        title: t('today.logSessionTitle', { defaultValue: 'Log today’s session' }),
+        body: suggestion.text,
+        cta: t('today.openLogger', { defaultValue: 'Open logger' }),
+        targetTab: 'log',
+        facts: [
+          sessionsLeft > 0
+            ? t('today.sessionsLeft', { count: sessionsLeft, defaultValue: `${sessionsLeft} sessions left this week` })
+            : t('today.weekTargetHit', { defaultValue: 'Weekly target is on track' }),
+          fuelBehind ? t('today.fuelNeedsAttention', { defaultValue: 'Nutrition is still behind today' }) : t('today.trainingReady', { defaultValue: 'Training slot is still open' }),
+        ],
+      }
+    }
+
+    return {
+      tone: 'cyan',
+      icon: Brain,
+      eyebrow: t('today.focusPlan', { defaultValue: 'Today focus' }),
+      title: t('today.keepMomentumTitle', { defaultValue: 'Keep momentum simple today' }),
+      body: t('today.keepMomentumBody', {
+        defaultValue: 'Hit the basics: log training, fuel well, and close the day with clean data.',
+      }),
+      cta: fuelBehind ? t('today.logMealCta', { defaultValue: 'Log a meal' }) : t('today.openLogger', { defaultValue: 'Open logger' }),
+      targetTab: fuelBehind ? 'eat' : 'log',
+      facts: [
+        sessionsLeft > 0
+          ? t('today.sessionsLeft', { count: sessionsLeft, defaultValue: `${sessionsLeft} sessions left this week` })
+          : t('today.weekTargetHit', { defaultValue: 'Weekly target is on track' }),
+        hydrationBehind ? t('today.waterNeedsAttention', { defaultValue: 'Water intake is behind' }) : t('today.basicsOnTrack', { defaultValue: 'Daily basics are on track' }),
+      ],
+    }
+  }, [
+    calCurrent,
+    calTarget,
+    cycle.redsFlags,
+    mealsCount,
+    readiness,
+    streakData.weeklyDone,
+    streakData.weeklyTarget,
+    suggestion,
+    t,
+    todayWorkout,
+    waterPct,
+  ])
+
   // Recovery/readiness score now comes from useReadiness() hook (declared above)
 
   // Animated numbers  -  count up from 0 on mount
   const animatedCalories = useCountUp(Math.round(calCurrent), 700)
   const animatedWaterPct = useCountUp(waterPct, 500)
+  const DecisionIcon = todayDecision.icon
 
   // Retention: streak milestone celebrations
   const { pendingMilestone, dismiss: dismissMilestone } = useStreakCelebration(streakData.currentStreak)
@@ -219,6 +415,39 @@ export function TodayPage() {
           bestStreak={streakData.bestStreak}
         />
       </div>
+
+      {/* Today Focus - one clear recommendation instead of scattered nudges */}
+      <button
+        className={`w-full text-left rounded-ct-lg p-4 border card-press ${DECISION_STYLES[todayDecision.tone].shell}`}
+        onClick={() => setActiveTab(todayDecision.targetTab)}
+      >
+        <div className="flex items-start gap-3">
+          <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${DECISION_STYLES[todayDecision.tone].iconShell}`}>
+            <DecisionIcon size={20} className={DECISION_STYLES[todayDecision.tone].icon} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 font-semibold">{todayDecision.eyebrow}</p>
+              <span className={`text-[11px] font-bold ${DECISION_STYLES[todayDecision.tone].badge}`}>{todayDecision.cta}</span>
+            </div>
+            <p className="text-[15px] font-bold text-ct-1 leading-tight">{todayDecision.title}</p>
+            <p className="text-[13px] text-ct-2 leading-relaxed mt-1">{todayDecision.body}</p>
+            <div className="flex flex-wrap gap-2 mt-3">
+              {todayDecision.facts.map((fact) => (
+                <span key={fact} className="px-2.5 py-1 rounded-full bg-ct-elevated/70 text-[11px] text-ct-2">
+                  {fact}
+                </span>
+              ))}
+            </div>
+            <div className="mt-3">
+              <span className={`inline-flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl ${DECISION_STYLES[todayDecision.tone].button}`}>
+                {todayDecision.cta}
+                <ChevronRight size={12} />
+              </span>
+            </div>
+          </div>
+        </div>
+      </button>
 
       {/* FIRST-TIME WELCOME  -  shown only when user has zero data */}
       {isFirstTime && (
@@ -497,22 +726,6 @@ export function TodayPage() {
             )}
           </div>
         </div>
-      )}
-
-      {/* WORKOUT SUGGESTION  -  only if no workout today */}
-      {suggestion && (
-        <button
-          className="w-full text-left bg-violet-500/10 rounded-ct-lg p-3 border border-violet-500/20 flex items-center gap-3 card-press"
-          onClick={() => setActiveTab('log')}
-        >
-          <div className="w-8 h-8 bg-violet-500/15 rounded-lg flex items-center justify-center shrink-0">
-            <Sparkles size={16} className="text-violet-400" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-violet-300">{suggestion.text}</p>
-          </div>
-          <ChevronRight size={14} className="text-violet-500/50 shrink-0" />
-        </button>
       )}
 
       {/* AI COACH  -  quick access to training insights */}
