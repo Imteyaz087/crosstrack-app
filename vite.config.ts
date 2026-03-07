@@ -12,9 +12,9 @@ export default defineConfig({
       registerType: 'prompt',
       includeAssets: ['favicon.ico', 'robots.txt', 'og-image.png'],
       manifest: {
-        name: 'TRACKVOLT — Hybrid Athlete OS',
+        name: 'TRACKVOLT - CrossFit & Hybrid Athlete OS',
         short_name: 'TRACKVOLT',
-        description: 'The all-in-one CrossFit & hybrid athlete tracker. Log WODs, track PRs, manage nutrition, sync training with your cycle — all offline-first.',
+        description: 'Built for CrossFit, HYROX, and hybrid athletes. Log WODs, track macros and recovery, and save every PR.',
         theme_color: '#020617',
         background_color: '#020617',
         display: 'standalone',
@@ -28,7 +28,7 @@ export default defineConfig({
         icons: [
           { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
-          { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+          { src: '/icon-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
         ],
         shortcuts: [
           {
@@ -59,14 +59,14 @@ export default defineConfig({
             sizes: '1290x2796',
             type: 'image/png',
             form_factor: 'narrow',
-            label: 'Your daily dashboard — streak, recovery, workout, nutrition at a glance'
+            label: 'Your daily dashboard - streak, recovery, workout, nutrition at a glance'
           },
           {
             src: '/screenshots/workout-log.png',
             sizes: '1290x2796',
             type: 'image/png',
             form_factor: 'narrow',
-            label: 'Log any WOD in seconds — AMRAP, EMOM, For Time, Strength'
+            label: 'Log any WOD in seconds - AMRAP, EMOM, For Time, Strength'
           },
           {
             src: '/screenshots/nutrition-macros.png',
@@ -101,7 +101,7 @@ export default defineConfig({
             sizes: '1290x2796',
             type: 'image/png',
             form_factor: 'narrow',
-            label: 'Works offline — every feature available without internet'
+            label: 'Works offline - every feature available without internet'
           }
         ],
       },
@@ -126,7 +126,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // Stable vendor chunk — rarely changes, long-cached
+          // Stable vendor chunk - rarely changes, long-cached
           if (id.includes('node_modules')) {
             if (id.includes('react') || id.includes('react-dom') || id.includes('scheduler'))
               return 'vendor-react'

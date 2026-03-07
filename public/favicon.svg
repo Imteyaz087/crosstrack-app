@@ -1,5 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#0F172A"/>
-  <path d="M 170 110 L 342 110 L 342 165 L 280 165 L 280 245 L 340 245 L 240 410 L 272 280 L 215 280 L 215 165 L 170 165 Z" fill="#F97316"/>
-  <rect x="170" y="110" width="172" height="35" rx="2" fill="#FB923C"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" rx="120" fill="#0B0F18"/>
+  <ellipse cx="256" cy="256" rx="164" ry="164" fill="url(#glow)" opacity="0.28"/>
+  <path d="M252 84L344 220L280 236L318 428L176 276L238 262L252 84Z" fill="#FF7A1A"/>
+  <path d="M252 84L344 220L280 236L252 84Z" fill="#FF9F5A"/>
+  <defs>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(256 238) rotate(90) scale(164)">
+      <stop stop-color="#FF7A1A"/>
+      <stop offset="1" stop-color="#FF7A1A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
 </svg>
