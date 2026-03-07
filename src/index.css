@@ -4,13 +4,13 @@
 /* These generate Tailwind utilities: bg-ct-surface, text-ct-2, border-ct, rounded-ct-lg, etc. */
 @theme {
   /* Brand Colors → bg-ct-brand, text-ct-brand, border-ct-brand */
-  --color-ct-brand: #22d3ee;
-  --color-ct-brand-dark: #0891b2;
-  --color-ct-brand-light: #67e8f9;
+  --color-ct-brand: #ff7a1a;
+  --color-ct-brand-dark: #c45400;
+  --color-ct-brand-light: #ff9f5a;
 
   /* Semantic → bg-ct-success, text-ct-error, etc. */
   --color-ct-success: #4ade80;
-  --color-ct-warning: #fb923c;
+  --color-ct-warning: #f59e0b;
   --color-ct-error: #f87171;
   --color-ct-info: #a78bfa;
 
@@ -77,12 +77,12 @@
   --ct-touch-gym: 56px;
 
   /* Shadows */
-  --ct-shadow-fab: 0 4px 16px rgba(34,211,238,0.25);
+  --ct-shadow-fab: 0 8px 24px rgba(255,122,26,0.28);
 
-  /* V21 Gradient — hex bolt accent */
-  --ct-gradient: linear-gradient(135deg, #22d3ee 0%, #a855f7 100%);
-  --ct-gradient-subtle: linear-gradient(135deg, rgba(34,211,238,0.15) 0%, rgba(168,85,247,0.15) 100%);
-  --ct-glow: 0 0 20px rgba(34,211,238,0.3), 0 0 40px rgba(168,85,247,0.15);
+  /* Brand Gradient — ember bolt accent */
+  --ct-gradient: linear-gradient(135deg, #ff7a1a 0%, #ff4d00 100%);
+  --ct-gradient-subtle: linear-gradient(135deg, rgba(255,122,26,0.18) 0%, rgba(255,77,0,0.10) 100%);
+  --ct-glow: 0 0 18px rgba(255,122,26,0.24), 0 0 36px rgba(255,77,0,0.10);
 
   /* Durations */
   --ct-fast: 100ms;
@@ -186,7 +186,7 @@ input[type="number"] { -moz-appearance: textfield; }
 
 /* Keyboard focus ring — visible only on keyboard navigation */
 *:focus-visible {
-  outline: 2px solid #22d3ee;
+  outline: 2px solid #ff7a1a;
   outline-offset: 2px;
   border-radius: 8px;
 }
