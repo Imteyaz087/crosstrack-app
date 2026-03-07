@@ -94,7 +94,39 @@ const intervalPresets = [
   { label: '4min', value: '240' },
 ]
 
-const repSchemePresets = ['6-6-6-6-6', '5-5-5-5-5', '3-3-3-2-2-1-1', '3-3-3-3-3', '2-2-2-2-2', '12-12-12-12']
+const strengthQuickPicks = [
+  'Back Squat',
+  'Front Squat',
+  'Deadlift',
+  'Shoulder Press (Strict Press)',
+  'Push Press',
+  'Push Jerk',
+  'Bench Press',
+  'Power Clean',
+  'Squat Clean',
+  'Power Snatch',
+  'Squat Snatch',
+  'Clean & Jerk',
+]
+
+const buildTargets = ['Heavy Single', 'Heavy Triple', 'Heavy 5']
+
+const repSchemePresets = [
+  { label: '5 x 5', scheme: '5-5-5-5-5', helper: '5 sets of 5 reps' },
+  { label: '5 x 3', scheme: '3-3-3-3-3', helper: '5 sets of 3 reps' },
+  { label: '5 x 2', scheme: '2-2-2-2-2', helper: '5 sets of 2 reps' },
+  { label: '5 x 1', scheme: '1-1-1-1-1', helper: '5 heavy singles' },
+  { label: '3 x 8', scheme: '8-8-8', helper: '3 volume sets' },
+  { label: 'Wave 3/2/1', scheme: '3-3-3-2-2-1-1', helper: '7 total sets' },
+]
+
+function countRepSchemeSets(value: string): string {
+  const reps = value
+    .split('-')
+    .map(part => part.trim())
+    .filter(part => /^\d+$/.test(part))
+  return reps.length > 0 ? String(reps.length) : ''
+}
 
 /** Previous results inline card */
 function PrevResultsCard({ results, label }: { results: Workout[]; label?: string }) {
@@ -235,8 +267,20 @@ export function WorkoutLogger({
   onSwitchToEvents,
   onScanWod,
 }: WorkoutLoggerProps) {
+  const [showStrengthMovementPicker, setShowStrengthMovementPicker] = useState(false)
+  const [strengthMovementSearch, setStrengthMovementSearch] = useState('')
   const hasStrength = classFormat === 'full' || classFormat === 'strength_only'
   const hasWod = classFormat === 'full' || classFormat === 'wod_only'
+  const hasMovementEntries = movements.length > 0
+  const movementHeaderActionLabel = showMovementPicker ? 'Close' : 'Add'
+
+  const handleMovementHeaderAction = () => {
+    if (showMovementPicker) {
+      onShowMovementPickerChange(false)
+      return
+    }
+    onShowMovementPickerChange(true)
+  }
 
   // === STEP 1: Class Format Selection ===
   if (workoutStep === 1) {
@@ -356,11 +400,11 @@ export function WorkoutLogger({
           {editingWorkoutId && <p className="text-[11px] text-amber-400">{t('workout.editingSaved')}</p>}
         </div>
         {/* kg/lbs toggle  -  pill style */}
-        <div className="flex bg-ct-surface rounded-lg p-0.5">
-          {(['kg', 'lbs'] as const).map(u => (
+        <div className="flex bg-ct-surface rounded-xl p-1 gap-1">
+          {(['lbs', 'kg'] as const).map(u => (
             <button key={u} onClick={() => onWeightUnitChange(u)}
-              className={`px-3 py-1.5 rounded-md text-[11px] font-bold transition-all ${
-                weightUnit === u ? 'bg-cyan-500/20 text-cyan-400 shadow-sm' : 'text-ct-2'
+              className={`min-w-[52px] px-4 py-2 rounded-lg text-[12px] font-bold tracking-wide transition-all ${
+                weightUnit === u ? 'bg-cyan-500/20 text-cyan-300 shadow-sm border border-cyan-400/20' : 'text-ct-2'
               }`}>{u}</button>
           ))}
         </div>
@@ -374,10 +418,57 @@ export function WorkoutLogger({
         <div className="bg-gradient-to-b from-purple-500/5 to-ct-surface/40 rounded-ct-lg p-4 border border-purple-400/15 space-y-4">
           <SectionHeader icon={Target} label={t('workout.strength')} color="purple" />
 
-          {/* Movement name  -  larger, cleaner */}
-          <input type="text" value={strengthMovement} onChange={e => onStrengthMovementChange(e.target.value)}
-            placeholder={t('workout.movementPlaceholder')}
-            className="w-full bg-ct-elevated/60 rounded-xl py-3.5 px-4 text-ct-1 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-400/40 placeholder:text-ct-2 border border-ct-border/30" autoFocus />
+          <div className="space-y-2">
+            <div className="relative">
+              <input type="text" value={strengthMovement} onChange={e => onStrengthMovementChange(e.target.value)}
+                placeholder={t('workout.movementPlaceholder')}
+                className="w-full bg-ct-elevated/60 rounded-xl py-3.5 pl-4 pr-24 text-ct-1 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-400/40 placeholder:text-ct-2 border border-ct-border/30" autoFocus />
+              <button
+                type="button"
+                onClick={() => setShowStrengthMovementPicker(current => !current)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg px-3 py-2 text-xs font-semibold text-ct-2 active:bg-purple-500/10"
+              >
+                {showStrengthMovementPicker ? 'Close' : 'All Lifts'}
+              </button>
+            </div>
+
+            <div className="space-y-1.5">
+              <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">Quick Picks</p>
+              <div className="flex flex-wrap gap-1.5">
+                {strengthQuickPicks.map(pick => {
+                  const isActive = strengthMovement === pick
+                  return (
+                    <button
+                      key={pick}
+                      type="button"
+                      onClick={() => onStrengthMovementChange(isActive ? '' : pick)}
+                      className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all ${
+                        isActive
+                          ? 'bg-purple-500/20 text-purple-300 border border-purple-400/30'
+                          : 'bg-ct-elevated/50 text-ct-2 border border-transparent'
+                      }`}
+                    >
+                      {pick}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {showStrengthMovementPicker && (
+              <div className="rounded-xl border border-purple-400/15 bg-ct-elevated/20 p-2">
+                <MovementPicker
+                  movementSearch={strengthMovementSearch}
+                  onMovementSearchChange={setStrengthMovementSearch}
+                  onSelectMovement={(name) => {
+                    onStrengthMovementChange(name)
+                    setShowStrengthMovementPicker(false)
+                    setStrengthMovementSearch('')
+                  }}
+                />
+              </div>
+            )}
+          </div>
 
           {/* Inline PR display */}
           {strengthCurrentPR && (
@@ -410,7 +501,7 @@ export function WorkoutLogger({
             <div className="space-y-3">
               <div className="flex gap-2 items-end">
                 <div className="flex-1">
-                  <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">{t('workout.every')}</label>
+                  <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">Interval</label>
                   <div className="flex gap-1">
                     {intervalPresets.map(ip => (
                       <button key={ip.value} onClick={() => onStrengthIntervalChange(ip.value)}
@@ -428,16 +519,37 @@ export function WorkoutLogger({
               </div>
               <div>
                 <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">{t('workout.repScheme')}</label>
-                <div className="flex gap-1 overflow-x-auto pb-1 mb-2">
-                  {repSchemePresets.map(rs => (
-                    <button key={rs} onClick={() => onStrengthRepSchemeChange(rs)}
-                      className={`px-2.5 py-2 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
-                        strengthRepScheme === rs ? 'bg-purple-500/20 text-purple-400 border border-purple-400/30' : 'bg-ct-elevated/50 text-ct-2 border border-transparent'
-                      }`}>{rs}</button>
-                  ))}
+                <p className="text-xs text-ct-2 mb-2">Tap a preset and TrackVolt fills both sets and reps for you.</p>
+                <div className="grid grid-cols-2 gap-2 mb-2">
+                  {repSchemePresets.map(preset => {
+                    const isActive = strengthRepScheme === preset.scheme
+                    return (
+                      <button
+                        key={preset.label}
+                        type="button"
+                        onClick={() => {
+                          onStrengthRepSchemeChange(preset.scheme)
+                          onStrengthSetsChange(String(preset.scheme.split('-').length))
+                        }}
+                        className={`rounded-xl px-3 py-2.5 text-left transition-all ${
+                          isActive
+                            ? 'bg-purple-500/20 text-purple-300 border border-purple-400/30'
+                            : 'bg-ct-elevated/50 text-ct-2 border border-transparent'
+                        }`}
+                      >
+                        <p className="text-sm font-bold">{preset.label}</p>
+                        <p className="text-xs mt-0.5">{preset.helper}</p>
+                      </button>
+                    )
+                  })}
                 </div>
-                <input type="text" value={strengthRepScheme} onChange={e => onStrengthRepSchemeChange(e.target.value)}
-                  placeholder={t('workout.repSchemePlaceholder')}
+                <input type="text" value={strengthRepScheme} onChange={e => {
+                  const value = e.target.value
+                  onStrengthRepSchemeChange(value)
+                  const countedSets = countRepSchemeSets(value)
+                  if (countedSets) onStrengthSetsChange(countedSets)
+                }}
+                  placeholder="Custom reps (e.g. 3-3-2-2-1-1)"
                   className="w-full bg-ct-elevated/60 rounded-lg py-2.5 px-3 text-ct-1 text-xs text-center focus:outline-none focus:ring-1 focus:ring-purple-400/40 placeholder:text-ct-2 border border-ct-border/30" />
               </div>
             </div>
@@ -446,7 +558,7 @@ export function WorkoutLogger({
           {/* Build to Heavy  -  multi-rep max */}
           {strengthSchemeType === 'build' && (
             <div className="grid grid-cols-3 gap-1.5">
-              {['Heavy Single', 'Heavy 3', 'Heavy 5', '1RM', '3RM', '5RM'].map(tgt => (
+              {buildTargets.map(tgt => (
                 <button key={tgt} onClick={() => onStrengthBuildTargetChange(tgt)}
                   className={`py-3 rounded-xl text-[11px] font-bold transition-all ${
                     strengthBuildTarget === tgt ? 'bg-purple-500/20 text-purple-400 border border-purple-400/30 shadow-sm' : 'bg-ct-elevated/50 text-ct-2 border border-transparent'
@@ -496,7 +608,7 @@ export function WorkoutLogger({
 
       {/* ====== WOD SECTION ====== */}
       {hasWod && (
-        <div className="bg-gradient-to-b from-cyan-500/5 to-ct-surface/40 rounded-ct-lg p-4 border border-cyan-400/15 space-y-4">
+        <div className={`bg-gradient-to-b from-cyan-500/5 to-ct-surface/40 rounded-ct-lg p-4 border border-cyan-400/15 space-y-4 ${hasStrength ? 'mt-5 pt-5 border-t border-cyan-400/20' : ''}`}>
           <div className="flex items-center justify-between">
             <SectionHeader icon={Flame} label="WOD" color="cyan" />
             <div className="flex items-center gap-2">
@@ -523,7 +635,7 @@ export function WorkoutLogger({
 
           {/* Quick Select  -  popular benchmarks */}
           <div className="overflow-x-auto -mx-1 px-1 scrollbar-hide">
-            <div className="flex gap-1.5 pb-1" style={{ minWidth: 'max-content' }}>
+            <div className="inline-flex gap-1.5 rounded-xl bg-ct-elevated/20 p-1 pb-1.5" style={{ minWidth: 'max-content' }}>
               {QUICK_SELECT_IDS.map(id => {
                 const wod = allBenchmarks.find(w => w.id === id)
                 if (!wod) return null
@@ -531,7 +643,7 @@ export function WorkoutLogger({
                 return (
                   <button key={id}
                     onClick={() => onSelectBenchmarkWod(wod)}
-                    className={`px-3 py-2 rounded-xl text-[11px] font-bold whitespace-nowrap transition-all min-h-[36px] ${
+                    className={`px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all min-h-[34px] ${
                       isActive
                         ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/30 shadow-sm'
                         : 'bg-ct-elevated/50 text-ct-2 border border-transparent active:scale-95'
@@ -602,14 +714,90 @@ export function WorkoutLogger({
             </div>
           </div>
 
+          {/* WOD Movements */}
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">{t('workout.movements')}</p>
+              {(hasMovementEntries || showMovementPicker) && (
+                <button
+                  onClick={handleMovementHeaderAction}
+                  className="text-xs text-cyan-400 font-semibold flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-lg active:bg-cyan-500/10"
+                >
+                  {showMovementPicker ? <X size={14} /> : <Plus size={14} />}
+                  {movementHeaderActionLabel}
+                </button>
+              )}
+            </div>
+
+            {movements.map((m, idx) => (
+              <div key={idx} className="bg-ct-elevated/30 rounded-xl p-3 mb-2 space-y-2 border border-ct-border/20">
+                <div className="flex justify-between items-center">
+                  <p className="text-sm font-semibold text-ct-1">{m.name}</p>
+                  <button onClick={() => onRemoveMovement(idx)} className="min-w-[44px] min-h-[44px] rounded-lg flex items-center justify-center text-ct-2 active:text-red-400 active:bg-red-500/10" aria-label="Remove movement"><X size={16} /></button>
+                </div>
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <label className="text-[11px] text-ct-2 block mb-0.5 font-medium">{t('workout.weight')} ({weightUnit})</label>
+                    <input type="text" inputMode="numeric" pattern="[0-9]*" value={m.weight} onChange={e => onUpdateMovement(idx, 'weight', e.target.value.replace(/\D/g, ''))}
+                      placeholder="0" className="w-full bg-ct-elevated/80 rounded-lg py-2 px-2 text-ct-1 text-xs text-center focus:outline-none tabular-nums border border-ct-border/30" />
+                  </div>
+                  <div className="flex-1">
+                    <label className="text-[11px] text-ct-2 block mb-0.5 font-medium">{t('workout.repsScheme')}</label>
+                    <input type="text" value={m.detail} onChange={e => onUpdateMovement(idx, 'detail', e.target.value)}
+                      placeholder="21-15-9" className="w-full bg-ct-elevated/80 rounded-lg py-2 px-2 text-ct-1 text-xs text-center focus:outline-none border border-ct-border/30" />
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {showMovementPicker && (
+              <MovementPicker
+                movementSearch={movementSearch}
+                onMovementSearchChange={onMovementSearchChange}
+                onSelectMovement={onAddMovement}
+              />
+            )}
+
+            {!hasMovementEntries && !showMovementPicker && (
+              <button
+                type="button"
+                onClick={() => onShowMovementPickerChange(true)}
+                className="w-full rounded-2xl border border-cyan-500/20 bg-cyan-500/5 px-4 py-4 text-left active:bg-cyan-500/10"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-ct-1">
+                      No <span className="text-cyan-400">WOD</span> movements added yet
+                    </p>
+                    <p className="text-xs text-ct-2 mt-1 leading-relaxed">
+                      Tap here to track weights, rep details, or skill work inside the WOD.
+                    </p>
+                  </div>
+                  <div className="shrink-0 w-10 h-10 rounded-xl border border-cyan-400/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400">
+                    <Plus size={18} />
+                  </div>
+                </div>
+              </button>
+            )}
+          </div>
+
           {/* Smart Score Entry  -  elevated card */}
           <div className="bg-ct-elevated/30 rounded-xl p-3">
-            <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold mb-3">{t('workout.score')}</p>
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">{t('workout.score')}</p>
+              <p className="text-[11px] text-ct-2">
+                {wodType === 'AMRAP' ? 'Rounds plus extra reps'
+                  : wodType === 'ForTime' || wodType === 'Chipper' ? 'Finish time'
+                  : wodType === 'EMOM' ? 'Completed rounds'
+                  : wodType === 'Tabata' ? 'Lowest reps'
+                  : 'Workout result'}
+              </p>
+            </div>
 
             {/* AMRAP: Rounds + Reps */}
             {wodType === 'AMRAP' && (
-              <div className="flex gap-2">
-                <div className="flex-1 min-w-0">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="rounded-xl bg-ct-elevated/20 p-2.5">
                   <label className="text-[11px] text-ct-2 block mb-1.5 font-medium text-center">{t('workout.rounds')}</label>
                   <div className="flex items-center gap-1">
                     <button onClick={() => onScoreRoundsChange(String(Math.max(0, (parseInt(scoreRounds) || 0) - 1)))}
@@ -620,7 +808,7 @@ export function WorkoutLogger({
                       className="w-11 h-11 shrink-0 bg-cyan-500/10 rounded-lg flex items-center justify-center active:bg-cyan-500/20 border border-cyan-400/20"><Plus size={14} className="text-cyan-400" /></button>
                   </div>
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className="rounded-xl bg-ct-elevated/20 p-2.5">
                   <label className="text-[11px] text-ct-2 block mb-1.5 font-medium text-center">{t('workout.plusReps')}</label>
                   <div className="flex items-center gap-1">
                     <button onClick={() => onScoreRepsChange(String(Math.max(0, (parseInt(scoreReps) || 0) - 1)))}
@@ -682,48 +870,6 @@ export function WorkoutLogger({
               <input type="text" value={scoreRounds} onChange={e => onScoreRoundsChange(e.target.value)}
                 placeholder={t('workout.scorePlaceholder')}
                 className="w-full bg-ct-elevated/80 rounded-xl py-3 px-4 text-ct-1 text-sm focus:outline-none border border-ct-border/30" />
-            )}
-          </div>
-
-          {/* WOD Movements */}
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">{t('workout.movements')}</p>
-              <button onClick={() => onShowMovementPickerChange(!showMovementPicker)}
-                className="text-xs text-cyan-400 font-semibold flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-lg active:bg-cyan-500/10"><Plus size={14} /> {t('workout.add')}</button>
-            </div>
-
-            {movements.map((m, idx) => (
-              <div key={idx} className="bg-ct-elevated/30 rounded-xl p-3 mb-2 space-y-2 border border-ct-border/20">
-                <div className="flex justify-between items-center">
-                  <p className="text-sm font-semibold text-ct-1">{m.name}</p>
-                  <button onClick={() => onRemoveMovement(idx)} className="min-w-[44px] min-h-[44px] rounded-lg flex items-center justify-center text-ct-2 active:text-red-400 active:bg-red-500/10" aria-label="Remove movement"><X size={16} /></button>
-                </div>
-                <div className="flex gap-2">
-                  <div className="flex-1">
-                    <label className="text-[11px] text-ct-2 block mb-0.5 font-medium">{t('workout.weight')} ({weightUnit})</label>
-                    <input type="text" inputMode="numeric" pattern="[0-9]*" value={m.weight} onChange={e => onUpdateMovement(idx, 'weight', e.target.value.replace(/\D/g, ''))}
-                      placeholder="0" className="w-full bg-ct-elevated/80 rounded-lg py-2 px-2 text-ct-1 text-xs text-center focus:outline-none tabular-nums border border-ct-border/30" />
-                  </div>
-                  <div className="flex-1">
-                    <label className="text-[11px] text-ct-2 block mb-0.5 font-medium">{t('workout.repsScheme')}</label>
-                    <input type="text" value={m.detail} onChange={e => onUpdateMovement(idx, 'detail', e.target.value)}
-                      placeholder="21-15-9" className="w-full bg-ct-elevated/80 rounded-lg py-2 px-2 text-ct-1 text-xs text-center focus:outline-none border border-ct-border/30" />
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {showMovementPicker && (
-              <MovementPicker
-                movementSearch={movementSearch}
-                onMovementSearchChange={onMovementSearchChange}
-                onSelectMovement={onAddMovement}
-              />
-            )}
-
-            {movements.length === 0 && !showMovementPicker && (
-              <p className="text-xs text-ct-2 text-center py-2">{t('workout.tapAddMovements')}</p>
             )}
           </div>
         </div>
