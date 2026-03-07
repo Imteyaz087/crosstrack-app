@@ -973,3 +973,18 @@ Why:
   - `src/components/LoadingSpinner.tsx`
 - Kept the existing `public/og-image.png` as the source asset because it already matches the desired WhatsApp/brand-preview treatment.
 - `npm run build` passed.
+## 2026-03-07 - Full Class restore on current HEAD
+
+Restored the agreed Full Class improvements in `src/components/log/WorkoutLogger.tsx` on top of the current branch state after a later commit had removed part of the work.
+
+Restored:
+- `lbs` shown first in the unit toggle with clearer spacing/tap targets
+- Strength quick picks plus `All Lifts` picker
+- readable strength presets (`5 x 5`, `5 x 3`, `5 x 2`, `5 x 1`, `3 x 8`, `Wave 3/2/1`) with auto-fill for `Sets`
+- `Build to Heavy` cleaned back to `Heavy Single`, `Heavy Triple`, `Heavy 5`
+- clearer Strength -> WOD separation in Full Class
+- WOD `Movements` block restored with contextual header action and clickable empty state card
+- WOD `Score` block restored below `Movements` with clearer AMRAP helper copy
+
+Verification:
+- `npm run build` passed

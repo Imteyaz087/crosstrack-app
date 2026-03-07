@@ -2017,3 +2017,20 @@ Reason:
 
 Verification:
 - `npm run build` passes
+
+## 2026-03-07 - Full Class current-branch restore
+
+Restored the missing Full Class work in `src/components/log/WorkoutLogger.tsx` after confirming a later commit on current `HEAD` had removed part of the agreed Strength/WOD UI.
+
+Present again on current branch:
+- `lbs` first / clearer toggle
+- strength quick picks + `All Lifts`
+- `5 x 5` style rep presets with set autofill
+- `Heavy Single / Heavy Triple / Heavy 5`
+- WOD `Movements` above `Score`
+- contextual movement header action
+- clickable empty movements card
+- stronger Strength -> WOD boundary
+
+Verification:
+- `npm run build` passed

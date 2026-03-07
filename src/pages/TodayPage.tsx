@@ -231,12 +231,12 @@ export function TodayPage() {
               <Target size={24} className="text-cyan-400" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[15px] font-bold text-ct-1 mb-1">{t('today.welcomeTitle', 'Ready to start?')}</p>
+              <p className="text-[15px] font-bold text-ct-1 mb-1">{t('today.welcomeTitle')}</p>
               <p className="text-[13px] text-ct-2 leading-relaxed mb-2">
-                {t('today.welcomeDesc', 'Log your first workout, meal, or body check-in to unlock your dashboard.')}
+                {t('today.welcomeDesc')}
               </p>
               <span className="inline-flex items-center gap-1 text-xs font-bold text-cyan-400">
-                {t('today.welcomeCta', 'Log your first entry')}
+                {t('today.welcomeCta')}
                 <ChevronRight size={12} />
               </span>
             </div>
@@ -458,7 +458,7 @@ export function TodayPage() {
                 ? 'bg-ct-surface border border-ct-border surface-highlight'
                 : 'bg-ct-surface/50 border border-dashed border-ct-border/60'
             }`}
-            aria-label={`${name}: ${value ?? t('today.tapToAdd', 'Tap to add')}`}
+            aria-label={`${name}: ${value ?? t('today.tapToAdd')}`}
           >
             <MetricIcon size={16} className={`mx-auto mb-1 ${value != null ? color : 'text-ct-2/50'}`} />
             {value != null ? (
@@ -469,7 +469,7 @@ export function TodayPage() {
             ) : (
               <>
                 <Plus size={12} className="mx-auto text-ct-2/40 mb-0.5" />
-                <p className="text-[11px] text-ct-2/50">{t('today.add', 'Add')}</p>
+                <p className="text-[11px] text-ct-2/50">{t('today.add')}</p>
               </>
             )}
           </button>

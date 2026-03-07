@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Heart, Bluetooth, Play, Square, Activity, Zap, Flame } from 'lucide-react'
 import { useStore } from '../stores/useStore'
 
@@ -11,6 +12,7 @@ interface HRReading {
 }
 
 export function HeartRatePage() {
+  const { t } = useTranslation()
   const { profile } = useStore()
   const [isSupported] = useState(() => {
     // Lazy init - check Bluetooth support on mount
@@ -116,11 +118,11 @@ export function HeartRatePage() {
   const getZone = (hr: number): { zone: number; name: string; color: string } => {
     const maxEstimated = 220 - (profile?.age || 30)
     const pct = hr / maxEstimated
-    if (pct < 0.6) return { zone: 1, name: 'Recovery', color: 'text-blue-400' }
-    if (pct < 0.7) return { zone: 2, name: 'Fat Burn', color: 'text-green-400' }
-    if (pct < 0.8) return { zone: 3, name: 'Aerobic', color: 'text-yellow-400' }
-    if (pct < 0.9) return { zone: 4, name: 'Threshold', color: 'text-orange-400' }
-    return { zone: 5, name: 'Max Effort', color: 'text-red-400' }
+    if (pct < 0.6) return { zone: 1, name: t('heartRate.zoneRecovery'), color: 'text-blue-400' }
+    if (pct < 0.7) return { zone: 2, name: t('heartRate.zoneFatBurn'), color: 'text-green-400' }
+    if (pct < 0.8) return { zone: 3, name: t('heartRate.zoneAerobic'), color: 'text-yellow-400' }
+    if (pct < 0.9) return { zone: 4, name: t('heartRate.zoneThreshold'), color: 'text-orange-400' }
+    return { zone: 5, name: t('heartRate.zoneMaxEffort'), color: 'text-red-400' }
   }
 
   // Calories estimate (very rough)
@@ -131,11 +133,11 @@ export function HeartRatePage() {
   if (!isSupported) {
     return (
       <div className="space-y-4 stagger-children">
-        <h1 className="text-xl font-bold text-ct-1">Heart Rate Monitor</h1>
+        <h1 className="text-xl font-bold text-ct-1">{t('heartRate.title')}</h1>
         <div className="bg-ct-surface rounded-ct-lg p-6 border border-ct-border text-center">
           <Bluetooth size={32} className="text-ct-2 mx-auto mb-3" />
-          <p className="text-sm text-ct-2">Bluetooth not supported</p>
-          <p className="text-xs text-ct-2 mt-1">Your browser doesn't support Web Bluetooth. Try Chrome on Android or desktop.</p>
+          <p className="text-sm text-ct-2">{t('heartRate.btNotSupported')}</p>
+          <p className="text-xs text-ct-2 mt-1">{t('heartRate.btNotSupportedDesc')}</p>
         </div>
       </div>
     )
@@ -143,8 +145,8 @@ export function HeartRatePage() {
 
   return (
     <div className="space-y-4 stagger-children">
-      <h1 className="text-xl font-bold text-ct-1">Heart Rate Monitor</h1>
-      <p className="text-xs text-ct-2">Connect a Bluetooth HR strap or watch</p>
+      <h1 className="text-xl font-bold text-ct-1">{t('heartRate.title')}</h1>
+      <p className="text-xs text-ct-2">{t('heartRate.subtitle')}</p>
 
       {/* Connection */}
       {!connected ? (
@@ -153,8 +155,8 @@ export function HeartRatePage() {
           <div className="w-14 h-14 bg-red-500/15 rounded-ct-lg flex items-center justify-center animate-pulse">
             <Heart size={24} className="text-red-400" />
           </div>
-          <p className="text-sm font-semibold text-red-400">Connect HR Monitor</p>
-          <p className="text-[11px] text-ct-2">Supports Polar, Garmin, Wahoo & most BLE HR straps</p>
+          <p className="text-sm font-semibold text-red-400">{t('heartRate.connectMonitor')}</p>
+          <p className="text-[11px] text-ct-2">{t('heartRate.connectDesc')}</p>
         </button>
       ) : (
         <>
@@ -162,7 +164,7 @@ export function HeartRatePage() {
           <div className="bg-ct-surface rounded-ct-lg p-6 border border-ct-border text-center">
             <div className="flex items-center justify-center gap-2 mb-1">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <p className="text-[11px] text-green-400 font-semibold">{device?.name || 'Connected'}</p>
+              <p className="text-[11px] text-green-400 font-semibold">{device?.name || t('heartRate.connected')}</p>
             </div>
 
             {currentHR ? (
@@ -170,19 +172,19 @@ export function HeartRatePage() {
                 <div className="flex items-center justify-center gap-3 my-4">
                   <Heart size={28} className="text-red-400 animate-pulse" />
                   <p className="text-5xl font-bold text-ct-1">{currentHR}</p>
-                  <span className="text-sm text-ct-2 self-end mb-2">bpm</span>
+                  <span className="text-sm text-ct-2 self-end mb-2">{t('heartRate.bpm')}</span>
                 </div>
                 {(() => {
                   const zone = getZone(currentHR)
                   return (
                     <p className={`text-xs font-bold ${zone.color}`}>
-                      Zone {zone.zone}  -  {zone.name}
+                      {t('heartRate.zone')} {zone.zone}  -  {zone.name}
                     </p>
                   )
                 })()}
               </>
             ) : (
-              <p className="text-ct-2 text-sm py-4">Waiting for heart rate data...</p>
+              <p className="text-ct-2 text-sm py-4">{t('heartRate.waitingData')}</p>
             )}
           </div>
 
@@ -191,17 +193,17 @@ export function HeartRatePage() {
             {!recording ? (
               <button onClick={startRecording}
                 className="flex-1 bg-green-500/10 border border-green-500/30 text-green-400 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2">
-                <Play size={14} /> Start Recording
+                <Play size={14} /> {t('heartRate.startRecording')}
               </button>
             ) : (
               <button onClick={stopRecording}
                 className="flex-1 bg-red-500/10 border border-red-500/30 text-red-400 font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2">
-                <Square size={14} /> Stop
+                <Square size={14} /> {t('heartRate.stop')}
               </button>
             )}
             <button onClick={disconnect}
               className="bg-ct-elevated/50 text-ct-2 font-bold py-3 px-4 rounded-xl text-sm">
-              Disconnect
+              {t('heartRate.disconnect')}
             </button>
           </div>
 
@@ -209,43 +211,43 @@ export function HeartRatePage() {
           {readings.length > 0 && (
             <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
               <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-3">
-                {recording ? 'Recording...' : 'Session Summary'}
+                {recording ? t('heartRate.recording') : t('heartRate.sessionSummary')}
               </p>
               <div className="grid grid-cols-3 gap-3 text-center mb-3">
                 <div>
                   <Activity size={14} className="text-cyan-400 mx-auto mb-1" />
                   <p className="text-lg font-bold text-ct-1">{avgHR}</p>
-                  <p className="text-[11px] text-ct-2">Avg HR</p>
+                  <p className="text-[11px] text-ct-2">{t('heartRate.avgHR')}</p>
                 </div>
                 <div>
                   <Zap size={14} className="text-red-400 mx-auto mb-1" />
                   <p className="text-lg font-bold text-ct-1">{maxHR}</p>
-                  <p className="text-[11px] text-ct-2">Max HR</p>
+                  <p className="text-[11px] text-ct-2">{t('heartRate.maxHR')}</p>
                 </div>
                 <div>
                   <Flame size={14} className="text-orange-400 mx-auto mb-1" />
                   <p className="text-lg font-bold text-ct-1">{caloriesEstimate}</p>
-                  <p className="text-[11px] text-ct-2">Cal (est)</p>
+                  <p className="text-[11px] text-ct-2">{t('heartRate.calEst')}</p>
                 </div>
               </div>
               <div className="flex justify-between text-xs text-ct-2">
-                <span>Duration: {Math.floor(duration / 60)}:{String(duration % 60).padStart(2, '0')}</span>
-                <span>Min HR: {minHR} bpm</span>
-                <span>{readings.length} readings</span>
+                <span>{t('heartRate.duration')} {Math.floor(duration / 60)}:{String(duration % 60).padStart(2, '0')}</span>
+                <span>{t('heartRate.minHR')} {minHR} {t('heartRate.bpm')}</span>
+                <span>{t('heartRate.readings', { count: readings.length })}</span>
               </div>
             </div>
           )}
 
           {/* HR Zone guide */}
           <div className="bg-ct-surface/40 rounded-xl p-3 border border-ct-border/30">
-            <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-2">HR Zones</p>
+            <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-2">{t('heartRate.hrZones')}</p>
             <div className="space-y-1">
               {[
-                { zone: 1, name: 'Recovery', range: '<60%', color: 'bg-blue-400' },
-                { zone: 2, name: 'Fat Burn', range: '60-70%', color: 'bg-green-400' },
-                { zone: 3, name: 'Aerobic', range: '70-80%', color: 'bg-yellow-400' },
-                { zone: 4, name: 'Threshold', range: '80-90%', color: 'bg-orange-400' },
-                { zone: 5, name: 'Max Effort', range: '90%+', color: 'bg-red-400' },
+                { zone: 1, name: t('heartRate.zoneRecovery'), range: '<60%', color: 'bg-blue-400' },
+                { zone: 2, name: t('heartRate.zoneFatBurn'), range: '60-70%', color: 'bg-green-400' },
+                { zone: 3, name: t('heartRate.zoneAerobic'), range: '70-80%', color: 'bg-yellow-400' },
+                { zone: 4, name: t('heartRate.zoneThreshold'), range: '80-90%', color: 'bg-orange-400' },
+                { zone: 5, name: t('heartRate.zoneMaxEffort'), range: '90%+', color: 'bg-red-400' },
               ].map(z => (
                 <div key={z.zone} className="flex items-center gap-2">
                   <div className={`w-2 h-2 rounded-full ${z.color}`} />

@@ -877,3 +877,25 @@ Changes:
   - keeps branding consistent with the social preview treatment
   - avoids continuing to show the obsolete inline icon on first launch
 - Note: the tiny square icon used by browser/PWA/favicon surfaces is a separate asset class and can be changed independently later if needed.
+
+## 2026-03-07 - Full Class Restore On Current Branch
+
+Problem:
+- `WorkoutLogger.tsx` on current `HEAD` had reverted to the older Full Class UI, even though the agreed Strength/WOD improvements had already been validated in earlier local/browser states.
+
+Decision:
+- Restore the agreed Full Class improvements directly on top of the current branch instead of rolling the whole file back.
+
+Restored in `src/components/log/WorkoutLogger.tsx`:
+- `lbs` first toggle order with larger spacing
+- strength `Quick Picks` and inline `All Lifts` picker
+- coach-readable rep presets with set auto-fill
+- build targets reduced to `Heavy Single`, `Heavy Triple`, `Heavy 5`
+- more deliberate Strength -> WOD spacing in `Full Class`
+- WOD `Movements` block above `Score` with contextual `Add/Close`
+- clickable empty movements card (`No WOD movements added yet`)
+- score helper copy such as `Rounds plus extra reps`
+
+Reason:
+- CrossFit logging should read like the class whiteboard and remain fast when the athlete is tired.
+- Reapplying the agreed Full Class work on top of current `HEAD` avoids overwriting unrelated newer changes in other files.

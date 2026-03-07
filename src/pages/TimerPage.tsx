@@ -43,8 +43,8 @@ export function TimerPage({ onClose }: { onClose: () => void }) {
   const [workSec, setWorkSec] = useState(0)
   const [restMin, setRestMin] = useState(1)
   const [restSec, setRestSec] = useState(0)
-  const [sets, setSets] = useState(1)
-  const [hasRest, setHasRest] = useState(false)
+  const [sets, setSets] = useState(3)
+  const [hasRest, setHasRest] = useState(true)
   const [emomInterval, setEmomInterval] = useState(1)
   const [tabataWork, setTabataWork] = useState(20)
   const [tabataRest, setTabataRest] = useState(10)
@@ -64,7 +64,7 @@ export function TimerPage({ onClose }: { onClose: () => void }) {
   }
 
   function applyDefaults(m: TimerMode) {
-    if (m === 'amrap') { setWorkMin(12); setWorkSec(0); setRestMin(1); setRestSec(0); setSets(1); setHasRest(false) }
+    if (m === 'amrap') { setWorkMin(12); setWorkSec(0); setRestMin(1); setRestSec(0); setSets(3); setHasRest(true) }
     if (m === 'emom') { setWorkMin(10); setWorkSec(0); setEmomInterval(1); setSets(1); setHasRest(false) }
     if (m === 'fortime') { setWorkMin(20); setWorkSec(0); setSets(1); setHasRest(false) }
     if (m === 'tabata') { setTabataWork(20); setTabataRest(10); setTabataRounds(8) }
@@ -125,7 +125,7 @@ export function TimerPage({ onClose }: { onClose: () => void }) {
     setConfiguring(true)
   }
 
-  const modeLabels: Record<string, string> = { amrap: 'AMRAP', emom: 'EMOM', fortime: 'For Time', tabata: 'Tabata', rest: 'Rest Timer' }
+  const modeLabels: Record<string, string> = { amrap: t('timer.amrap'), emom: t('timer.emom'), fortime: t('timer.forTime'), tabata: t('timer.tabata'), rest: t('timer.restTimer') }
   const modeColors: Record<string, string> = { amrap: 'text-cyan-400', emom: 'text-green-400', fortime: 'text-orange-400', tabata: 'text-red-400', rest: 'text-purple-400' }
   const modeBorders: Record<string, string> = { amrap: 'border-cyan-400/40 text-cyan-400', emom: 'border-green-400/40 text-green-400', fortime: 'border-orange-400/40 text-orange-400', tabata: 'border-red-400/40 text-red-400', rest: 'border-purple-400/40 text-purple-400' }
   const modeEmojis: Record<string, string> = { amrap: String.fromCodePoint(0x1F525), emom: String.fromCodePoint(0x23F1, 0xFE0F), fortime: String.fromCodePoint(0x1F3C3), tabata: String.fromCodePoint(0x1F4A5), rest: String.fromCodePoint(0x1F60C) }
@@ -250,26 +250,26 @@ export function TimerPage({ onClose }: { onClose: () => void }) {
           <div className="bg-ct-surface rounded-ct-lg p-5 border border-ct-border space-y-5">
             <p className="text-xs text-ct-2 uppercase tracking-wider font-semibold">{mode === 'rest' ? t('timer.restDuration') : t('timer.workDuration')}</p>
             <div className="flex justify-center gap-6">
-              <Adjuster value={workMin} onChange={setWorkMin} min={0} max={60} label="Minutes" unit="min" />
-              <Adjuster value={workSec} onChange={setWorkSec} min={0} max={59} label="Seconds" unit="sec" />
+              <Adjuster value={workMin} onChange={setWorkMin} min={0} max={60} label={t('timer.minutes')} unit={t('timer.min')} />
+              <Adjuster value={workSec} onChange={setWorkSec} min={0} max={59} label={t('timer.seconds')} unit={t('timer.sec')} />
             </div>
             {mode !== 'rest' && (
               <>
                 <div className="border-t border-ct-border pt-4">
                   <p className="text-xs text-ct-2 uppercase tracking-wider font-semibold mb-3">{t('timer.sets')}</p>
-                  <div className="flex justify-center"><Adjuster value={sets} onChange={setSets} min={1} max={10} label="Number of Sets" unit="sets" /></div>
+                  <div className="flex justify-center"><Adjuster value={sets} onChange={setSets} min={1} max={10} label={t('timer.numberOfSets')} unit={t('timer.setsUnit')} /></div>
                 </div>
                 {sets > 1 && (
                   <div className="border-t border-ct-border pt-4">
                     <button onClick={() => setHasRest(!hasRest)}
                       className={`w-full flex items-center justify-between py-3 px-4 rounded-xl border transition-colors min-h-[44px] ${hasRest ? 'bg-amber-500/10 border-amber-400/30 text-amber-400' : 'bg-ct-elevated/40 border-ct-border/50 text-ct-2'}`}>
                       <span className="text-sm font-semibold">{t('timer.restBetween')}</span>
-                      <span className="text-xs font-bold">{hasRest ? 'ON' : 'OFF'}</span>
+                      <span className="text-xs font-bold">{hasRest ? t('timer.on') : t('timer.off')}</span>
                     </button>
                     {hasRest && (
                       <div className="flex justify-center gap-6 mt-4">
-                        <Adjuster value={restMin} onChange={setRestMin} min={0} max={10} label="Rest Min" unit="min" />
-                        <Adjuster value={restSec} onChange={setRestSec} min={0} max={59} label="Rest Sec" unit="sec" />
+                        <Adjuster value={restMin} onChange={setRestMin} min={0} max={10} label={t('timer.restMin')} unit={t('timer.min')} />
+                        <Adjuster value={restSec} onChange={setRestSec} min={0} max={59} label={t('timer.restSec')} unit={t('timer.sec')} />
                       </div>
                     )}
                   </div>
@@ -282,16 +282,16 @@ export function TimerPage({ onClose }: { onClose: () => void }) {
         {mode === 'emom' && (
           <div className="bg-ct-surface rounded-ct-lg p-5 border border-ct-border space-y-5">
             <p className="text-xs text-ct-2 uppercase tracking-wider font-semibold">{t('timer.totalDuration')}</p>
-            <div className="flex justify-center gap-6"><Adjuster value={workMin} onChange={setWorkMin} min={1} max={60} label="Minutes" unit="min" /></div>
+            <div className="flex justify-center gap-6"><Adjuster value={workMin} onChange={setWorkMin} min={1} max={60} label={t('timer.minutes')} unit={t('timer.min')} /></div>
             <div className="border-t border-ct-border pt-4">
               <p className="text-xs text-ct-2 uppercase tracking-wider font-semibold mb-3">{t('timer.intervalEvery')}</p>
               <div className="flex gap-2 justify-center">
                 {[1, 2, 3, 4, 5].map(v => (
                   <button key={v} onClick={() => setEmomInterval(v)}
-                    className={`w-12 h-12 rounded-xl text-sm font-bold flex items-center justify-center min-w-[44px] min-h-[44px] ${emomInterval === v ? 'bg-green-500/20 text-green-400 border border-green-400/40' : 'bg-ct-elevated text-ct-2'}`}>{v} min</button>
+                    className={`w-12 h-12 rounded-xl text-sm font-bold flex items-center justify-center min-w-[44px] min-h-[44px] ${emomInterval === v ? 'bg-green-500/20 text-green-400 border border-green-400/40' : 'bg-ct-elevated text-ct-2'}`}>{v} {t('timer.min')}</button>
                 ))}
               </div>
-              <p className="text-[11px] text-ct-2 text-center mt-2">{emomTotalRounds} {t('timer.rounds').toLowerCase()} of {emomInterval} min each</p>
+              <p className="text-[11px] text-ct-2 text-center mt-2">{t('timer.roundsOfMin', { rounds: emomTotalRounds, interval: emomInterval })}</p>
             </div>
           </div>
         )}
@@ -301,8 +301,8 @@ export function TimerPage({ onClose }: { onClose: () => void }) {
             <div>
               <p className="text-xs text-ct-2 uppercase tracking-wider font-semibold mb-3">{t('timer.work')} / {t('timer.rest')} (seconds)</p>
               <div className="flex justify-center gap-8">
-                <Adjuster value={tabataWork} onChange={setTabataWork} min={5} max={120} label={t('timer.work')} unit="sec" />
-                <Adjuster value={tabataRest} onChange={setTabataRest} min={5} max={60} label={t('timer.rest')} unit="sec" />
+                <Adjuster value={tabataWork} onChange={setTabataWork} min={5} max={120} label={t('timer.work')} unit={t('timer.sec')} />
+                <Adjuster value={tabataRest} onChange={setTabataRest} min={5} max={60} label={t('timer.rest')} unit={t('timer.sec')} />
               </div>
             </div>
             <div className="border-t border-ct-border pt-4">
@@ -314,7 +314,7 @@ export function TimerPage({ onClose }: { onClose: () => void }) {
                 ))}
               </div>
               <p className="text-[11px] text-ct-2 text-center mt-2">
-                Total: {Math.floor((tabataWork + tabataRest) * tabataRounds / 60)}:{(((tabataWork + tabataRest) * tabataRounds) % 60).toString().padStart(2, '0')}
+                {t('timer.total')} {Math.floor((tabataWork + tabataRest) * tabataRounds / 60)}:{(((tabataWork + tabataRest) * tabataRounds) % 60).toString().padStart(2, '0')}
               </p>
             </div>
           </div>
@@ -370,7 +370,7 @@ export function TimerPage({ onClose }: { onClose: () => void }) {
               {countdownVal}
             </p>
             {countdownVal <= 5 && (
-              <p className="text-xs text-ct-2 font-semibold">{countdownVal === 1 ? 'GO!' : ''}</p>
+              <p className="text-xs text-ct-2 font-semibold">{countdownVal === 1 ? t('timer.go') : ''}</p>
             )}
           </div>
         )}
@@ -394,7 +394,7 @@ export function TimerPage({ onClose }: { onClose: () => void }) {
             {mode === 'emom' && <p className="text-sm text-ct-2 mb-1">{t('timer.rounds')} {currentRound} / {emomTotalRounds}</p>}
             {(mode === 'amrap' || mode === 'fortime') && sets > 1 && (
               <p className="text-sm text-ct-2 mb-1">
-                Set {currentSet} / {sets}
+                {t('timer.set')} {currentSet} / {sets}
                 {phase === 'rest' && <span className="ml-2 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400">{t('timer.rest')}</span>}
               </p>
             )}

@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useStore } from '../stores/useStore'
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
 import { Ruler, TrendingDown, TrendingUp, Minus, Save, Loader2 } from 'lucide-react'
@@ -6,17 +7,18 @@ import { useSaveToast } from '../components/SaveToast'
 
 type MeasurementKey = 'weightKg' | 'bodyFatPct' | 'chestCm' | 'waistCm' | 'hipsCm' | 'armCm' | 'thighCm'
 
-const MEASUREMENTS: { key: MeasurementKey; label: string; unit: string; color: string }[] = [
-  { key: 'weightKg', label: 'Weight', unit: 'kg', color: '#22d3ee' },
-  { key: 'bodyFatPct', label: 'Body Fat', unit: '%', color: '#f97316' },
-  { key: 'chestCm', label: 'Chest', unit: 'cm', color: '#a78bfa' },
-  { key: 'waistCm', label: 'Waist', unit: 'cm', color: '#fb923c' },
-  { key: 'hipsCm', label: 'Hips', unit: 'cm', color: '#f472b6' },
-  { key: 'armCm', label: 'Arm', unit: 'cm', color: '#4ade80' },
-  { key: 'thighCm', label: 'Thigh', unit: 'cm', color: '#60a5fa' },
+const MEASUREMENTS: { key: MeasurementKey; i18nKey: string; unit: string; color: string }[] = [
+  { key: 'weightKg', i18nKey: 'bodyMeasurements.weight', unit: 'kg', color: '#22d3ee' },
+  { key: 'bodyFatPct', i18nKey: 'bodyMeasurements.bodyFat', unit: '%', color: '#f97316' },
+  { key: 'chestCm', i18nKey: 'bodyMeasurements.chest', unit: 'cm', color: '#a78bfa' },
+  { key: 'waistCm', i18nKey: 'bodyMeasurements.waist', unit: 'cm', color: '#fb923c' },
+  { key: 'hipsCm', i18nKey: 'bodyMeasurements.hips', unit: 'cm', color: '#f472b6' },
+  { key: 'armCm', i18nKey: 'bodyMeasurements.arm', unit: 'cm', color: '#4ade80' },
+  { key: 'thighCm', i18nKey: 'bodyMeasurements.thigh', unit: 'cm', color: '#60a5fa' },
 ]
 
 export function BodyMeasurementsPage() {
+  const { t } = useTranslation()
   const { allDailyLogs, todayLog, loadAllDailyLogs, loadTodayLog, saveDailyLog } = useStore()
   const { showToast, toastEl } = useSaveToast()
   const [activeMeasurement, setActiveMeasurement] = useState<MeasurementKey>('weightKg')
@@ -78,19 +80,19 @@ export function BodyMeasurementsPage() {
       }
     })
     if (Object.keys(updates).length === 0) {
-      showToast('Enter at least one measurement', 'error')
+      showToast(t('bodyMeasurements.enterOne'), 'error')
       return
     }
     await saveDailyLog(updates)
     await loadAllDailyLogs()
-    showToast('Measurements saved!')
+    showToast(t('bodyMeasurements.saved'))
   }
 
   if (loading) {
     return (
       <div className="space-y-3 stagger-children">
         <h2 className="text-lg font-bold text-ct-1 flex items-center gap-2">
-          <Ruler size={20} className="text-cyan-400" /> Body Measurements
+          <Ruler size={20} className="text-cyan-400" /> {t('bodyMeasurements.title')}
         </h2>
         <div className="flex items-center justify-center py-12">
           <Loader2 size={24} className="text-cyan-400 animate-spin" />
@@ -119,7 +121,7 @@ export function BodyMeasurementsPage() {
             }`}
             style={activeMeasurement === m.key ? { backgroundColor: activeConfig.color + '33', color: activeConfig.color } : undefined}
           >
-            {m.label}
+            {t(m.i18nKey)}
             {latestValues[m.key] !== null && (
               <span className="ml-1 opacity-70">{latestValues[m.key]}</span>
             )}
@@ -130,7 +132,7 @@ export function BodyMeasurementsPage() {
       {/* Chart */}
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
         <div className="flex justify-between items-center mb-3">
-          <p className="text-[11px] uppercase tracking-widest text-ct-2">{activeConfig.label} Trend</p>
+          <p className="text-[11px] uppercase tracking-widest text-ct-2">{t('bodyMeasurements.trend', { label: t(activeConfig.i18nKey) })}</p>
           {trend && (
             <div className={`flex items-center gap-1 text-xs font-bold ${
               trend.direction === 'down' ? 'text-green-400' : trend.direction === 'up' ? 'text-red-400' : 'text-ct-2'
@@ -150,23 +152,23 @@ export function BodyMeasurementsPage() {
               <YAxis domain={['dataMin - 1', 'dataMax + 1']} tick={{ fontSize: 9, fill: '#64748b' }} width={35} />
               <Tooltip
                 contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 8, fontSize: 12 }}
-                formatter={(value: unknown) => [`${value} ${activeConfig.unit}`, activeConfig.label]}
+                formatter={(value: unknown) => [`${value} ${activeConfig.unit}`, t(activeConfig.i18nKey)]}
               />
               <Line type="monotone" dataKey="value" stroke={activeConfig.color} strokeWidth={2.5} dot={{ r: 3, fill: activeConfig.color }} />
             </LineChart>
           </ResponsiveContainer>
         ) : (
-          <p className="text-sm text-ct-2 text-center py-8">Log at least 2 entries to see your {activeConfig.label.toLowerCase()} trend</p>
+          <p className="text-sm text-ct-2 text-center py-8">{t('bodyMeasurements.noDataYet', { label: t(activeConfig.i18nKey).toLowerCase() })}</p>
         )}
       </div>
 
       {/* Quick entry form */}
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
-        <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-3">Log Today's Measurements</p>
+        <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-3">{t('bodyMeasurements.logToday')}</p>
         <div className="grid grid-cols-2 gap-2">
           {MEASUREMENTS.map(m => (
             <div key={m.key} className="relative">
-              <label className="text-[11px] text-ct-2 block mb-0.5">{m.label} ({m.unit})</label>
+              <label className="text-[11px] text-ct-2 block mb-0.5">{t(m.i18nKey)} ({m.unit})</label>
               <input
                 type="text"
                 inputMode="decimal"
@@ -181,26 +183,26 @@ export function BodyMeasurementsPage() {
         </div>
         <button onClick={handleSave}
           className="mt-3 w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 active:scale-[0.97] transition-transform">
-          <Save size={16} /> Save Measurements
+          <Save size={16} /> {t('bodyMeasurements.saveMeasurements')}
         </button>
       </div>
 
       {/* History table */}
       {allDailyLogs.filter(l => l.weightKg || l.chestCm || l.waistCm).length > 0 && (
         <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
-          <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-2">Recent Entries</p>
+          <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-2">{t('bodyMeasurements.recentEntries')}</p>
           <div className="overflow-x-auto">
             <table className="w-full text-[11px]">
               <thead>
                 <tr className="text-ct-2 border-b border-ct-border">
-                  <th className="text-left py-1.5 pr-2">Date</th>
-                  <th className="text-right px-1">Wt</th>
-                  <th className="text-right px-1">BF%</th>
-                  <th className="text-right px-1">Chest</th>
-                  <th className="text-right px-1">Waist</th>
-                  <th className="text-right px-1">Hips</th>
-                  <th className="text-right px-1">Arm</th>
-                  <th className="text-right pl-1">Thigh</th>
+                  <th className="text-left py-1.5 pr-2">{t('bodyMeasurements.date')}</th>
+                  <th className="text-right px-1">{t('bodyMeasurements.wt')}</th>
+                  <th className="text-right px-1">{t('bodyMeasurements.bf')}</th>
+                  <th className="text-right px-1">{t('bodyMeasurements.chest')}</th>
+                  <th className="text-right px-1">{t('bodyMeasurements.waist')}</th>
+                  <th className="text-right px-1">{t('bodyMeasurements.hips')}</th>
+                  <th className="text-right px-1">{t('bodyMeasurements.arm')}</th>
+                  <th className="text-right pl-1">{t('bodyMeasurements.thigh')}</th>
                 </tr>
               </thead>
               <tbody>

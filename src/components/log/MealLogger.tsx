@@ -17,7 +17,7 @@ interface RecentFood {
 }
 
 interface MealLoggerProps {
-  t: (key: string) => string
+  t: (key: string, options?: Record<string, unknown>) => string
   mealType: MealType
   selectedFood: FoodItem | null
   grams: string
@@ -174,7 +174,7 @@ export function MealLogger({
         <div className="bg-ct-surface rounded-ct-lg border border-ct-border overflow-hidden">
           <div className="px-4 pt-3 pb-1.5">
             <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 font-semibold">
-              {t(`meals.${mealType}`)}  -  {mealsForType.length} item{mealsForType.length > 1 ? 's' : ''}
+              {t(`meals.${mealType}`)}  -  {t('log.mealItems', { count: mealsForType.length })}
             </p>
           </div>
           {mealsForType.map(m => (
@@ -245,7 +245,7 @@ export function MealLogger({
         <button onClick={() => onCloneYesterday(mealType)}
           className="w-full bg-ct-surface border border-ct-border rounded-xl py-2.5 px-3 flex items-center justify-center gap-2 active:bg-ct-elevated min-h-[44px]">
           <Copy size={18} className="text-cyan-400" />
-          <span className="text-sm font-semibold text-ct-2">Repeat Yesterday's {t(`meals.${mealType}`)}</span>
+          <span className="text-sm font-semibold text-ct-2">{t('log.repeatYesterdayMeal', { mealType: t(`meals.${mealType}`) })}</span>
         </button>
       )}
 
@@ -264,7 +264,7 @@ export function MealLogger({
           {searchFiltered.length > 0 && (
             <div className="bg-ct-surface rounded-xl border border-ct-border max-h-48 overflow-y-auto">
               <div className="px-3 pt-2.5 pb-1">
-                <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 font-semibold">Your Library</p>
+                <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 font-semibold">{t('log.yourLibrary')}</p>
               </div>
               {searchFiltered.slice(0, 8).map(food => (
                 <button key={food.id} onClick={() => onSelectFood(food)}
@@ -283,7 +283,7 @@ export function MealLogger({
             <div className="bg-ct-surface rounded-xl border border-cyan-500/20 max-h-56 overflow-y-auto">
               <div className="px-3 pt-2.5 pb-1 flex items-center gap-1.5">
                 <Globe size={10} className="text-cyan-400" />
-                <p className="text-[11px] uppercase tracking-[0.1em] text-cyan-400 font-semibold">USDA Database</p>
+                <p className="text-[11px] uppercase tracking-[0.1em] text-cyan-400 font-semibold">{t('log.usdaDatabase')}</p>
                 {apiSearching && <Loader2 size={10} className="text-cyan-400 animate-spin ml-auto" />}
               </div>
               {apiResults.map((r, i) => (
@@ -305,7 +305,7 @@ export function MealLogger({
               {apiSearching && apiResults.length === 0 && (
                 <div className="flex items-center justify-center gap-2 py-4">
                   <Loader2 size={14} className="text-cyan-400 animate-spin" />
-                  <p className="text-xs text-ct-2">Searching USDA...</p>
+                  <p className="text-xs text-ct-2">{t('log.searchingUsda')}</p>
                 </div>
               )}
             </div>
@@ -317,7 +317,7 @@ export function MealLogger({
               <div className="bg-ct-surface rounded-xl border border-ct-border py-4">
                 <p className="text-sm text-ct-2 text-center">{t('log.noFoodsFound')}</p>
                 {foodSearch.trim().length < 3 && (
-                  <p className="text-xs text-ct-2 text-center mt-1">Type 3+ letters to search USDA</p>
+                  <p className="text-xs text-ct-2 text-center mt-1">{t('log.typeToSearchUsda')}</p>
                 )}
               </div>
               {/* Quick Add Macros section */}
@@ -340,19 +340,19 @@ export function MealLogger({
                       </div>
                       <div className="grid grid-cols-3 gap-2">
                         <div>
-                          <label className="text-xs text-ct-2 uppercase tracking-wider font-semibold block mb-1">Protein</label>
+                          <label className="text-xs text-ct-2 uppercase tracking-wider font-semibold block mb-1">{t('log.protein')}</label>
                           <input type="text" inputMode="numeric" value={quickAddProt} onChange={e => setQuickAddProt(e.target.value.replace(/\D/g, ''))}
                             placeholder={t('log.enterProtein')}
                             className="w-full bg-ct-elevated rounded-lg py-2 px-3 text-ct-1 text-sm focus:outline-none focus:ring-1 focus:ring-green-400/40 min-h-[44px]" />
                         </div>
                         <div>
-                          <label className="text-xs text-ct-2 uppercase tracking-wider font-semibold block mb-1">Carbs</label>
+                          <label className="text-xs text-ct-2 uppercase tracking-wider font-semibold block mb-1">{t('log.carbs')}</label>
                           <input type="text" inputMode="numeric" value={quickAddCarbs} onChange={e => setQuickAddCarbs(e.target.value.replace(/\D/g, ''))}
                             placeholder={t('log.enterCarbs')}
                             className="w-full bg-ct-elevated rounded-lg py-2 px-3 text-ct-1 text-sm focus:outline-none focus:ring-1 focus:ring-orange-400/40 min-h-[44px]" />
                         </div>
                         <div>
-                          <label className="text-xs text-ct-2 uppercase tracking-wider font-semibold block mb-1">Fat</label>
+                          <label className="text-xs text-ct-2 uppercase tracking-wider font-semibold block mb-1">{t('log.fat')}</label>
                           <input type="text" inputMode="numeric" value={quickAddFat} onChange={e => setQuickAddFat(e.target.value.replace(/\D/g, ''))}
                             placeholder={t('log.enterFat')}
                             className="w-full bg-ct-elevated rounded-lg py-2 px-3 text-ct-1 text-sm focus:outline-none focus:ring-1 focus:ring-pink-400/40 min-h-[44px]" />
@@ -364,12 +364,12 @@ export function MealLogger({
                         const carbs = parseInt(quickAddCarbs) || 0
                         const fat = parseInt(quickAddFat) || 0
                         if (cals <= 0 || (prot === 0 && carbs === 0 && fat === 0)) {
-                          alert('Please enter valid macros')
+                          alert(t('log.enterValidMacros'))
                           return
                         }
                         // Create and save custom food
                         const customFood: FoodItem = {
-                          name: `Quick Add ${new Date().toLocaleTimeString()}`,
+                          name: `${t('log.quickAddName')} ${new Date().toLocaleTimeString()}`,
                           category: 'custom',
                           caloriesPer100g: cals,
                           proteinPer100g: prot,
@@ -387,7 +387,7 @@ export function MealLogger({
                         onFoodSearchChange('')
                       }}
                         className="w-full bg-cyan-500 text-slate-900 font-bold py-2.5 rounded-lg text-sm transition-transform active:scale-[0.98] min-h-[44px]">
-                        Add to {t(`meals.${mealType}`)}
+                        {t('log.addToMeal', { meal: t(`meals.${mealType}`) })}
                       </button>
                     </div>
                   )}
@@ -437,7 +437,7 @@ export function MealLogger({
             className={`w-full font-bold py-3 rounded-xl transition-transform text-sm min-h-[48px] flex items-center justify-center gap-2 ${
               savingMeal ? 'bg-green-500/60 text-slate-900/60 cursor-not-allowed' : 'bg-green-500 text-slate-900 active:scale-[0.98]'
             }`}>
-            {savingMeal ? <><Loader2 size={16} className="animate-spin" /> Saving...</> : <>Add to {t(`meals.${mealType}`)}</>}
+            {savingMeal ? <><Loader2 size={16} className="animate-spin" /> {t('log.saving')}</> : <>{t('log.addToMeal', { meal: t(`meals.${mealType}`) })}</>}
           </button>
         </div>
       )}
@@ -475,14 +475,14 @@ export function MealLogger({
                 className="flex-1 text-left px-4 py-3 active:bg-ct-elevated/50 flex items-center justify-between min-h-[44px]">
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-ct-1 truncate">{food.name}</p>
-                  <p className="text-[11px] text-ct-2">{lastGrams}g last time{count > 1 ? ` (${count}x)` : ''}</p>
+                  <p className="text-[11px] text-ct-2">{t('log.lastTimeGrams', { grams: lastGrams })}{count > 1 ? ` ${t('log.lastTimeCount', { count })}` : ''}</p>
                 </div>
                 <span className="text-xs text-cyan-400 font-semibold shrink-0 ml-2">{t('log.add')}</span>
               </button>
               {onToggleFavorite && (
                 <button onClick={() => onToggleFavorite(food.id!)}
                   className="p-3 flex items-center justify-center text-ct-2 active:text-amber-400 min-h-[44px] min-w-[44px]"
-                  aria-label={food.isFavorite ? 'Remove from favorites' : 'Add to favorites'}>
+                  aria-label={food.isFavorite ? t('log.removeFromFavorites') : t('log.addToFavorites')}>
                   {food.isFavorite ? (
                     <Star size={18} className="fill-amber-400 text-amber-400" />
                   ) : (
@@ -515,7 +515,7 @@ export function MealLogger({
                   {onToggleFavorite && (
                     <button onClick={() => onToggleFavorite(food.id!)}
                       className="p-3 flex items-center justify-center text-ct-2 active:text-amber-400 min-h-[44px] min-w-[44px]"
-                      aria-label={food.isFavorite ? 'Remove from favorites' : 'Add to favorites'}>
+                      aria-label={food.isFavorite ? t('log.removeFromFavorites') : t('log.addToFavorites')}>
                       {food.isFavorite ? (
                         <Star size={16} className="fill-amber-400 text-amber-400" />
                       ) : (

@@ -224,7 +224,7 @@ export function ProgressPage() {
               {/* Strength chart */}
               <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
                 <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold mb-3">
-                  {selectedLift}  -  Weight Over Time
+                  {selectedLift}  -  {t('progress.weightOverTime')}
                 </p>
                 {strengthChartData.length > 1 ? (
                   <ResponsiveContainer width="100%" height={180}>
@@ -238,9 +238,9 @@ export function ProgressPage() {
                 ) : (
                   <div className="text-center py-6">
                     <p className="text-sm text-ct-2">
-                      {strengthChartData.length === 1 ? 'Log one more session to see the trend' : `No ${selectedLift} data in this period`}
+                      {strengthChartData.length === 1 ? t('progress.logOneMore') : t('progress.noDataInPeriod', { lift: selectedLift })}
                     </p>
-                    <p className="text-xs text-ct-2 mt-1">Switch to a longer time range or log more sessions</p>
+                    <p className="text-xs text-ct-2 mt-1">{t('progress.switchTimeRange')}</p>
                   </div>
                 )}
               </div>
@@ -248,7 +248,7 @@ export function ProgressPage() {
               {/* Movement PR history */}
               {liftPRs.length > 0 && (
                 <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
-                  <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold mb-2">{selectedLift}  -  PR History</p>
+                  <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold mb-2">{selectedLift}  -  {t('progress.prHistory')}</p>
                   {liftPRs.map(pr => (
                     <div key={pr.id} className="flex items-center py-2.5 border-b border-ct-border/30 last:border-0">
                       <Trophy size={14} className="text-yellow-400 mr-2 shrink-0" />
@@ -335,10 +335,10 @@ export function ProgressPage() {
           {filteredLogs.length > 0 && (() => {
             const latest = filteredLogs[filteredLogs.length - 1]
             const metrics = [
-              latest.weightKg ? { value: `${latest.weightKg} kg`, label: 'Weight' } : null,
-              latest.sleepHours ? { value: `${latest.sleepHours} hrs`, label: 'Sleep' } : null,
-              latest.waterMl ? { value: `${(latest.waterMl / 1000).toFixed(1)} L`, label: 'Water' } : null,
-              latest.restingHR ? { value: `${latest.restingHR} bpm`, label: 'Resting HR' } : null,
+              latest.weightKg ? { value: `${latest.weightKg} kg`, label: t('today.weight') } : null,
+              latest.sleepHours ? { value: `${latest.sleepHours} hrs`, label: t('today.sleep') } : null,
+              latest.waterMl ? { value: `${(latest.waterMl / 1000).toFixed(1)} L`, label: t('today.water') } : null,
+              latest.restingHR ? { value: `${latest.restingHR} bpm`, label: t('progress.restingHR') } : null,
             ].filter(Boolean)
             if (metrics.length === 0) return null
             return (

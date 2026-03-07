@@ -1,4 +1,5 @@
 import { X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface MetricConfig {
   label: string
@@ -22,6 +23,7 @@ export function MetricLogger({
   onSave,
   onClose,
 }: MetricLoggerProps) {
+  const { t } = useTranslation()
   return (
     <div className="space-y-4 w-full overflow-hidden">
       <div className="flex justify-between items-center">
@@ -49,7 +51,7 @@ export function MetricLogger({
       </div>
       {/* Save  -  sticky at bottom */}
       <div className="sticky-save">
-        <button onClick={onSave} className="w-full bg-cyan-500 text-slate-900 font-bold py-4 rounded-xl btn-press text-base shadow-lg shadow-cyan-500/30">Save</button>
+        <button onClick={onSave} className="w-full bg-cyan-500 text-slate-900 font-bold py-4 rounded-xl btn-press text-base shadow-lg shadow-cyan-500/30">{t('common.save')}</button>
       </div>
     </div>
   )
