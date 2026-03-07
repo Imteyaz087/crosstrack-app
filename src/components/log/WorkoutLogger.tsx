@@ -322,6 +322,14 @@ export function WorkoutLogger({
   const movementPreview = getMovementPreview(movements)
   const saveSummary = getSaveSummary(classFormat, wodType, wodName, strengthMovement, timeCap, movements)
   const scoreHelper = getScoreHelper(wodType)
+  const strengthQuickWeightTarget =
+    strengthSchemeType === 'build'
+      ? 'top'
+      : !strengthStartWeight
+        ? 'start'
+        : !strengthEndWeight
+          ? 'end'
+          : 'end'
 
   const handleMovementHeaderAction = () => {
     if (showMovementPicker) {
@@ -668,7 +676,11 @@ export function WorkoutLogger({
                 <div className="flex-1">
                   <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">{t('workout.start')} ({weightUnit})</label>
                   <input type="text" inputMode="numeric" pattern="[0-9]*" value={strengthStartWeight} onChange={e => onStrengthStartWeightChange(e.target.value.replace(/\D/g, ''))}
-                    placeholder="0" className="w-full bg-ct-elevated/80 rounded-xl py-3 text-ct-1 text-xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-purple-400/30 tabular-nums border border-ct-border/30" />
+                    placeholder="0" className={`w-full rounded-xl py-3 text-ct-1 text-xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-purple-400/30 tabular-nums border transition-all ${
+                      strengthQuickWeightTarget === 'start'
+                        ? 'bg-purple-500/10 border-purple-400/35 shadow-[0_0_0_1px_rgba(196,181,253,0.18)]'
+                        : 'bg-ct-elevated/80 border-ct-border/30'
+                    }`} />
                 </div>
                 <div className="pb-3">
                   <span className="text-ct-2 text-lg font-bold">{'->'}</span>
@@ -676,13 +688,24 @@ export function WorkoutLogger({
                 <div className="flex-1">
                   <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">{t('workout.end')} ({weightUnit})</label>
                   <input type="text" inputMode="numeric" pattern="[0-9]*" value={strengthEndWeight} onChange={e => onStrengthEndWeightChange(e.target.value.replace(/\D/g, ''))}
-                    placeholder="0" className="w-full bg-ct-elevated/80 rounded-xl py-3 text-ct-1 text-xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-purple-400/30 tabular-nums border border-ct-border/30" />
+                    placeholder="0" className={`w-full rounded-xl py-3 text-ct-1 text-xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-purple-400/30 tabular-nums border transition-all ${
+                      strengthQuickWeightTarget === 'end'
+                        ? 'bg-purple-500/10 border-purple-400/35 shadow-[0_0_0_1px_rgba(196,181,253,0.18)]'
+                        : 'bg-ct-elevated/80 border-ct-border/30'
+                    }`} />
                 </div>
               </div>
             )}
 
             {/* Quick weight buttons */}
-            <div className="flex gap-1 overflow-x-auto pb-0.5">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-ct-2 font-semibold">Quick weights</p>
+                <p className="text-[11px] text-purple-300 font-medium">
+                  Filling: {strengthQuickWeightTarget === 'start' ? t('workout.start') : strengthQuickWeightTarget === 'end' ? t('workout.end') : 'Top Weight'}
+                </p>
+              </div>
+              <div className="flex gap-1 overflow-x-auto pb-0.5">
               {(weightUnit === 'kg' ? [40, 50, 60, 70, 80, 90, 100, 110, 120] : [45, 65, 95, 115, 135, 155, 185, 205, 225, 275, 315]).map(w => (
                 <button key={w} onClick={() => handleStrengthQuickWeight(w)}
                   className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold shrink-0 transition-all ${
@@ -691,6 +714,7 @@ export function WorkoutLogger({
                       : 'bg-ct-elevated/50 text-ct-2 border border-transparent'
                   }`}>{w}</button>
               ))}
+            </div>
             </div>
           </div>
 
