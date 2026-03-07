@@ -234,20 +234,9 @@ export function WorkoutLogger({
   onClose,
   onSwitchToEvents,
   onScanWod,
-  // onShareWod  -  handled by LogPage via pendingShareData
 }: WorkoutLoggerProps) {
   const hasStrength = classFormat === 'full' || classFormat === 'strength_only'
   const hasWod = classFormat === 'full' || classFormat === 'wod_only'
-  const hasMovementEntries = movements.length > 0
-  const movementHeaderActionLabel = showMovementPicker ? 'Close' : 'Add'
-
-  const handleMovementHeaderAction = () => {
-    if (showMovementPicker) {
-      onShowMovementPickerChange(false)
-      return
-    }
-    onShowMovementPickerChange(true)
-  }
 
   // === STEP 1: Class Format Selection ===
   if (workoutStep === 1) {
@@ -290,7 +279,7 @@ export function WorkoutLogger({
               <Flame size={26} strokeWidth={1.8} className="text-green-400 drop-shadow-sm" />
             </div>
             <p className="text-sm font-bold text-ct-1 text-center">{t('workout.wodOnly')}</p>
-            <p className="text-[10px] text-ct-2 mt-0.5 text-center">{t('workout.wodOnlyDesc')}</p>
+            <p className="text-[11px] text-ct-2 mt-0.5 text-center">{t('workout.wodOnlyDesc')}</p>
           </button>
           <button onClick={() => { onClassFormatChange('strength_only'); onWorkoutStepChange(2) }}
             className="relative overflow-hidden bg-gradient-to-br from-purple-500/12 to-ct-surface border border-purple-400/25 rounded-2xl p-4 flex flex-col items-center justify-center aspect-[4/3] active:scale-[0.93] transition-all duration-200 shadow-lg shadow-purple-500/5 group">
@@ -298,7 +287,7 @@ export function WorkoutLogger({
               <Target size={26} strokeWidth={1.8} className="text-purple-400 drop-shadow-sm" />
             </div>
             <p className="text-sm font-bold text-ct-1 text-center">{t('workout.strengthOnly')}</p>
-            <p className="text-[10px] text-ct-2 mt-0.5 text-center">{t('workout.strengthOnlyDesc')}</p>
+            <p className="text-[11px] text-ct-2 mt-0.5 text-center">{t('workout.strengthOnlyDesc')}</p>
           </button>
         </div>
 
@@ -472,7 +461,7 @@ export function WorkoutLogger({
               <div className="flex-1">
                 <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">{t('workout.start')} ({weightUnit})</label>
                 <input type="text" inputMode="numeric" pattern="[0-9]*" value={strengthStartWeight} onChange={e => onStrengthStartWeightChange(e.target.value.replace(/\D/g, ''))}
-                  placeholder="0" className="w-full bg-ct-elevated/80 rounded-xl py-3 px-2 text-ct-1 text-xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-purple-400/30 tabular-nums border border-ct-border/30" />
+                  placeholder="0" className="w-full bg-ct-elevated/80 rounded-xl py-3 text-ct-1 text-xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-purple-400/30 tabular-nums border border-ct-border/30" />
               </div>
               <div className="pb-3">
                 <span className="text-ct-2 text-lg font-bold">{"->"}</span>
@@ -480,7 +469,7 @@ export function WorkoutLogger({
               <div className="flex-1">
                 <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">{t('workout.end')} ({weightUnit})</label>
                 <input type="text" inputMode="numeric" pattern="[0-9]*" value={strengthEndWeight} onChange={e => onStrengthEndWeightChange(e.target.value.replace(/\D/g, ''))}
-                  placeholder="0" className="w-full bg-ct-elevated/80 rounded-xl py-3 px-2 text-ct-1 text-xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-purple-400/30 tabular-nums border border-ct-border/30" />
+                  placeholder="0" className="w-full bg-ct-elevated/80 rounded-xl py-3 text-ct-1 text-xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-purple-400/30 tabular-nums border border-ct-border/30" />
               </div>
             </div>
 
@@ -700,15 +689,8 @@ export function WorkoutLogger({
           <div>
             <div className="flex justify-between items-center mb-2">
               <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">{t('workout.movements')}</p>
-              {(hasMovementEntries || showMovementPicker) && (
-                <button
-                  onClick={handleMovementHeaderAction}
-                  className="text-xs text-cyan-400 font-semibold flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-lg active:bg-cyan-500/10"
-                >
-                  {showMovementPicker ? <X size={14} /> : <Plus size={14} />}
-                  {movementHeaderActionLabel}
-                </button>
-              )}
+              <button onClick={() => onShowMovementPickerChange(!showMovementPicker)}
+                className="text-xs text-cyan-400 font-semibold flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-lg active:bg-cyan-500/10"><Plus size={14} /> {t('workout.add')}</button>
             </div>
 
             {movements.map((m, idx) => (
@@ -740,26 +722,8 @@ export function WorkoutLogger({
               />
             )}
 
-            {!hasMovementEntries && !showMovementPicker && (
-              <button
-                type="button"
-                onClick={() => onShowMovementPickerChange(true)}
-                className="w-full rounded-2xl border border-cyan-500/20 bg-cyan-500/5 px-4 py-4 text-left active:bg-cyan-500/10"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-ct-1">
-                      No <span className="text-cyan-400">WOD</span> movements added yet
-                    </p>
-                    <p className="text-xs text-ct-2 mt-1 leading-relaxed">
-                      Tap here to track weights, rep details, or skill work inside the WOD.
-                    </p>
-                  </div>
-                  <div className="shrink-0 w-10 h-10 rounded-xl border border-cyan-400/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400">
-                    <Plus size={18} />
-                  </div>
-                </div>
-              </button>
+            {movements.length === 0 && !showMovementPicker && (
+              <p className="text-xs text-ct-2 text-center py-2">{t('workout.tapAddMovements')}</p>
             )}
           </div>
         </div>

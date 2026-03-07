@@ -17,17 +17,17 @@ interface WodScanReviewProps {
 
 function ConfidenceBadge({ score }: { score: number }) {
   if (score >= 0.9) return (
-    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-bold">
+    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-[11px] font-bold">
       <CheckCircle size={10} /> {Math.round(score * 100)}%
     </span>
   )
   if (score >= 0.7) return (
-    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400 text-[10px] font-bold">
+    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400 text-[11px] font-bold">
       <AlertTriangle size={10} /> {Math.round(score * 100)}%
     </span>
   )
   return (
-    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-500/15 text-red-400 text-[10px] font-bold">
+    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-red-500/15 text-red-400 text-[11px] font-bold">
       <AlertCircle size={10} /> {Math.round(score * 100)}%
     </span>
   )
@@ -56,10 +56,10 @@ export function WodScanReview({ result, onConfirm, onRetry, onCancel }: WodScanR
             <div>
               <p className="text-[11px] font-bold text-amber-300">Review needed</p>
               {edited.warnings?.map((w, i) => (
-                <p key={i} className="text-[10px] text-ct-2 mt-0.5">• {w}</p>
+                <p key={i} className="text-[11px] text-ct-2 mt-0.5">• {w}</p>
               ))}
               {hasLowConfidence && (
-                <p className="text-[10px] text-ct-2 mt-0.5">• Some fields have low confidence</p>
+                <p className="text-[11px] text-ct-2 mt-0.5">• Some fields have low confidence</p>
               )}
             </div>
           </div>
@@ -187,7 +187,7 @@ function ReviewField({ label, confidence, editing, onEdit, compact, children }: 
     }`}>
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] uppercase tracking-wider text-ct-2 font-semibold">{label}</span>
+          <span className="text-[11px] uppercase tracking-wider text-ct-2 font-semibold">{label}</span>
           {confidence !== undefined && <ConfidenceBadge score={confidence} />}
         </div>
         <button onClick={onEdit} className="p-1 min-w-[24px] min-h-[24px] flex items-center justify-center">

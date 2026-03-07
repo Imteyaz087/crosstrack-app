@@ -141,7 +141,7 @@ export function EventScoreEntry({ template, customTitle, customWodType, customLi
     <div className="space-y-4 animate-fade-in">
       {/* Event header */}
       <div className="bg-ct-surface border border-ct-border rounded-ct-lg p-4">
-        <p className="text-[10px] uppercase font-bold text-ct-3 tracking-wider mb-1">{category}</p>
+        <p className="text-[11px] uppercase font-bold text-ct-3 tracking-wider mb-1">{category}</p>
         <h2 className="text-lg font-bold text-ct-1">{title}</h2>
         <p className="text-xs text-cyan-400 font-semibold mt-0.5">
           {wodType === 'ForTime' ? 'For Time' : wodType}
@@ -156,7 +156,7 @@ export function EventScoreEntry({ template, customTitle, customWodType, customLi
         </div>
 
         {rxStd && (
-          <p className="text-[10px] text-ct-3 mt-2 border-t border-ct-border pt-2">
+          <p className="text-[11px] text-ct-3 mt-2 border-t border-ct-border pt-2">
             RX: {rxStd}
           </p>
         )}

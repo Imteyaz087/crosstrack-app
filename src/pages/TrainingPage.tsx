@@ -162,7 +162,7 @@ export function TrainingPage() {
                 <p className="text-sm text-ct-1 truncate">{w.name}</p>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <p className="text-[11px] text-ct-2">{w.date}</p>
-                  <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold ${
+                  <span className={`px-1.5 py-0.5 rounded-md text-[11px] font-bold ${
                     w.workoutType === 'HYROX' ? 'bg-orange-500/15 text-orange-400' :
                     w.workoutType === 'Running' || w.workoutType === 'Cardio' ? 'bg-emerald-500/15 text-emerald-400' :
                     'bg-ct-elevated/60 text-ct-2'
@@ -175,7 +175,7 @@ export function TrainingPage() {
                 w.rxOrScaled === 'Elite' ? 'bg-purple-500/20 text-purple-400' :
                 'bg-orange-500/20 text-orange-400'
               }`}>{w.rxOrScaled}</span>
-              {w.prFlag && <span className="ml-1 px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded-md text-[10px] font-bold shrink-0 flex items-center gap-0.5"><Trophy size={8} />PR</span>}
+              {w.prFlag && <span className="ml-1 px-1 py-0.5 bg-yellow-500/20 text-yellow-400 rounded-md text-[11px] font-bold shrink-0 flex items-center gap-0.5"><Trophy size={8} />PR</span>}
             </div>
           ))
         )}

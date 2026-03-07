@@ -469,7 +469,7 @@ export function TodayPage() {
             ) : (
               <>
                 <Plus size={12} className="mx-auto text-ct-2/40 mb-0.5" />
-                <p className="text-[10px] text-ct-2/50">{t('today.add', 'Add')}</p>
+                <p className="text-[11px] text-ct-2/50">{t('today.add', 'Add')}</p>
               </>
             )}
           </button>

@@ -107,10 +107,10 @@ export function EventBrowser({ onSelectEvent, onCreateCustom }: EventBrowserProp
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${CATEGORY_COLORS[event.category]}`}>
+                  <span className={`text-[11px] uppercase font-bold px-2 py-0.5 rounded-full border ${CATEGORY_COLORS[event.category]}`}>
                     {event.category}
                   </span>
-                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${WOD_TYPE_BADGE[event.wodType] || WOD_TYPE_BADGE.Other}`}>
+                  <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${WOD_TYPE_BADGE[event.wodType] || WOD_TYPE_BADGE.Other}`}>
                     {event.wodType === 'ForTime' ? 'For Time' : event.wodType}
                   </span>
                 </div>

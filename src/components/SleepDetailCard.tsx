@@ -62,13 +62,13 @@ export function SleepDetailCard({ log }: SleepDetailCardProps) {
         {log.sleepSource === 'autosleep' && (
           <div className="flex items-center gap-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full px-2.5 py-0.5">
             <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0" />
-            <span className="text-[10px] font-bold text-indigo-400">AutoSleep</span>
+            <span className="text-[11px] font-bold text-indigo-400">AutoSleep</span>
           </div>
         )}
         {log.sleepSource === 'health' && (
           <div className="flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 rounded-full px-2.5 py-0.5">
             <div className="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0" />
-            <span className="text-[10px] font-bold text-green-400">Apple Health</span>
+            <span className="text-[11px] font-bold text-green-400">Apple Health</span>
           </div>
         )}
       </div>
@@ -134,19 +134,19 @@ export function SleepDetailCard({ log }: SleepDetailCardProps) {
             {log.sleepHRV !== undefined && (
               <div>
                 <p className="text-sm font-bold text-cyan-400">{log.sleepHRV}</p>
-                <p className="text-[10px] text-ct-2">HRV ms</p>
+                <p className="text-[11px] text-ct-2">HRV ms</p>
               </div>
             )}
             {log.sleepAvgHR !== undefined && (
               <div>
                 <p className="text-sm font-bold text-pink-400">{log.sleepAvgHR}</p>
-                <p className="text-[10px] text-ct-2">{t('sleep.avgHR')} bpm</p>
+                <p className="text-[11px] text-ct-2">{t('sleep.avgHR')} bpm</p>
               </div>
             )}
             {log.sleepEfficiency !== undefined && (
               <div>
                 <p className="text-sm font-bold text-green-400">{log.sleepEfficiency}%</p>
-                <p className="text-[10px] text-ct-2">{t('sleep.efficiency')}</p>
+                <p className="text-[11px] text-ct-2">{t('sleep.efficiency')}</p>
               </div>
             )}
           </div>
@@ -180,25 +180,25 @@ export function SleepDetailCard({ log }: SleepDetailCardProps) {
           {/* Stage labels */}
           <div className="flex flex-wrap gap-x-3 gap-y-1">
             {deep > 0 && (
-              <span className="text-[10px] text-ct-2">
+              <span className="text-[11px] text-ct-2">
                 <span style={{ color: '#a78bfa' }}>● </span>
                 {t('sleep.deep')} {fmtHours(deep)}
               </span>
             )}
             {rem > 0 && (
-              <span className="text-[10px] text-ct-2">
+              <span className="text-[11px] text-ct-2">
                 <span style={{ color: '#818cf8' }}>● </span>
                 REM {fmtHours(rem)}
               </span>
             )}
             {light > 0 && (
-              <span className="text-[10px] text-ct-2">
+              <span className="text-[11px] text-ct-2">
                 <span style={{ color: '#22d3ee' }}>● </span>
                 {t('sleep.light')} {fmtHours(light)}
               </span>
             )}
             {awake > 0 && (
-              <span className="text-[10px] text-ct-2">
+              <span className="text-[11px] text-ct-2">
                 <span style={{ color: '#64748b' }}>● </span>
                 {t('sleep.awake')} {fmtHours(awake)}
               </span>

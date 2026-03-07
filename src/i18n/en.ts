@@ -47,6 +47,11 @@ export default {
     itemsOnGrocery: '{{count}} item on grocery list',
     itemsOnGrocery_plural: '{{count}} items on grocery list',
     more: '+{{count}} more',
+    welcomeTitle: 'Ready to start?',
+    welcomeDesc: 'Log your first workout, meal, or body check-in to unlock your dashboard.',
+    welcomeCta: 'Log your first entry',
+    add: 'Add',
+    tapToAdd: 'Tap to add',
   },
   log: {
     title: 'Quick Log',
@@ -120,6 +125,7 @@ export default {
     logFirstWorkout: 'Log First Workout',
     previousMonth: 'Previous month',
     nextMonth: 'Next month',
+    total: 'total',
   },
   nutrition: {
     title: 'Nutrition',
@@ -556,7 +562,6 @@ export default {
     notesPlaceholder: 'Notes (optional)',
     save: 'Save HYROX Result',
   },
-  // scanner keys consolidated into the main scanner section below
   photo: {
     cameraAccessDenied: 'Camera access denied',
     parseFailed: 'Could not parse AI response — enter manually',
@@ -767,7 +772,6 @@ export default {
     notFound: 'Product Not Found',
     notFoundDesc: 'This barcode is not in the OpenFoodFacts database. Try creating a custom food instead.',
     tryAgain: 'Try Again',
-    // Quality badges & labels
     complete: 'Complete',
     partial: 'Partial',
     limited: 'Limited',
@@ -777,7 +781,6 @@ export default {
     prot: 'prot',
     carb: 'carb',
     fat: 'fat',
-    // Review & edit
     reviewEdit: 'Review & Edit Before Saving',
     reviewNutrition: 'Review Nutrition (per 100g)',
     name: 'Name',

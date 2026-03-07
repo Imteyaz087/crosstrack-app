@@ -264,7 +264,7 @@ export function MealLogger({
           {searchFiltered.length > 0 && (
             <div className="bg-ct-surface rounded-xl border border-ct-border max-h-48 overflow-y-auto">
               <div className="px-3 pt-2.5 pb-1">
-                <p className="text-[10px] uppercase tracking-[0.1em] text-ct-2 font-semibold">Your Library</p>
+                <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 font-semibold">Your Library</p>
               </div>
               {searchFiltered.slice(0, 8).map(food => (
                 <button key={food.id} onClick={() => onSelectFood(food)}
@@ -283,7 +283,7 @@ export function MealLogger({
             <div className="bg-ct-surface rounded-xl border border-cyan-500/20 max-h-56 overflow-y-auto">
               <div className="px-3 pt-2.5 pb-1 flex items-center gap-1.5">
                 <Globe size={10} className="text-cyan-400" />
-                <p className="text-[10px] uppercase tracking-[0.1em] text-cyan-400 font-semibold">USDA Database</p>
+                <p className="text-[11px] uppercase tracking-[0.1em] text-cyan-400 font-semibold">USDA Database</p>
                 {apiSearching && <Loader2 size={10} className="text-cyan-400 animate-spin ml-auto" />}
               </div>
               {apiResults.map((r, i) => (
@@ -292,7 +292,7 @@ export function MealLogger({
                   <div className="flex items-start gap-2">
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-ct-1 leading-tight">{r.name}</p>
-                      {r.brand && <p className="text-[10px] text-ct-2 mt-0.5">{r.brand}</p>}
+                      {r.brand && <p className="text-[11px] text-ct-2 mt-0.5">{r.brand}</p>}
                       <p className="text-[11px] text-ct-2 mt-0.5 tabular-nums">
                         {r.caloriesPer100g} cal · P:{r.proteinPer100g}g · C:{r.carbsPer100g}g · F:{r.fatPer100g}g /100g
                       </p>

@@ -66,7 +66,7 @@ export function StreakRing({
         className="text-[11px] text-ct-2 bg-ct-elevated/40 px-3 py-1.5 rounded-full min-h-[44px] flex items-center card-press"
         aria-label={t('streak.startStreak')}
       >
-        <Flame size={12} className="text-slate-500 mr-1" />
+        <Flame size={12} className="text-slate-400 mr-1" />
         {t('streak.startStreak')}
       </button>
     )
@@ -146,7 +146,7 @@ export function StreakRing({
             ? 'bg-slate-700 border border-slate-600'
             : 'bg-blue-500/20 border border-blue-400/30'
         }`}>
-          <Snowflake size={8} className={freezeUsedThisWeek ? 'text-slate-500' : 'text-blue-400'} />
+          <Snowflake size={8} className={freezeUsedThisWeek ? 'text-slate-400' : 'text-blue-400'} />
         </div>
       )}
     </button>

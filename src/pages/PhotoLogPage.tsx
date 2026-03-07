@@ -200,11 +200,11 @@ export function PhotoLogPage() {
           className="w-full bg-ct-surface border border-ct-border text-ct-1 rounded-xl py-2.5 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400" />
 
         <div className="flex gap-1.5 flex-wrap">
-          {(['ForTime', 'AMRAP', 'EMOM', 'Tabata', 'Strength', 'Other'] as WodType[]).map(t => (
-            <button key={t} onClick={() => setWodType(t)}
+          {(['ForTime', 'AMRAP', 'EMOM', 'Tabata', 'Strength', 'Other'] as WodType[]).map(wt => (
+            <button key={wt} onClick={() => setWodType(wt)}
               className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold ${
-                wodType === t ? 'bg-cyan-500/20 text-cyan-400' : 'bg-ct-elevated/50 text-ct-2'
-              }`}>{t}</button>
+                wodType === wt ? 'bg-cyan-500/20 text-cyan-400' : 'bg-ct-elevated/50 text-ct-2'
+              }`}>{wt}</button>
           ))}
         </div>
 
