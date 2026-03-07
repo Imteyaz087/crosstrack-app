@@ -283,7 +283,7 @@ export function CloudSyncPage() {
         </div>
         <p className="text-[11px] text-ct-2">{t('cloudSyncPage.importDesc')}</p>
         <div className="grid grid-cols-2 gap-2">
-          <button onClick={handleFileImport} className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2"><FileText size={14} /> {t('cloudSyncPage.fromFile')}button>
+          <button onClick={handleFileImport} className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2"><FileText size={14} /> {t('cloudSyncPage.fromFile')}</button>
           <button onClick={() => setShowImport(!showImport)} className="bg-ct-elevated/50 text-ct-2 font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2"><Copy size={14} /> {t('cloudSyncPage.pasteJSON')}</button>
         </div>
         {showImport && (

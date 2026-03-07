@@ -168,7 +168,7 @@ export async function downloadAllData(uid: string): Promise<Record<string, any[]
     const snap = await getDoc(ref)
     if (snap.exists()) {
       const d = snap.data()
-      result[tableName] = d.items || []
+      result[tableName] = Array.isArray(d.items) ? d.items : []
       hasData = true
     }
   }
@@ -181,7 +181,10 @@ export async function getLastSyncTime(uid: string): Promise<string | null> {
   const { doc, getDoc } = await import('firebase/firestore')
   const ref = doc(db, 'users', uid, 'meta', 'sync')
   const snap = await getDoc(ref)
-  if (snap.exists()) return snap.data().lastSync || null
+  if (snap.exists()) {
+    const lastSync = snap.data().lastSync
+    return typeof lastSync === 'string' ? lastSync : null
+  }
   return null
 }
 
