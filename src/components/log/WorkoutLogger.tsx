@@ -730,7 +730,17 @@ export function WorkoutLogger({
 
       {/* ====== WOD SECTION ====== */}
       {hasWod && (
-        <div className={`bg-gradient-to-b from-cyan-500/5 to-ct-surface/40 rounded-ct-lg p-4 border border-cyan-400/15 space-y-4 ${hasStrength ? 'mt-7' : ''}`}>
+        <>
+          {hasStrength && (
+            <div className="relative my-5 flex items-center justify-center px-2" aria-hidden="true">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-cyan-400/20 to-cyan-400/8" />
+              <div className="mx-3 flex items-center justify-center">
+                <div className="h-2.5 w-2.5 rounded-full border border-cyan-300/35 bg-cyan-400/30 shadow-[0_0_18px_rgba(34,211,238,0.22)]" />
+              </div>
+              <div className="h-px flex-1 bg-gradient-to-r from-cyan-400/8 via-cyan-400/20 to-transparent" />
+            </div>
+          )}
+          <div className="bg-gradient-to-b from-cyan-500/5 to-ct-surface/40 rounded-ct-lg p-4 border border-cyan-400/15 space-y-4">
           <div className="flex items-center justify-between">
             <SectionHeader icon={Flame} label="WOD" color="cyan" />
             <div className="flex items-center gap-2 rounded-xl border border-ct-border/20 bg-ct-elevated/25 px-1.5 py-1">
@@ -1026,6 +1036,7 @@ export function WorkoutLogger({
             )}
           </div>
         </div>
+        </>
       )}
 
       {/* Scaled / RX / Elite  -  pill toggle style */}
