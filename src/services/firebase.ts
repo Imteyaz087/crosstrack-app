@@ -1,12 +1,5 @@
-import { initializeApp, type FirebaseApp } from 'firebase/app'
-import {
-  getAuth, signInWithPopup, GoogleAuthProvider, signOut as fbSignOut,
-  onAuthStateChanged, type User
-} from 'firebase/auth'
-import {
-  getFirestore, doc, setDoc, getDoc, writeBatch,
-  type Firestore
-} from 'firebase/firestore'
+// Firebase SDK loaded dynamically — 333KB chunk only fetched when functions are called
+// (not when Settings/CloudSync pages load)
 
 // ---- Firebase Config ----
 // Priority: env vars (build-time) -> localStorage (user-configured at runtime)
@@ -23,7 +16,6 @@ export interface FirebaseConfig {
 
 /** Try env vars first, then fall back to localStorage */
 export function getFirebaseConfig(): FirebaseConfig | null {
-  // Check Vite env vars first (set in .env file, never exposed to client localStorage)
   const envApiKey = import.meta.env.VITE_FIREBASE_API_KEY
   if (envApiKey) {
     return {
@@ -35,7 +27,6 @@ export function getFirebaseConfig(): FirebaseConfig | null {
       appId: import.meta.env.VITE_FIREBASE_APP_ID || '',
     }
   }
-  // Fall back to localStorage for user-configured setups
   try {
     const raw = localStorage.getItem(CONFIG_KEY)
     if (!raw) return null
@@ -45,7 +36,6 @@ export function getFirebaseConfig(): FirebaseConfig | null {
 
 export function setFirebaseConfig(config: FirebaseConfig) {
   localStorage.setItem(CONFIG_KEY, JSON.stringify(config))
-  // Re-initialize on next call
   _app = null
   _auth = null
   _db = null
@@ -62,35 +52,43 @@ export function hasFirebaseConfig(): boolean {
   return getFirebaseConfig() !== null
 }
 
-// ---- Lazy initialization ----
-let _app: FirebaseApp | null = null
-let _auth: ReturnType<typeof getAuth> | null = null
-let _db: Firestore | null = null
+// ---- Lazy initialization (fully dynamic imports) ----
+let _app: any = null
+let _auth: any = null
+let _db: any = null
 
-function ensureApp(): FirebaseApp {
+async function ensureApp() {
   if (_app) return _app
   const config = getFirebaseConfig()
   if (!config) throw new Error('Firebase not configured. Add your Firebase config in Settings.')
+  const { initializeApp } = await import('firebase/app')
   _app = initializeApp(config)
   return _app
 }
 
-export function getAppAuth() {
+async function getAppAuth() {
   if (_auth) return _auth
-  _auth = getAuth(ensureApp())
+  const app = await ensureApp()
+  const { getAuth } = await import('firebase/auth')
+  _auth = getAuth(app)
   return _auth
 }
 
-export function getAppFirestore() {
+async function getAppFirestore() {
   if (_db) return _db
-  _db = getFirestore(ensureApp())
+  const app = await ensureApp()
+  const { getFirestore } = await import('firebase/firestore')
+  _db = getFirestore(app)
   return _db
 }
 
 // ---- Auth ----
-export async function signInWithGoogle(): Promise<User> {
+export type { User } from 'firebase/auth'
+
+export async function signInWithGoogle() {
   try {
-    const auth = getAppAuth()
+    const auth = await getAppAuth()
+    const { signInWithPopup, GoogleAuthProvider } = await import('firebase/auth')
     const provider = new GoogleAuthProvider()
     const result = await signInWithPopup(auth, provider)
     return result.user
@@ -102,30 +100,46 @@ export async function signInWithGoogle(): Promise<User> {
 
 export async function signOutUser(): Promise<void> {
   try {
-    const auth = getAppAuth()
-    await fbSignOut(auth)
+    const auth = await getAppAuth()
+    const { signOut } = await import('firebase/auth')
+    await signOut(auth)
   } catch (e: unknown) {
     throw new Error('Failed to sign out. Please try again.')
   }
 }
 
-export function onAuthChange(callback: (user: User | null) => void): () => void {
-  const auth = getAppAuth()
-  return onAuthStateChanged(auth, callback)
+export function onAuthChange(callback: (user: any) => void): () => void {
+  // Must start listening synchronously when called, but auth load is async
+  // Return an unsubscribe function that will be set once auth loads
+  let unsubscribe: (() => void) | null = null
+  let cancelled = false
+
+  getAppAuth().then(async (auth) => {
+    if (cancelled) return
+    const { onAuthStateChanged } = await import('firebase/auth')
+    if (cancelled) return
+    unsubscribe = onAuthStateChanged(auth, callback)
+  }).catch(() => {
+    callback(null)
+  })
+
+  return () => {
+    cancelled = true
+    unsubscribe?.()
+  }
 }
 
-export function getCurrentUser(): User | null {
+export async function getCurrentUser() {
   try {
-    const auth = getAppAuth()
+    const auth = await getAppAuth()
     return auth.currentUser
   } catch { return null }
 }
 
 // ---- Firestore Sync ----
-// Data structure: users/{uid}/data/{tableName} -> { items: [...], updatedAt: timestamp }
-
 export async function uploadAllData(uid: string, data: Record<string, any[]>): Promise<void> {
-  const db = getAppFirestore()
+  const db = await getAppFirestore()
+  const { doc, writeBatch } = await import('firebase/firestore')
   const batch = writeBatch(db)
   const now = new Date().toISOString()
 
@@ -138,7 +152,8 @@ export async function uploadAllData(uid: string, data: Record<string, any[]>): P
 }
 
 export async function downloadAllData(uid: string): Promise<Record<string, any[]> | null> {
-  const db = getAppFirestore()
+  const db = await getAppFirestore()
+  const { doc, getDoc } = await import('firebase/firestore')
   const tables = [
     'profile', 'dailyLogs', 'workouts', 'mealLogs', 'foods',
     'mealTemplates', 'weeklyPlans', 'bodyMeasurements',
@@ -153,7 +168,7 @@ export async function downloadAllData(uid: string): Promise<Record<string, any[]
     const snap = await getDoc(ref)
     if (snap.exists()) {
       const d = snap.data()
-      result[tableName] = Array.isArray(d.items) ? d.items : []
+      result[tableName] = d.items || []
       hasData = true
     }
   }
@@ -162,18 +177,17 @@ export async function downloadAllData(uid: string): Promise<Record<string, any[]
 }
 
 export async function getLastSyncTime(uid: string): Promise<string | null> {
-  const db = getAppFirestore()
+  const db = await getAppFirestore()
+  const { doc, getDoc } = await import('firebase/firestore')
   const ref = doc(db, 'users', uid, 'meta', 'sync')
   const snap = await getDoc(ref)
-  if (snap.exists()) {
-    const lastSync = snap.data().lastSync
-    return typeof lastSync === 'string' ? lastSync : null
-  }
+  if (snap.exists()) return snap.data().lastSync || null
   return null
 }
 
 export async function setLastSyncTime(uid: string): Promise<void> {
-  const db = getAppFirestore()
+  const db = await getAppFirestore()
+  const { doc, setDoc } = await import('firebase/firestore')
   const ref = doc(db, 'users', uid, 'meta', 'sync')
   await setDoc(ref, { lastSync: new Date().toISOString() })
 }

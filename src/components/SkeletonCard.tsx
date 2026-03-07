@@ -25,6 +25,50 @@ export function SkeletonRow() {
   )
 }
 
+/** Generic sub-page skeleton — mimics back-button + title + content cards */
+export function SubPageSkeleton() {
+  return (
+    <div className="space-y-4 stagger-children">
+      {/* Back button */}
+      <Bone className="h-4 w-16 rounded-lg" />
+
+      {/* Title + subtitle */}
+      <div>
+        <Bone className="h-6 w-48 mb-2" />
+        <Bone className="h-3 w-64" />
+      </div>
+
+      {/* Content cards */}
+      <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border space-y-3">
+        <Bone className="h-4 w-1/3" />
+        <Bone className="h-10 w-full rounded-xl" />
+        <div className="flex gap-2">
+          <Bone className="flex-1 h-8 rounded-xl" />
+          <Bone className="flex-1 h-8 rounded-xl" />
+        </div>
+      </div>
+
+      <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border space-y-3">
+        <Bone className="h-4 w-1/4" />
+        <Bone className="h-3 w-full" />
+        <Bone className="h-3 w-3/4" />
+        <Bone className="h-10 w-full rounded-xl" />
+      </div>
+
+      <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
+        <div className="flex gap-3">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="flex-1 text-center">
+              <Bone className="h-6 w-10 mx-auto mb-1" />
+              <Bone className="h-3 w-12 mx-auto" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function TodayPageSkeleton() {
   return (
     <div className="space-y-4 stagger-children">

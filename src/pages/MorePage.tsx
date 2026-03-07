@@ -1,6 +1,7 @@
 import React, { useState, lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ShoppingCart, BarChart3, Settings, ChevronRight, Timer, Calculator, BookOpen, Target, Trophy, ChefHat, Dumbbell, Brain, Cloud, Camera, Heart, History, Ruler, CalendarDays, Award, Loader2, Shield } from 'lucide-react'
+import { ShoppingCart, BarChart3, Settings, ChevronRight, Timer, Calculator, BookOpen, Target, Trophy, ChefHat, Dumbbell, Brain, Cloud, Camera, Heart, History, Ruler, CalendarDays, Award, Shield } from 'lucide-react'
+import { SubPageSkeleton } from '../components/SkeletonCard'
 
 // Lazy-load ALL sub-pages  -  cuts MorePage chunk from 800KB to ~5KB
 const GroceryPage = lazy(() => import('./GroceryPage').then(m => ({ default: m.GroceryPage })))
@@ -26,11 +27,7 @@ const PrivacyPolicyPage = lazy(() => import('./PrivacyPolicyPage').then(m => ({ 
 type SubPage = 'menu' | 'grocery' | 'progress' | 'settings' | 'timer' | 'calc' | 'benchmarks' | 'movementPRs' | 'achievements' | 'wodTemplates' | 'mealPrep' | 'aiCoach' | 'cloudSync' | 'photoLog' | 'heartRate' | 'workoutHistory' | 'bodyMeasurements' | 'weeklyPlanner' | 'prWall' | 'privacy'
 
 function LoadingFallback() {
-  return (
-    <div className="flex items-center justify-center py-12">
-      <Loader2 size={24} className="text-cyan-400 animate-spin" />
-    </div>
-  )
+  return <SubPageSkeleton />
 }
 
 export function MorePage() {
