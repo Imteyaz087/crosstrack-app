@@ -238,6 +238,16 @@ export function WorkoutLogger({
 }: WorkoutLoggerProps) {
   const hasStrength = classFormat === 'full' || classFormat === 'strength_only'
   const hasWod = classFormat === 'full' || classFormat === 'wod_only'
+  const hasMovementEntries = movements.length > 0
+  const movementHeaderActionLabel = showMovementPicker ? 'Close' : 'Add'
+
+  const handleMovementHeaderAction = () => {
+    if (showMovementPicker) {
+      onShowMovementPickerChange(false)
+      return
+    }
+    onShowMovementPickerChange(true)
+  }
 
   // === STEP 1: Class Format Selection ===
   if (workoutStep === 1) {
@@ -690,8 +700,15 @@ export function WorkoutLogger({
           <div>
             <div className="flex justify-between items-center mb-2">
               <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">{t('workout.movements')}</p>
-              <button onClick={() => onShowMovementPickerChange(!showMovementPicker)}
-                className="text-xs text-cyan-400 font-semibold flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-lg active:bg-cyan-500/10"><Plus size={14} /> {t('workout.add')}</button>
+              {(hasMovementEntries || showMovementPicker) && (
+                <button
+                  onClick={handleMovementHeaderAction}
+                  className="text-xs text-cyan-400 font-semibold flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-lg active:bg-cyan-500/10"
+                >
+                  {showMovementPicker ? <X size={14} /> : <Plus size={14} />}
+                  {movementHeaderActionLabel}
+                </button>
+              )}
             </div>
 
             {movements.map((m, idx) => (
@@ -723,8 +740,26 @@ export function WorkoutLogger({
               />
             )}
 
-            {movements.length === 0 && !showMovementPicker && (
-              <p className="text-xs text-ct-2 text-center py-2">{t('workout.tapAddMovements')}</p>
+            {!hasMovementEntries && !showMovementPicker && (
+              <button
+                type="button"
+                onClick={() => onShowMovementPickerChange(true)}
+                className="w-full rounded-2xl border border-cyan-500/20 bg-cyan-500/5 px-4 py-4 text-left active:bg-cyan-500/10"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-ct-1">
+                      No <span className="text-cyan-400">WOD</span> movements added yet
+                    </p>
+                    <p className="text-xs text-ct-2 mt-1 leading-relaxed">
+                      Tap here to track weights, rep details, or skill work inside the WOD.
+                    </p>
+                  </div>
+                  <div className="shrink-0 w-10 h-10 rounded-xl border border-cyan-400/30 bg-cyan-500/10 flex items-center justify-center text-cyan-400">
+                    <Plus size={18} />
+                  </div>
+                </div>
+              </button>
             )}
           </div>
         </div>
