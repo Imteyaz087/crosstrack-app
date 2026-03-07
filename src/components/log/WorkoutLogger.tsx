@@ -83,8 +83,8 @@ interface WorkoutLoggerProps {
   onShareWod?: () => void
 }
 
-// Quick-select benchmark IDs (most popular)
-const QUICK_SELECT_IDS = ['fran', 'cindy', 'grace', 'helen', 'murph', 'dt', 'annie', 'karen', 'diane', 'jackie', 'fight-gone-bad', 'filthy-fifty', 'nancy', 'angie', 'isabel']
+// Quick-select benchmark IDs shown by default in the logger.
+const QUICK_SELECT_IDS = ['fran', 'grace', 'helen', 'murph', 'dt', 'annie']
 const allBenchmarks = benchmarkData.wods as BenchmarkWod[]
 
 const intervalPresets = [
@@ -313,10 +313,12 @@ export function WorkoutLogger({
 }: WorkoutLoggerProps) {
   const [showStrengthMovementPicker, setShowStrengthMovementPicker] = useState(false)
   const [strengthMovementSearch, setStrengthMovementSearch] = useState('')
+  const [showMovementDetails, setShowMovementDetails] = useState(false)
   const hasStrength = classFormat === 'full' || classFormat === 'strength_only'
   const hasWod = classFormat === 'full' || classFormat === 'wod_only'
   const hasMovementEntries = movements.length > 0
-  const movementHeaderActionLabel = showMovementPicker ? 'Close' : 'Add'
+  const movementPanelOpen = showMovementPicker || showMovementDetails
+  const movementHeaderActionLabel = movementPanelOpen ? 'Done' : 'Edit'
   const movementPreview = getMovementPreview(movements)
   const saveSummary = getSaveSummary(classFormat, wodType, wodName, strengthMovement, timeCap, movements)
   const scoreHelper = getScoreHelper(wodType)
@@ -324,9 +326,14 @@ export function WorkoutLogger({
   const handleMovementHeaderAction = () => {
     if (showMovementPicker) {
       onShowMovementPickerChange(false)
+      setShowMovementDetails(false)
       return
     }
-    onShowMovementPickerChange(true)
+    if (showMovementDetails) {
+      setShowMovementDetails(false)
+      return
+    }
+    setShowMovementDetails(true)
   }
 
   // === STEP 1: Class Format Selection ===
@@ -658,12 +665,12 @@ export function WorkoutLogger({
         <div className={`bg-gradient-to-b from-cyan-500/5 to-ct-surface/40 rounded-ct-lg p-4 border border-cyan-400/15 space-y-4 ${hasStrength ? 'mt-5 pt-5 border-t border-cyan-400/20' : ''}`}>
           <div className="flex items-center justify-between">
             <SectionHeader icon={Flame} label="WOD" color="cyan" />
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 rounded-xl border border-ct-border/20 bg-ct-elevated/25 px-1.5 py-1">
               {/* Scan WOD Button */}
               {onScanWod && (
                 <button
                   onClick={onScanWod}
-                  className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-[11px] font-bold bg-violet-500/[0.08] text-violet-300 border border-violet-400/20 card-press"
+                  className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-[11px] font-semibold text-ct-2 active:bg-violet-500/10 active:text-violet-300 card-press"
                 >
                   <Camera size={12} />
                   {t('workout.scan')}
@@ -672,7 +679,11 @@ export function WorkoutLogger({
               {/* Benchmark WOD Library Button */}
               <button
                 onClick={() => onShowBenchmarkPickerChange(!showBenchmarkPicker)}
-                className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-[11px] font-bold bg-cyan-500/[0.08] text-cyan-300 border border-cyan-400/20 card-press"
+                className={`flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-[11px] font-semibold transition-all card-press ${
+                  showBenchmarkPicker
+                    ? 'bg-cyan-500/14 text-cyan-300 border border-cyan-400/20'
+                    : 'text-ct-2 active:bg-cyan-500/10 active:text-cyan-300 border border-transparent'
+                }`}
               >
                 <BookOpen size={12} />
                 {t('workout.all')}
@@ -684,7 +695,7 @@ export function WorkoutLogger({
           <div className="space-y-2">
             <p className="text-[10px] uppercase tracking-[0.22em] text-ct-2 font-semibold">Popular benchmarks</p>
             <div className="overflow-x-auto -mx-1 px-1 scrollbar-hide">
-            <div className="inline-flex gap-1.5 rounded-2xl border border-cyan-500/10 bg-cyan-500/[0.03] p-1.5" style={{ minWidth: 'max-content' }}>
+            <div className="inline-flex gap-1 rounded-2xl border border-cyan-500/8 bg-cyan-500/[0.025] p-1.5" style={{ minWidth: 'max-content' }}>
               {QUICK_SELECT_IDS.map(id => {
                 const wod = allBenchmarks.find(w => w.id === id)
                 if (!wod) return null
@@ -692,10 +703,10 @@ export function WorkoutLogger({
                 return (
                   <button key={id}
                     onClick={() => onSelectBenchmarkWod(wod)}
-                    className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap transition-all min-h-[34px] ${
+                    className={`px-2.5 py-1.5 rounded-xl text-[11px] font-semibold whitespace-nowrap transition-all min-h-[32px] ${
                       isActive
                         ? 'bg-cyan-500/18 text-cyan-300 border border-cyan-400/25 shadow-sm'
-                        : 'bg-ct-elevated/50 text-ct-2 border border-transparent active:scale-95'
+                        : 'bg-ct-elevated/42 text-ct-2 border border-transparent active:scale-95'
                     }`}
                   >
                     {wod.name}
@@ -768,49 +779,67 @@ export function WorkoutLogger({
           <div>
             <div className="flex justify-between items-center mb-2">
               <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">{t('workout.movements')}</p>
-              {(hasMovementEntries || showMovementPicker) && (
+              {(hasMovementEntries || movementPanelOpen) && (
                 <button
                   onClick={handleMovementHeaderAction}
                   className="text-xs text-cyan-400 font-semibold flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-lg active:bg-cyan-500/10"
                 >
-                  {showMovementPicker ? <X size={14} /> : <Plus size={14} />}
+                  {movementPanelOpen ? <X size={14} /> : <Pencil size={14} />}
                   {movementHeaderActionLabel}
                 </button>
               )}
             </div>
 
-            {hasMovementEntries && !showMovementPicker && (
-              <div className="mb-2 rounded-xl border border-cyan-500/10 bg-cyan-500/[0.04] px-3 py-2.5">
+            {hasMovementEntries && !movementPanelOpen && (
+              <button
+                type="button"
+                onClick={() => setShowMovementDetails(true)}
+                className="mb-2 w-full rounded-xl border border-cyan-500/10 bg-cyan-500/[0.04] px-3 py-2.5 text-left active:bg-cyan-500/[0.08]"
+              >
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <p className="text-[11px] font-semibold text-ct-1">{movements.length} movement{movements.length === 1 ? '' : 's'} added</p>
                     <p className="text-[11px] text-ct-2 truncate">{movementPreview}</p>
                   </div>
-                  <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-300">Ready</span>
+                  <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-300">Edit</span>
                 </div>
-              </div>
+              </button>
             )}
 
-            {movements.map((m, idx) => (
-              <div key={idx} className="bg-ct-elevated/30 rounded-xl p-3 mb-2 space-y-2 border border-ct-border/20">
-                <div className="flex justify-between items-center">
-                  <p className="text-sm font-semibold text-ct-1">{m.name}</p>
-                  <button onClick={() => onRemoveMovement(idx)} className="min-w-[44px] min-h-[44px] rounded-lg flex items-center justify-center text-ct-2 active:text-red-400 active:bg-red-500/10" aria-label="Remove movement"><X size={16} /></button>
-                </div>
-                <div className="flex gap-2">
-                  <div className="flex-1">
-                    <label className="text-[11px] text-ct-2 block mb-0.5 font-medium">{t('workout.weight')} ({weightUnit})</label>
-                    <input type="text" inputMode="numeric" pattern="[0-9]*" value={m.weight} onChange={e => onUpdateMovement(idx, 'weight', e.target.value.replace(/\D/g, ''))}
-                      placeholder="0" className="w-full bg-ct-elevated/80 rounded-lg py-2 px-2 text-ct-1 text-xs text-center focus:outline-none tabular-nums border border-ct-border/30" />
+            {showMovementDetails && (
+              <div className="space-y-2">
+                {movements.map((m, idx) => (
+                  <div key={idx} className="bg-ct-elevated/30 rounded-xl p-3 space-y-2 border border-ct-border/20">
+                    <div className="flex justify-between items-center">
+                      <p className="text-sm font-semibold text-ct-1">{m.name}</p>
+                      <button onClick={() => onRemoveMovement(idx)} className="min-w-[44px] min-h-[44px] rounded-lg flex items-center justify-center text-ct-2 active:text-red-400 active:bg-red-500/10" aria-label="Remove movement"><X size={16} /></button>
+                    </div>
+                    <div className="flex gap-2">
+                      <div className="flex-1">
+                        <label className="text-[11px] text-ct-2 block mb-0.5 font-medium">{t('workout.weight')} ({weightUnit})</label>
+                        <input type="text" inputMode="numeric" pattern="[0-9]*" value={m.weight} onChange={e => onUpdateMovement(idx, 'weight', e.target.value.replace(/\D/g, ''))}
+                          placeholder="0" className="w-full bg-ct-elevated/80 rounded-lg py-2 px-2 text-ct-1 text-xs text-center focus:outline-none tabular-nums border border-ct-border/30" />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-[11px] text-ct-2 block mb-0.5 font-medium">{t('workout.repsScheme')}</label>
+                        <input type="text" value={m.detail} onChange={e => onUpdateMovement(idx, 'detail', e.target.value)}
+                          placeholder="21-15-9" className="w-full bg-ct-elevated/80 rounded-lg py-2 px-2 text-ct-1 text-xs text-center focus:outline-none border border-ct-border/30" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <label className="text-[11px] text-ct-2 block mb-0.5 font-medium">{t('workout.repsScheme')}</label>
-                    <input type="text" value={m.detail} onChange={e => onUpdateMovement(idx, 'detail', e.target.value)}
-                      placeholder="21-15-9" className="w-full bg-ct-elevated/80 rounded-lg py-2 px-2 text-ct-1 text-xs text-center focus:outline-none border border-ct-border/30" />
-                  </div>
-                </div>
+                ))}
+
+                {!showMovementPicker && (
+                  <button
+                    type="button"
+                    onClick={() => onShowMovementPickerChange(true)}
+                    className="w-full rounded-xl border border-cyan-500/15 bg-cyan-500/[0.04] px-3 py-2.5 text-sm font-semibold text-cyan-300 active:bg-cyan-500/[0.08]"
+                  >
+                    Add another movement
+                  </button>
+                )}
               </div>
-            ))}
+            )}
 
             {showMovementPicker && (
               <MovementPicker
