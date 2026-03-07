@@ -1,6 +1,6 @@
 import React, { useState, lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ShoppingCart, BarChart3, Settings, ChevronRight, Timer, Calculator, BookOpen, Target, Trophy, ChefHat, Dumbbell, Brain, Cloud, Camera, Heart, History, Ruler, CalendarDays, Award, Shield } from 'lucide-react'
+import { ShoppingCart, BarChart3, Settings, ChevronRight, Timer, Calculator, BookOpen, Target, Trophy, ChefHat, Dumbbell, Brain, Cloud, Camera, Heart, History, Ruler, CalendarDays, Award, Shield, HelpCircle, Radar } from 'lucide-react'
 import { SubPageSkeleton } from '../components/SkeletonCard'
 
 // Lazy-load ALL sub-pages  -  cuts MorePage chunk from 800KB to ~5KB
@@ -23,8 +23,10 @@ const BodyMeasurementsPage = lazy(() => import('./BodyMeasurementsPage').then(m 
 const WeeklyPlannerPage = lazy(() => import('./WeeklyPlannerPage').then(m => ({ default: m.WeeklyPlannerPage })))
 const PRWallPage = lazy(() => import('./PRWallPage').then(m => ({ default: m.PRWallPage })))
 const PrivacyPolicyPage = lazy(() => import('./PrivacyPolicyPage').then(m => ({ default: m.PrivacyPolicyPage })))
+const SupportPage = lazy(() => import('./SupportPage').then(m => ({ default: m.SupportPage })))
+const HyroxAnalyticsPage = lazy(() => import('./HyroxAnalyticsPage').then(m => ({ default: m.HyroxAnalyticsPage })))
 
-type SubPage = 'menu' | 'grocery' | 'progress' | 'settings' | 'timer' | 'calc' | 'benchmarks' | 'movementPRs' | 'achievements' | 'wodTemplates' | 'mealPrep' | 'aiCoach' | 'cloudSync' | 'photoLog' | 'heartRate' | 'workoutHistory' | 'bodyMeasurements' | 'weeklyPlanner' | 'prWall' | 'privacy'
+type SubPage = 'menu' | 'grocery' | 'progress' | 'settings' | 'timer' | 'calc' | 'benchmarks' | 'movementPRs' | 'achievements' | 'wodTemplates' | 'mealPrep' | 'aiCoach' | 'cloudSync' | 'photoLog' | 'heartRate' | 'workoutHistory' | 'bodyMeasurements' | 'weeklyPlanner' | 'prWall' | 'privacy' | 'support' | 'hyroxAnalytics'
 
 function LoadingFallback() {
   return <SubPageSkeleton />
@@ -57,6 +59,8 @@ export function MorePage() {
       weeklyPlanner: <div>{back}<WeeklyPlannerPage /></div>,
       prWall: <div>{back}<PRWallPage /></div>,
       privacy: <div>{back}<PrivacyPolicyPage /></div>,
+      support: <div>{back}<SupportPage /></div>,
+      hyroxAnalytics: <div>{back}<HyroxAnalyticsPage /></div>,
     }
     return <Suspense fallback={<LoadingFallback />}>{pageMap[subPage]}</Suspense>
   }
@@ -68,6 +72,7 @@ export function MorePage() {
     {
       title: t('logMode.training'),
       items: [
+        { id: 'hyroxAnalytics', icon: Radar, label: t('hyroxAnalytics.menuLabel'), desc: t('hyroxAnalytics.menuDesc'), color: 'text-orange-400' },
         { id: 'workoutHistory', icon: History, label: t('more.workoutHistory'), desc: t('more.workoutHistoryDesc'), color: 'text-teal-400' },
         { id: 'weeklyPlanner', icon: CalendarDays, label: t('more.weeklyPlanner'), desc: t('more.weeklyPlannerDesc'), color: 'text-indigo-400' },
         { id: 'prWall', icon: Award, label: t('more.prWall'), desc: t('more.prWallDesc'), color: 'text-yellow-400' },
@@ -107,6 +112,7 @@ export function MorePage() {
         { id: 'cloudSync', icon: Cloud, label: t('more.cloudSync'), desc: t('more.cloudSyncDesc'), color: 'text-sky-400' },
         { id: 'settings', icon: Settings, label: t('settings.title'), desc: t('more.profileDesc'), color: 'text-ct-2' },
         { id: 'privacy', icon: Shield, label: t('privacy.linkLabel'), desc: t('privacy.linkDesc'), color: 'text-cyan-400' },
+        { id: 'support', icon: HelpCircle, label: t('support.linkLabel'), desc: t('support.linkDesc'), color: 'text-green-400' },
       ],
     },
   ]

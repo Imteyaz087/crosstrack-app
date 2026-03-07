@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrackVolt Welcome Screen Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0D1117; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+  .phone {
+    width: 375px; height: 812px; background: #0D1117; border-radius: 40px;
+    border: 3px solid #21262D; overflow: hidden; display: flex; flex-direction: column;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+  }
+  .screen { flex: 1; display: flex; flex-direction: column; padding: 60px 24px 32px; }
+  .content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; }
+  .logo { width: 192px; }
+  .tagline {
+    font-size: 11px; font-weight: 700; color: #22D3EE; text-transform: uppercase;
+    letter-spacing: 0.15em; text-align: center;
+  }
+  .sub {
+    font-size: 13px; color: #8B949E; line-height: 1.5; text-align: center;
+    max-width: 280px;
+  }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-width: 280px; width: 100%; }
+  .card {
+    background: rgba(22,27,34,0.5); border: 1px solid #21262D;
+    border-radius: 12px; padding: 12px;
+  }
+  .card-title { font-size: 11px; font-weight: 700; color: #E6EDF3; }
+  .card-desc { font-size: 10px; color: #8B949E; margin-top: 2px; }
+  .lang-row { display: flex; gap: 12px; justify-content: center; }
+  .lang-btn {
+    padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600;
+    border: 1px solid #21262D; background: #161B22; color: #8B949E;
+    cursor: pointer;
+  }
+  .lang-btn.active { background: #22D3EE; color: #0D1117; border-color: #22D3EE; }
+  .bottom { padding: 12px 0 20px; }
+  .cta {
+    width: 100%; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 700;
+    background: #22D3EE; color: #0D1117; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+  }
+  .dots { display: flex; gap: 6px; justify-content: center; padding-bottom: 12px; }
+  .dot { height: 6px; border-radius: 3px; background: #161B22; }
+  .dot.active { width: 32px; background: #22D3EE; }
+  .dot:not(.active) { width: 16px; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="screen">
+    <!-- Progress dots -->
+    <div class="dots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+
+    <div class="content">
+      <!-- TIPO Logo -->
+      <img src="data:image/png;base64,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" alt="TRACKVOLT" class="logo">
+
+      <!-- Tagline -->
+      <div style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+        <p class="tagline">EVERY REP. EVERY ROUND. EVERY PR.</p>
+        <p class="sub">Built for CrossFit, HYROX, and hybrid athletes. Log WODs, track macros and recovery, and save every PR.</p>
+      </div>
+
+      <!-- Value prop cards -->
+      <div class="grid">
+        <div class="card">
+          <p class="card-title">Log WODs</p>
+          <p class="card-desc">Strength + metcon in 30 sec</p>
+        </div>
+        <div class="card">
+          <p class="card-title">Track Macros</p>
+          <p class="card-desc">Protein, carbs, fat, water</p>
+        </div>
+        <div class="card">
+          <p class="card-title">Save Every PR</p>
+          <p class="card-desc">Movements, benchmarks, lifts</p>
+        </div>
+        <div class="card">
+          <p class="card-title">Private by Default</p>
+          <p class="card-desc">Your data never leaves your phone</p>
+        </div>
+      </div>
+
+      <!-- Language selector -->
+      <div class="lang-row">
+        <button class="lang-btn active">English</button>
+        <button class="lang-btn">繁體中文</button>
+        <button class="lang-btn">简体中文</button>
+      </div>
+    </div>
+
+    <!-- CTA button -->
+    <div class="bottom">
+      <button class="cta">Get Started →</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
