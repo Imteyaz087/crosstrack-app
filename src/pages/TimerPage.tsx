@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStore } from '../stores/useStore'
 import type { TimerMode, TimerPreset } from '../types'
@@ -140,6 +140,8 @@ export function TimerPage({ onClose }: TimerPageProps) {
   const [tabataWork, setTabataWork] = useState(20)
   const [tabataRest, setTabataRest] = useState(10)
   const [tabataRounds, setTabataRounds] = useState(8)
+  const wakeLockRef = useRef<{ release: () => Promise<void> } | null>(null)
+  const prevPhaseRef = useRef<'idle' | 'countdown' | 'work' | 'rest' | 'done'>('idle')
 
   const engine = useTimerEngine({
     mode: mode || 'amrap',
@@ -158,6 +160,31 @@ export function TimerPage({ onClose }: TimerPageProps) {
   useEffect(() => {
     loadTimerPresets()
   }, [loadTimerPresets])
+
+  async function releaseWakeLock() {
+    if (!wakeLockRef.current) return
+    try {
+      await wakeLockRef.current.release()
+    } catch {
+      // Ignore browsers that fail to release gracefully.
+    }
+    wakeLockRef.current = null
+  }
+
+  async function requestWakeLock() {
+    const wakeLockApi = (navigator as Navigator & { wakeLock?: { request: (type: 'screen') => Promise<{ release: () => Promise<void> }> } }).wakeLock
+    if (!wakeLockApi || document.visibilityState !== 'visible') return
+    try {
+      wakeLockRef.current = await wakeLockApi.request('screen')
+    } catch {
+      wakeLockRef.current = null
+    }
+  }
+
+  function vibrate(pattern: number | number[]) {
+    if (typeof navigator === 'undefined' || typeof navigator.vibrate !== 'function') return
+    navigator.vibrate(pattern)
+  }
 
   function applyDefaults(nextMode: TimerMode) {
     if (nextMode === 'amrap') {
@@ -341,6 +368,55 @@ export function TimerPage({ onClose }: TimerPageProps) {
     rest: t('timer.restTimerDesc'),
     custom: '',
   }
+
+  const shouldKeepScreenAwake =
+    configuring ||
+    engine.isRunning ||
+    engine.phase === 'countdown' ||
+    engine.phase === 'work' ||
+    engine.phase === 'rest'
+
+  useEffect(() => {
+    if (!shouldKeepScreenAwake) {
+      void releaseWakeLock()
+      return
+    }
+
+    void requestWakeLock()
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === 'visible') {
+        void requestWakeLock()
+      } else {
+        void releaseWakeLock()
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      void releaseWakeLock()
+    }
+  }, [shouldKeepScreenAwake, configuring, engine.isRunning, engine.phase])
+
+  useEffect(() => {
+    const previousPhase = prevPhaseRef.current
+    if (engine.phase === previousPhase) return
+
+    if (engine.phase === 'countdown') vibrate(24)
+    if (engine.phase === 'work' && previousPhase === 'countdown') vibrate([50, 40, 110])
+    if (engine.phase === 'work' && previousPhase === 'rest') vibrate([35, 35, 70])
+    if (engine.phase === 'rest') vibrate([90, 50, 90])
+    if (engine.phase === 'done') vibrate([120, 80, 120, 80, 120])
+
+    prevPhaseRef.current = engine.phase
+  }, [engine.phase])
+
+  useEffect(() => {
+    return () => {
+      void releaseWakeLock()
+    }
+  }, [])
 
   if (!mode) {
     const modes: Array<{ id: TimerMode; label: string; desc: string }> = [
