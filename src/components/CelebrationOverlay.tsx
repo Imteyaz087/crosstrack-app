@@ -50,9 +50,10 @@ interface CelebrationOverlayProps {
 const CONFETTI_COLORS = ['#4ade80', '#22d3ee', '#f59e0b', '#ef4444', '#a78bfa', '#fb923c', '#f472b6', '#facc15', '#34d399', '#818cf8', '#fb7185', '#fbbf24']
 const CONFETTI_COUNT = 12
 
-function ConfettiParticle({ delay, color, x, size }: {
-  delay: number; color: string; x: number; size: number
+function ConfettiParticle({ delay, color, x, size, index }: {
+  delay: number; color: string; x: number; size: number; index: number
 }) {
+  const rotation = (index * 137.5) % 360
   return (
     <div
       className="absolute rounded-full animate-confetti"
@@ -63,7 +64,7 @@ function ConfettiParticle({ delay, color, x, size }: {
         width: size,
         height: size,
         animationDelay: `${delay}ms`,
-        transform: `rotate(${Math.random() * 360}deg)`,
+        transform: `rotate(${rotation}deg)`,
       }}
     />
   )
@@ -107,14 +108,18 @@ export function CelebrationOverlay({ celebration, onDismiss, onShare }: Celebrat
   // Mount/unmount based on celebration data
   useEffect(() => {
     if (!celebration) {
-      setVisible(false)
-      setShowShare(false)
+      queueMicrotask(() => {
+        setVisible(false)
+        setShowShare(false)
+      })
       return
     }
 
-    setVisible(true)
-    setFading(false)
-    setShowShare(false)
+    queueMicrotask(() => {
+      setVisible(true)
+      setFading(false)
+      setShowShare(false)
+    })
 
     // Haptic feedback
     if (celebration.type === 'pr') haptic('success')
@@ -183,7 +188,8 @@ export function CelebrationOverlay({ celebration, onDismiss, onShare }: Celebrat
                     delay={80 + i * 50}
                     color={color}
                     x={10 + (i * 7)}
-                    size={2 + Math.random() * 2}
+                    size={2 + ((i * 7 + 3) % 3)}
+                    index={i}
                   />
                 ))}
               </>

@@ -14,9 +14,19 @@ export function ProgressPage() {
   const { t } = useTranslation()
   const { allDailyLogs, workouts, movementPRs, loadAllDailyLogs, loadWorkouts, loadPRs, loadMovementPRs } = useStore()
   const [tab, setTab] = useState<ProgressTab>('overview')
-  const [selectedLift, setSelectedLift] = useState<string>('')
   const [timeRange, setTimeRange] = useState<'30' | '90' | '365'>('90')
   const [loading, setLoading] = useState(true)
+
+  // === Strength Data - compute early so we can use in lazy state init ===
+  const strengthMovements = useMemo(() => {
+    const moveSet = new Set<string>()
+    workouts.forEach(w => { if (w.loads?.strength_movement) moveSet.add(w.loads.strength_movement) })
+    movementPRs.forEach(pr => moveSet.add(pr.movementName))
+    return Array.from(moveSet).sort()
+  }, [workouts, movementPRs])
+
+  // Initialize selectedLift with first movement from strengthMovements (lazy init pattern)
+  const [selectedLift, setSelectedLift] = useState<string>(() => strengthMovements[0] || '')
 
   useEffect(() => { Promise.allSettled([loadAllDailyLogs(), loadWorkouts(), loadPRs(), loadMovementPRs()]).finally(() => setLoading(false)) }, [])
 
@@ -46,17 +56,6 @@ export function ProgressPage() {
     else break
   }
 
-  // === Strength Data ===
-  const strengthMovements = useMemo(() => {
-    const moveSet = new Set<string>()
-    workouts.forEach(w => { if (w.loads?.strength_movement) moveSet.add(w.loads.strength_movement) })
-    movementPRs.forEach(pr => moveSet.add(pr.movementName))
-    return Array.from(moveSet).sort()
-  }, [workouts, movementPRs])
-
-  useEffect(() => {
-    if (!selectedLift && strengthMovements.length > 0) setSelectedLift(strengthMovements[0])
-  }, [strengthMovements, selectedLift])
 
   const strengthChartData = useMemo(() => {
     if (!selectedLift) return []

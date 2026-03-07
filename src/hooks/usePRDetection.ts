@@ -27,7 +27,7 @@ function isGymnasticsMovement(name: string): boolean {
 /** Map rep scheme strings like "3-3-3" or "5-5-5" to RM type */
 function repSchemeToRMType(scheme: string, buildTarget: string): '1rm' | '3rm' | '5rm' | null {
   if (buildTarget === '1RM' || buildTarget === 'Heavy Single') return '1rm'
-  if (buildTarget === '3RM' || buildTarget === 'Heavy 3') return '3rm'
+  if (buildTarget === '3RM' || buildTarget === 'Heavy 3' || buildTarget === 'Heavy Triple') return '3rm'
   if (buildTarget === '5RM' || buildTarget === 'Heavy 5') return '5rm'
 
   // Parse from rep scheme string

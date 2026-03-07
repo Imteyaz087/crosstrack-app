@@ -22,28 +22,10 @@ export function SettingsPage() {
   const [fbApiKey, setFbApiKey] = useState('')
   const [showFbSetup, setShowFbSetup] = useState(false)
 
-  const [form, setForm] = useState({
-    displayName: '',
-    age: '' as string,
-    gender: 'prefer_not_to_say' as Gender,
-    weightKg: '' as string,
-    heightCm: '' as string,
-    experienceLevel: 'beginner' as ExperienceLevel,
-    goal: 'general_health' as Goal,
-    trainingTime: '06:00',
-    trainingDaysPerWeek: 5,
-    proteinTarget: 150,
-    carbsTarget: 200,
-    fatTarget: 60,
-    calorieTarget: 2000,
-    waterTarget: 2500,
-    language: 'en' as 'en' | 'zh-TW' | 'zh-CN',
-  })
-
-  useEffect(() => { loadProfile() }, [])
-  useEffect(() => {
+  const [form, setForm] = useState(() => {
+    // Lazy initialization: populate from profile if available
     if (profile) {
-      setForm({
+      return {
         displayName: profile.displayName,
         age: profile.age?.toString() || '',
         gender: profile.gender || 'prefer_not_to_say',
@@ -59,9 +41,28 @@ export function SettingsPage() {
         calorieTarget: profile.calorieTarget,
         waterTarget: profile.waterTarget,
         language: profile.language,
-      })
+      }
     }
-  }, [profile])
+    return {
+      displayName: '',
+      age: '' as string,
+      gender: 'prefer_not_to_say' as Gender,
+      weightKg: '' as string,
+      heightCm: '' as string,
+      experienceLevel: 'beginner' as ExperienceLevel,
+      goal: 'general_health' as Goal,
+      trainingTime: '06:00',
+      trainingDaysPerWeek: 5,
+      proteinTarget: 150,
+      carbsTarget: 200,
+      fatTarget: 60,
+      calorieTarget: 2000,
+      waterTarget: 2500,
+      language: 'en' as 'en' | 'zh-TW' | 'zh-CN',
+    }
+  })
+
+  useEffect(() => { loadProfile() }, [])
 
   const handleRecalculate = () => {
     const w = parseFloat(form.weightKg) || 70

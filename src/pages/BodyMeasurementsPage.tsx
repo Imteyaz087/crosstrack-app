@@ -20,22 +20,21 @@ export function BodyMeasurementsPage() {
   const { allDailyLogs, todayLog, loadAllDailyLogs, loadTodayLog, saveDailyLog } = useStore()
   const { showToast, toastEl } = useSaveToast()
   const [activeMeasurement, setActiveMeasurement] = useState<MeasurementKey>('weightKg')
-  const [formValues, setFormValues] = useState<Record<string, string>>({})
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => { Promise.allSettled([loadAllDailyLogs(), loadTodayLog()]).finally(() => setLoading(false)) }, [])
-
-  // Pre-fill form with today's values
-  useEffect(() => {
+  const [formValues, setFormValues] = useState<Record<string, string>>(() => {
+    // Lazy initialization: pre-fill form with today's values if todayLog is available
     if (todayLog) {
       const vals: Record<string, string> = {}
       MEASUREMENTS.forEach(m => {
         const v = todayLog[m.key]
         if (v !== undefined && v !== null) vals[m.key] = String(v)
       })
-      setFormValues(vals)
+      return vals
     }
-  }, [todayLog])
+    return {}
+  })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => { Promise.allSettled([loadAllDailyLogs(), loadTodayLog()]).finally(() => setLoading(false)) }, [])
 
   const activeConfig = MEASUREMENTS.find(m => m.key === activeMeasurement)!
 
@@ -107,7 +106,7 @@ export function BodyMeasurementsPage() {
         <Ruler size={20} className="text-cyan-400" /> Body Measurements
       </h2>
 
-      {/* Measurement selector — scrollable chips */}
+      {/* Measurement selector  -  scrollable chips */}
       <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1 no-scrollbar">
         {MEASUREMENTS.map(m => (
           <button
@@ -174,7 +173,7 @@ export function BodyMeasurementsPage() {
                 pattern="[0-9.]*"
                 value={formValues[m.key] || ''}
                 onChange={e => setFormValues(prev => ({ ...prev, [m.key]: e.target.value.replace(/[^\d.]/g, '') }))}
-                placeholder="—"
+                placeholder=" - "
                 className="w-full bg-ct-elevated/50 border border-ct-border/50 rounded-xl py-2 px-3 text-sm text-ct-1 placeholder-ct-2 focus:outline-none focus:ring-1 focus:ring-cyan-400"
               />
             </div>
@@ -212,13 +211,13 @@ export function BodyMeasurementsPage() {
                   .map(l => (
                     <tr key={l.id} className="border-b border-ct-border/30 text-ct-2">
                       <td className="py-1.5 pr-2 text-ct-2">{l.date.slice(5)}</td>
-                      <td className="text-right px-1">{l.weightKg ?? '—'}</td>
-                      <td className="text-right px-1">{l.bodyFatPct ?? '—'}</td>
-                      <td className="text-right px-1">{l.chestCm ?? '—'}</td>
-                      <td className="text-right px-1">{l.waistCm ?? '—'}</td>
-                      <td className="text-right px-1">{l.hipsCm ?? '—'}</td>
-                      <td className="text-right px-1">{l.armCm ?? '—'}</td>
-                      <td className="text-right pl-1">{l.thighCm ?? '—'}</td>
+                      <td className="text-right px-1">{l.weightKg ?? ' - '}</td>
+                      <td className="text-right px-1">{l.bodyFatPct ?? ' - '}</td>
+                      <td className="text-right px-1">{l.chestCm ?? ' - '}</td>
+                      <td className="text-right px-1">{l.waistCm ?? ' - '}</td>
+                      <td className="text-right px-1">{l.hipsCm ?? ' - '}</td>
+                      <td className="text-right px-1">{l.armCm ?? ' - '}</td>
+                      <td className="text-right pl-1">{l.thighCm ?? ' - '}</td>
                     </tr>
                   ))}
               </tbody>

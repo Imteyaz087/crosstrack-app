@@ -1947,3 +1947,73 @@ The highest-value adaptations for TrackVolt are:
 4. Apple Health design + import
 5. exercise library
 6. deeper OCR / China data / adaptive coaching
+
+## 2026-03-07 - Strength Rep Scheme Recommendation
+
+Context: reviewed the Full Class strength UI in `src/components/log/WorkoutLogger.tsx` and compared current presets against common CrossFit heavy-day patterns.
+
+Recommendation:
+- Keep core default presets focused on universally recognizable class-strength patterns:
+  - `5 x 5` -> `5-5-5-5-5`
+  - `5 x 3` -> `3-3-3-3-3`
+  - `5 x 2` -> `2-2-2-2-2`
+  - `5 x 1` -> `1-1-1-1-1`
+  - `3 x 8` -> `8-8-8`
+  - `Wave 3/2/1` -> `3-3-3-2-2-1-1`
+- Move `6-6-6-6-6` and `12-12-12-12` out of the primary preset row. They are valid but read more like volume/accessory presets than default class-strength presets.
+- Keep custom text entry for any non-standard programming.
+
+UI/UX recommendation for this page:
+- Show human-readable chips like `5 x 5`, not only raw dashed strings.
+- Auto-sync `Sets` from the selected scheme so the user cannot choose mismatched values.
+- Make the rep scheme row wrap or use a 2-row grid instead of a cramped horizontal rail.
+- Default strength weight logging to one clear `Work Weight` / `Top Set` field, with `Start -> End` as an advanced/progression option.
+- Rename `Every` to `Interval` or `Every 2:00` style wording for clearer scanning.
+
+Reasoning:
+- Official CrossFit heavy-day examples strongly support repeated 5s, 3s, 2s, and singles, while higher-rep work exists but is better treated as secondary volume/accessory work.
+
+## 2026-03-07 - Build Target Terminology Recommendation
+
+Research-based recommendation for the Strength > Build to Heavy UI:
+- In the action UI, prefer coach-language labels:
+  - `Heavy Single`
+  - `Heavy Triple`
+  - `Heavy 5`
+- In saved PR/history/analytics, keep metric-language labels:
+  - `1RM`
+  - `3RM`
+  - `5RM`
+
+Do NOT use a duplicated button label like `1RM (Heavy Single)` in the main selection UI. It is redundant and visually noisy.
+
+Reasoning:
+- CrossFit programming commonly uses `heavy single` / `heavy triple` as workout instructions.
+- CrossFit benchmark stats and PR tracking commonly use `1RM` / `3RM` / `5RM` as the recorded metric.
+- Best UX is to separate instruction language from result language.
+
+## 2026-03-07 - Build Target Labels: Coach Language in UI
+
+Updated strength build-target UX to use coach-language labels in the logger:
+- `Heavy Single`
+- `Heavy Triple`
+- `Heavy 5`
+
+Implementation details:
+- `useWorkoutForm.ts`
+  - default build target reverted to `Heavy Single`
+  - old saved values normalize to current UI labels:
+    - `1RM` or `Heavy Single` -> `Heavy Single`
+    - `3RM`, `Heavy 3`, or `Heavy Triple` -> `Heavy Triple`
+    - `5RM` or `Heavy 5` -> `Heavy 5`
+- `usePRDetection.ts`
+  - still maps build targets to PR metric types `1rm` / `3rm` / `5rm`
+- `WorkoutLogger.tsx`
+  - selector buttons now show only coach-facing labels
+
+Reason:
+- Coach instructions should read like the whiteboard.
+- PR/history/analytics should continue to use standard RM metrics.
+
+Verification:
+- `npm run build` passes

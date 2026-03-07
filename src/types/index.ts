@@ -161,6 +161,7 @@ export interface FoodItem {
   sodiumPer100g?: number
   defaultServingG: number
   isCustom: boolean
+  isFavorite?: boolean
 }
 
 export interface MealLog {

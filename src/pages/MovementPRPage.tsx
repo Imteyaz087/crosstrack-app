@@ -87,7 +87,7 @@ export function MovementPRPage() {
               {PR_TYPES.map(p => <option key={p} value={p}>{p.replace('_', ' ')}</option>)}
             </select>
             <select value={unit} onChange={e => setUnit(e.target.value as any)}
-              className="bg-ct-elevated rounded-xl py-2.5 px-3 text-ct-1 text-sm w-20 min-h-[44px] focus:outline-none focus:ring-1 focus:ring-cyan-400">
+              className="bg-ct-elevated rounded-xl py-2.5 px-3.5 text-ct-1 text-[15px] font-semibold w-24 min-h-[44px] focus:outline-none focus:ring-1 focus:ring-cyan-400">
               {UNITS.map(u => <option key={u} value={u}>{u}</option>)}
             </select>
           </div>

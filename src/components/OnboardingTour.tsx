@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { X, ChevronRight, ChevronLeft, Dumbbell, Plus, UtensilsCrossed, MoreHorizontal, Home } from 'lucide-react'
 
 const TOUR_KEY = 'trackvolt_tour_done'
@@ -58,14 +58,12 @@ const STEPS: TourStep[] = [
 
 export function OnboardingTour() {
   const [step, setStep] = useState(0)
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(() => {
+    // Lazy initialization - check if tour has been completed
+    return !localStorage.getItem(TOUR_KEY)
+  })
   const [slideDir, setSlideDir] = useState<'left' | 'right' | null>(null)
   const prevStep = useRef(0)
-
-  useEffect(() => {
-    const done = localStorage.getItem(TOUR_KEY)
-    if (!done) setVisible(true)
-  }, [])
 
   const dismiss = () => {
     setVisible(false)

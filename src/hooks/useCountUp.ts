@@ -6,14 +6,14 @@ import { useState, useEffect } from 'react'
  * Respects prefers-reduced-motion  -  instantly shows final value.
  */
 export function useCountUp(target: number, duration = 600): number {
-  const [value, setValue] = useState(0)
+  const [value, setValue] = useState(target)
 
   useEffect(() => {
-    if (target === 0) { setValue(0); return }
-
     // Respect reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (prefersReducedMotion) { setValue(target); return }
+    if (prefersReducedMotion || target === 0) {
+      return
+    }
 
     const start = performance.now()
     let raf: number

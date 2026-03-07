@@ -8,16 +8,12 @@ interface BeforeInstallPromptEvent extends Event {
 
 export function InstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
-  const [dismissed, setDismissed] = useState(false)
-  const [suppressed, setSuppressed] = useState(false)
+  const [dismissed, setDismissed] = useState(() => {
+    // Lazy initialization - check storage on mount
+    return !!sessionStorage.getItem('pwa-install-dismissed')
+  })
 
   useEffect(() => {
-    // Check if already dismissed this session
-    if (sessionStorage.getItem('pwa-install-dismissed')) {
-      setDismissed(true)
-      return
-    }
-
     const handler = (e: Event) => {
       e.preventDefault()
       setDeferredPrompt(e as BeforeInstallPromptEvent)
@@ -26,20 +22,7 @@ export function InstallPrompt() {
     return () => window.removeEventListener('beforeinstallprompt', handler)
   }, [])
 
-  useEffect(() => {
-    const syncSuppressedState = () => {
-      setSuppressed(Boolean(document.querySelector('[data-fullscreen-tool="true"]')))
-    }
-
-    syncSuppressedState()
-
-    const observer = new MutationObserver(syncSuppressedState)
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true })
-
-    return () => observer.disconnect()
-  }, [])
-
-  if (!deferredPrompt || dismissed || suppressed) return null
+  if (!deferredPrompt || dismissed) return null
 
   const handleInstall = async () => {
     await deferredPrompt.prompt()

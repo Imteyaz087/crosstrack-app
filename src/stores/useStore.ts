@@ -79,6 +79,9 @@ interface AppStore {
   loadEventLogs: () => Promise<void>
   saveEventLog: (log: Omit<EventLog, 'id' | 'createdAt' | 'updatedAt'> & { id?: number }) => Promise<void>
   deleteEventLog: (id: number) => Promise<void>
+  // Faster meal logging
+  toggleFavoriteFood: (id: number) => Promise<void>
+  cloneYesterdayMeals: (mealType?: MealType) => Promise<number>
 }
 
 export const useStore = create<AppStore>((set, get) => ({
@@ -430,5 +433,53 @@ export const useStore = create<AppStore>((set, get) => ({
       await db.eventLogs.delete(id)
       await get().loadEventLogs()
     } catch (e) { import.meta.env.DEV && console.error('deleteEventLog failed:', e); throw e }
+  },
+
+  // ═══ Faster Meal Logging: Favorites ═══
+  toggleFavoriteFood: async (id) => {
+    try {
+      const food = await db.foodLibrary.get(id)
+      if (food) {
+        await db.foodLibrary.update(id, { isFavorite: !food.isFavorite })
+        await get().loadFoods()
+        await get().loadRecentFoods()
+      }
+    } catch (e) { import.meta.env.DEV && console.error('toggleFavoriteFood failed:', e); throw e }
+  },
+
+  // ═══ Faster Meal Logging: Clone Yesterday ═══
+  cloneYesterdayMeals: async (mealType) => {
+    try {
+      const yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+      const yesterdayStr = yesterday.toISOString().split('T')[0]
+
+      const yesterdayMeals = await db.mealLogs.where('date').equals(yesterdayStr).toArray()
+      const filtered = mealType
+        ? yesterdayMeals.filter(m => m.mealType === mealType)
+        : yesterdayMeals
+
+      if (filtered.length === 0) return 0
+
+      const todayStr = today()
+      const now = new Date().toISOString()
+      const cloned = filtered.map(m => ({
+        date: todayStr,
+        mealType: m.mealType,
+        foodId: m.foodId,
+        foodName: m.foodName,
+        grams: m.grams,
+        calories: m.calories,
+        protein: m.protein,
+        carbs: m.carbs,
+        fat: m.fat,
+        fiber: m.fiber,
+        createdAt: now,
+      } as MealLog))
+
+      await db.mealLogs.bulkAdd(cloned)
+      await get().loadTodayMeals()
+      return cloned.length
+    } catch (e) { import.meta.env.DEV && console.error('cloneYesterdayMeals failed:', e); throw e }
   },
 }))

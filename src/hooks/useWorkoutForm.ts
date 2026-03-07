@@ -71,6 +71,13 @@ export function useWorkoutForm(
   // Share card data  -  set after save, cleared when user dismisses
   const [pendingShareData, setPendingShareData] = useState<ShareCardData | null>(null)
 
+  const normalizeBuildTarget = useCallback((target: string): string => {
+    if (target === '1RM' || target === 'Heavy Single') return 'Heavy Single'
+    if (target === '3RM' || target === 'Heavy 3' || target === 'Heavy Triple') return 'Heavy Triple'
+    if (target === '5RM' || target === 'Heavy 5') return 'Heavy 5'
+    return target
+  }, [])
+
   // ── #2 Previous Result Auto-load ──
   const prevResults = useMemo((): Workout[] => {
     const nameToMatch = wodName.trim().toLowerCase()
@@ -145,13 +152,18 @@ export function useWorkoutForm(
   }, [weightUnit, rxScaled, getBenchmarkWeights])
 
   // ── Update movement weights when RX/Scaled/Elite changes (only for benchmark WODs) ──
+  // Using a separate state update callback to handle the effect properly
   useEffect(() => {
     if (!selectedBenchmark) return
     const weight = getBenchmarkWeights(selectedBenchmark, rxScaled, weightUnit)
-    setMovements(prev => prev.map(m => ({
-      ...m,
-      weight: selectedBenchmark.movements.length === 1 ? weight : m.weight,
-    })))
+    // Schedule the state update to avoid synchronous setState in effect
+    const timer = setTimeout(() => {
+      setMovements(prev => prev.map(m => ({
+        ...m,
+        weight: selectedBenchmark.movements.length === 1 ? weight : m.weight,
+      })))
+    }, 0)
+    return () => clearTimeout(timer)
   }, [rxScaled, weightUnit, selectedBenchmark, getBenchmarkWeights])
 
   const loadWorkoutForEdit = useCallback((w: Workout) => {
@@ -226,7 +238,7 @@ export function useWorkoutForm(
         const scheme = w.loads['strength_scheme']
         if (scheme.startsWith('Build to')) {
           setStrengthSchemeType('build')
-          setStrengthBuildTarget(scheme.replace('Build to ', ''))
+          setStrengthBuildTarget(normalizeBuildTarget(scheme.replace('Build to ', '')))
         } else {
           setStrengthSchemeType('programmed')
         }
@@ -249,6 +261,18 @@ export function useWorkoutForm(
 
     setWorkoutStep(2)
   }, [])
+
+  const resetAll = () => {
+    setEditingWorkoutId(null)
+    setWorkoutStep(1); setWodName(''); setWodDescription('')
+    setScoreMin(''); setScoreSec(''); setScoreRounds(''); setScoreReps('')
+    setMovements([]); setTimeCap(''); setWorkoutNotes(''); setPrFlag(false); setIsBenchmark(false)
+    setStrengthMovement(''); setStrengthStartWeight(''); setStrengthEndWeight('')
+    setStrengthRepScheme(''); setStrengthPercent(''); setShowBenchmarkPicker(false)
+    setWeightUnit('lbs'); setStrengthSchemeType('programmed'); setStrengthInterval('120'); setStrengthSets('5')
+    setStrengthBuildTarget('Heavy Single'); setWodType('AMRAP'); setRxScaled('RX'); setClassFormat('full')
+    setMovementSearch(''); setShowMovementPicker(false); setSelectedBenchmark(null)
+  }
 
   const handleDeleteWorkout = useCallback(async () => {
     if (editingWorkoutId) {
@@ -296,18 +320,6 @@ export function useWorkoutForm(
     else if (ew) parts.push(`${ew} ${weightUnit}`)
     if (strengthPercent) parts.push(`@${strengthPercent}%`)
     return parts.join('  -  ')
-  }
-
-  const resetAll = () => {
-    setEditingWorkoutId(null)
-    setWorkoutStep(1); setWodName(''); setWodDescription('')
-    setScoreMin(''); setScoreSec(''); setScoreRounds(''); setScoreReps('')
-    setMovements([]); setTimeCap(''); setWorkoutNotes(''); setPrFlag(false); setIsBenchmark(false)
-    setStrengthMovement(''); setStrengthStartWeight(''); setStrengthEndWeight('')
-    setStrengthRepScheme(''); setStrengthPercent(''); setShowBenchmarkPicker(false)
-    setWeightUnit('lbs'); setStrengthSchemeType('programmed'); setStrengthInterval('120'); setStrengthSets('5')
-    setStrengthBuildTarget('Heavy Single'); setWodType('AMRAP'); setRxScaled('RX'); setClassFormat('full')
-    setMovementSearch(''); setShowMovementPicker(false); setSelectedBenchmark(null)
   }
 
   const handleSaveWorkout = async () => {
@@ -390,14 +402,21 @@ export function useWorkoutForm(
 
     await saveWorkout({
       ...(editingWorkoutId ? { id: editingWorkoutId } : {}),
-      date: today(), workoutType, name, description,
-      scoreDisplay: fullScore, scoreValue: scoreVal, scoreUnit: unit,
-      rxOrScaled: rxScaled, prFlag: autoPR, isBenchmark,
+      date: today(),
+      workoutType,
+      name,
+      description,
+      scoreDisplay: fullScore,
+      scoreValue: scoreVal,
+      scoreUnit: unit,
+      rxOrScaled: rxScaled,
+      prFlag: autoPR,
+      isBenchmark,
       duration: dur,
       movements: movementNames.length > 0 ? movementNames : undefined,
       loads: Object.keys(loads).length > 0 ? loads : undefined,
       notes: workoutNotes || undefined,
-    } as any)
+    } as Omit<Workout, 'createdAt' | 'updatedAt'>)
 
     const savedName = name
     const wasEditing = !!editingWorkoutId

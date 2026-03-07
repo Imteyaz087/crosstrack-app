@@ -8,7 +8,7 @@ import { searchFood, resultToFoodItem } from '../services/nutritionApi'
 export function useMealForm(
   onToast: (msg: string, type: 'success' | 'error') => void,
 ) {
-  const { foods, recentFoods, todayMeals, todayMacros, profile, saveMealLog, deleteMealLog, loadRecentFoods, saveCustomFood } = useStore()
+  const { foods, recentFoods, todayMeals, todayMacros, profile, saveMealLog, deleteMealLog, loadRecentFoods, saveCustomFood, toggleFavoriteFood, cloneYesterdayMeals } = useStore()
 
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null)
   const [grams, setGrams] = useState('')
@@ -145,6 +145,28 @@ export function useMealForm(
     setApiResults([])
   }
 
+  const handleToggleFavorite = async (foodId: number) => {
+    try {
+      await toggleFavoriteFood(foodId)
+    } catch (e) {
+      import.meta.env.DEV && console.error('toggleFavorite failed:', e)
+    }
+  }
+
+  const handleCloneYesterday = async (mt?: MealType) => {
+    try {
+      const count = await cloneYesterdayMeals(mt)
+      if (count > 0) {
+        onToast(`Cloned ${count} meal${count > 1 ? 's' : ''} from yesterday!`, 'success')
+      } else {
+        onToast('No meals found for yesterday', 'error')
+      }
+    } catch (e) {
+      onToast('Failed to clone meals', 'error')
+      import.meta.env.DEV && console.error('cloneYesterday failed:', e)
+    }
+  }
+
   return {
     selectedFood, grams, mealType, foodSearch, showAllFoods,
     foods, recentFoods, macros, searchRef, gramsRef,
@@ -152,6 +174,6 @@ export function useMealForm(
     apiResults, apiSearching, savingMeal,
     setMealType, setGrams, setFoodSearch, setShowAllFoods,
     handleSelectFood, handleSelectApiResult, handleSaveMeal, handleDeleteMeal, resetMeal,
-    setSelectedFood,
+    setSelectedFood, handleToggleFavorite, handleCloneYesterday,
   }
 }

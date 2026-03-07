@@ -12,7 +12,10 @@ interface HRReading {
 
 export function HeartRatePage() {
   const { profile } = useStore()
-  const [isSupported, setIsSupported] = useState(true)
+  const [isSupported] = useState(() => {
+    // Lazy init - check Bluetooth support on mount
+    return !!(navigator as BT).bluetooth
+  })
   const [device, setDevice] = useState<BT>(null)
   const [connected, setConnected] = useState(false)
   const [currentHR, setCurrentHR] = useState<number | null>(null)
@@ -23,7 +26,6 @@ export function HeartRatePage() {
   const hrHandlerRef = useRef<((event: Event) => void) | null>(null)
 
   useEffect(() => {
-    if (!(navigator as BT).bluetooth) setIsSupported(false)
     // Cleanup BLE listener on unmount
     return () => {
       if (charRef.current && hrHandlerRef.current) {
@@ -95,11 +97,21 @@ export function HeartRatePage() {
     setRecording(false)
   }
 
+  // Memoize current time to avoid calling Date.now() during render
+  const [currentTime, setCurrentTime] = useState(() => Date.now())
+
+  useEffect(() => {
+    // Update current time every second when recording
+    if (!recording || !sessionStart) return
+    const interval = setInterval(() => setCurrentTime(Date.now()), 1000)
+    return () => clearInterval(interval)
+  }, [recording, sessionStart])
+
   // Stats
   const avgHR = readings.length > 0 ? Math.round(readings.reduce((s, r) => s + r.hr, 0) / readings.length) : null
   const maxHR = readings.length > 0 ? Math.max(...readings.map(r => r.hr)) : null
   const minHR = readings.length > 0 ? Math.min(...readings.map(r => r.hr)) : null
-  const duration = sessionStart ? Math.floor((Date.now() - sessionStart) / 1000) : 0
+  const duration = sessionStart ? Math.floor((currentTime - sessionStart) / 1000) : 0
 
   const getZone = (hr: number): { zone: number; name: string; color: string } => {
     const maxEstimated = 220 - (profile?.age || 30)
@@ -164,7 +176,7 @@ export function HeartRatePage() {
                   const zone = getZone(currentHR)
                   return (
                     <p className={`text-xs font-bold ${zone.color}`}>
-                      Zone {zone.zone} — {zone.name}
+                      Zone {zone.zone}  -  {zone.name}
                     </p>
                   )
                 })()}

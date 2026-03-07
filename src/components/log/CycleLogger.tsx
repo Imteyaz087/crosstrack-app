@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { X, Shield, ChevronRight, Droplets, Heart } from 'lucide-react'
 import { E } from '../../utils/emoji'
@@ -55,16 +55,8 @@ export function CycleLogger({
   const [showAllSymptoms, setShowAllSymptoms] = useState(false)
   const [showTrainingRec, setShowTrainingRec] = useState(false)
 
-  // Restore from todayLog if it changes
-  useEffect(() => {
-    if (todayLog) {
-      setPeriodActive(todayLog.periodActive)
-      setFlowLevel(todayLog.flowLevel)
-      setSymptoms(todayLog.symptoms || [])
-      setMood(todayLog.mood)
-      setEnergy(todayLog.energy)
-    }
-  }, [todayLog])
+  // Note: Using key={todayLog?.date} on parent to reset form when todayLog changes
+  // This replaces the previous useEffect that was calling setState synchronously
 
   const toggleSymptom = (s: string) => {
     setSymptoms(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s])

@@ -98,7 +98,7 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
     } else {
       // BarcodeDetector not supported  -  fall back to manual entry
       stopCamera()
-      setError('Camera barcode scanning not supported on this device. Enter the number manually.')
+      setError(t('scanner.cameraNotSupported'))
       setMode('manual')
     }
   }
@@ -164,9 +164,9 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
   }
 
   const qualityBadge = (q: string) => {
-    if (q === 'high') return <span className="text-[0.6rem] px-1.5 py-0.5 rounded bg-green-500/15 text-green-400">Complete</span>
-    if (q === 'medium') return <span className="text-[0.6rem] px-1.5 py-0.5 rounded bg-orange-500/15 text-orange-400">Partial</span>
-    return <span className="text-[0.6rem] px-1.5 py-0.5 rounded bg-red-500/15 text-red-400">Limited</span>
+    if (q === 'high') return <span className="text-[0.6rem] px-1.5 py-0.5 rounded bg-green-500/15 text-green-400">{t('scanner.complete')}</span>
+    if (q === 'medium') return <span className="text-[0.6rem] px-1.5 py-0.5 rounded bg-orange-500/15 text-orange-400">{t('scanner.partial')}</span>
+    return <span className="text-[0.6rem] px-1.5 py-0.5 rounded bg-red-500/15 text-red-400">{t('scanner.limited')}</span>
   }
 
   return (
@@ -177,7 +177,7 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
         <div className="flex items-center gap-2">
           {isOffline && (
             <span className="flex items-center gap-1 text-xs text-orange-400 bg-orange-500/10 px-2 py-1 rounded-lg">
-              <WifiOff size={12} /> Offline
+              <WifiOff size={12} /> {t('scanner.offline')}
             </span>
           )}
           <button onClick={() => { stopCamera(); onClose() }} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-ct-2 active:text-ct-1" aria-label="Close">
@@ -283,7 +283,7 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
               </div>
               <div className="flex flex-col items-end gap-1 ml-2">
                 {qualityBadge(product.dataQuality)}
-                {fromCache && <span className="text-[0.6rem] px-1.5 py-0.5 rounded bg-ct-elevated text-ct-2">Cached</span>}
+                {fromCache && <span className="text-[0.6rem] px-1.5 py-0.5 rounded bg-ct-elevated text-ct-2">{t('scanner.cached')}</span>}
               </div>
             </div>
 
@@ -291,19 +291,19 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
             <div className="grid grid-cols-4 gap-1 bg-ct-elevated/50 rounded-xl px-2 py-2.5 mb-3">
               <div className="text-center">
                 <p className="text-sm font-bold text-ct-1 tabular-nums">{product.caloriesPer100g}</p>
-                <p className="text-[0.6rem] text-ct-2">cal</p>
+                <p className="text-[0.6rem] text-ct-2">{t('scanner.cal')}</p>
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold text-green-400 tabular-nums">{product.proteinPer100g}g</p>
-                <p className="text-[0.6rem] text-ct-2">prot</p>
+                <p className="text-[0.6rem] text-ct-2">{t('scanner.prot')}</p>
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold text-orange-400 tabular-nums">{product.carbsPer100g}g</p>
-                <p className="text-[0.6rem] text-ct-2">carb</p>
+                <p className="text-[0.6rem] text-ct-2">{t('scanner.carb')}</p>
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold text-pink-400 tabular-nums">{product.fatPer100g}g</p>
-                <p className="text-[0.6rem] text-ct-2">fat</p>
+                <p className="text-[0.6rem] text-ct-2">{t('scanner.fat')}</p>
               </div>
             </div>
             <p className="text-[0.6rem] text-ct-2 text-center mb-1">{t('scanner.per100g')}</p>
@@ -319,7 +319,7 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
           </button>
           <button onClick={openReview}
             className="w-full bg-ct-surface border border-ct-border text-ct-1 font-semibold py-3 rounded-xl text-sm min-h-[44px] flex items-center justify-center gap-2">
-            <Edit3 size={16} /> Review & Edit Before Saving
+            <Edit3 size={16} /> {t('scanner.reviewEdit')}
           </button>
           <button onClick={() => { setMode('choose'); setBarcode(''); setProduct(null) }}
             className="w-full text-ct-2 text-sm py-2 min-h-[44px]">
@@ -332,38 +332,38 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
       {mode === 'review' && (
         <div className="space-y-3">
           <div className="bg-ct-surface rounded-ct-lg p-4 border border-cyan-500/30">
-            <p className="text-sm font-semibold text-ct-1 mb-3">Review Nutrition (per 100g)</p>
+            <p className="text-sm font-semibold text-ct-1 mb-3">{t('scanner.reviewNutrition')}</p>
 
             <div className="space-y-2.5">
               <div>
-                <label className="text-xs text-ct-2 mb-1 block">Name</label>
+                <label className="text-xs text-ct-2 mb-1 block">{t('scanner.name')}</label>
                 <input type="text" value={editName} onChange={e => setEditName(e.target.value)}
                   className="w-full bg-ct-elevated rounded-lg py-2.5 px-3 text-ct-1 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400/50 min-h-[40px]" />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-xs text-ct-2 mb-1 block">Calories</label>
+                  <label className="text-xs text-ct-2 mb-1 block">{t('scanner.calories')}</label>
                   <input type="text" inputMode="decimal" value={editCal} onChange={e => setEditCal(e.target.value)}
                     className="w-full bg-ct-elevated rounded-lg py-2.5 px-3 text-ct-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-cyan-400/50 min-h-[40px] tabular-nums" />
                 </div>
                 <div>
-                  <label className="text-xs text-green-400 mb-1 block">Protein (g)</label>
+                  <label className="text-xs text-green-400 mb-1 block">{t('scanner.protein')}</label>
                   <input type="text" inputMode="decimal" value={editProtein} onChange={e => setEditProtein(e.target.value)}
                     className="w-full bg-ct-elevated rounded-lg py-2.5 px-3 text-ct-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-green-400/50 min-h-[40px] tabular-nums" />
                 </div>
                 <div>
-                  <label className="text-xs text-orange-400 mb-1 block">Carbs (g)</label>
+                  <label className="text-xs text-orange-400 mb-1 block">{t('scanner.carbs')}</label>
                   <input type="text" inputMode="decimal" value={editCarbs} onChange={e => setEditCarbs(e.target.value)}
                     className="w-full bg-ct-elevated rounded-lg py-2.5 px-3 text-ct-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-orange-400/50 min-h-[40px] tabular-nums" />
                 </div>
                 <div>
-                  <label className="text-xs text-pink-400 mb-1 block">Fat (g)</label>
+                  <label className="text-xs text-pink-400 mb-1 block">{t('scanner.fatLabel')}</label>
                   <input type="text" inputMode="decimal" value={editFat} onChange={e => setEditFat(e.target.value)}
                     className="w-full bg-ct-elevated rounded-lg py-2.5 px-3 text-ct-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-pink-400/50 min-h-[40px] tabular-nums" />
                 </div>
               </div>
               <div className="w-1/2">
-                <label className="text-xs text-ct-2 mb-1 block">Fiber (g)</label>
+                <label className="text-xs text-ct-2 mb-1 block">{t('scanner.fiber')}</label>
                 <input type="text" inputMode="decimal" value={editFiber} onChange={e => setEditFiber(e.target.value)}
                   className="w-full bg-ct-elevated rounded-lg py-2.5 px-3 text-ct-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-cyan-400/50 min-h-[40px] tabular-nums" />
               </div>
@@ -372,7 +372,7 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
 
           <button onClick={handleConfirmSave}
             className="w-full bg-green-500 text-slate-900 font-bold py-3.5 rounded-xl active:scale-[0.98] transition-transform text-sm min-h-[48px] flex items-center justify-center gap-2">
-            <Check size={18} /> Confirm & Save
+            <Check size={18} /> {t('scanner.confirmSave')}
           </button>
           <button onClick={() => setMode('result')} className="w-full text-ct-2 text-sm py-2 min-h-[44px]">
             {t('common.back')}
@@ -391,13 +391,13 @@ export function BarcodeScanner({ t, onFoodFound, onClose, onCreateCustom }: Barc
             <p className="text-sm text-ct-2">{t('scanner.notFoundDesc')}</p>
             {barcode && <p className="text-xs text-ct-2 mt-2 font-mono tabular-nums">{barcode}</p>}
             {isOffline && (
-              <p className="text-xs text-orange-400 mt-2">You're offline  -  try again when connected</p>
+              <p className="text-xs text-orange-400 mt-2">{t('scanner.offlineRetry')}</p>
             )}
           </div>
           {onCreateCustom && (
             <button onClick={onCreateCustom}
               className="w-full bg-cyan-500 text-slate-900 font-bold py-3.5 rounded-xl active:scale-[0.98] transition-transform text-sm min-h-[48px]">
-              Create Custom Food
+              {t('scanner.createCustom')}
             </button>
           )}
           <button onClick={() => { setMode('choose'); setBarcode('') }}

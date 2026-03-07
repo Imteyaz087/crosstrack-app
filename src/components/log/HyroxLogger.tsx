@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ChevronLeft, Timer, Trophy } from 'lucide-react'
 import type { HyroxStation, RxScaled } from '../../types'
 
@@ -62,20 +63,22 @@ export function HyroxLogger({ onSave, onClose }: HyroxLoggerProps) {
     })
   }
 
+  const { t } = useTranslation()
+
   return (
     <div className="space-y-4 w-full overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <button onClick={onClose} className="text-ct-2 p-1" aria-label="Go back"><ChevronLeft size={20} /></button>
+        <button onClick={onClose} className="text-ct-2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Go back"><ChevronLeft size={20} /></button>
         <div>
           <h1 className="text-xl font-bold text-orange-400">HYROX</h1>
-          <p className="text-xs text-ct-2">8 runs + 8 functional stations</p>
+          <p className="text-xs text-ct-2">{t('hyrox.subtitle')}</p>
         </div>
       </div>
 
       {/* Total Time */}
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-orange-500/20">
-        <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-3">Total Finish Time</p>
+        <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-3">{t('hyrox.totalFinishTime')}</p>
         <div className="flex items-center gap-2 overflow-hidden">
           <input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={3} value={totalMin} onChange={e => setTotalMin(e.target.value.replace(/\D/g, ''))}
             placeholder="MM" aria-label="Minutes"
@@ -89,7 +92,7 @@ export function HyroxLogger({ onSave, onClose }: HyroxLoggerProps) {
 
       {/* Division / Level */}
       <div className="bg-ct-surface rounded-ct-lg p-4 border border-ct-border">
-        <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-3">Division</p>
+        <p className="text-[11px] uppercase tracking-widest text-ct-2 mb-3">{t('hyrox.division')}</p>
         <div className="flex gap-2">
           {(['RX' as RxScaled, 'Scaled' as RxScaled, 'Elite' as RxScaled]).map(level => (
             <button key={level} onClick={() => setRxScaled(level)}
@@ -110,9 +113,9 @@ export function HyroxLogger({ onSave, onClose }: HyroxLoggerProps) {
           className="w-full flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Timer size={16} className="text-orange-400" />
-            <p className="text-sm font-semibold text-ct-1">Station Splits</p>
+            <p className="text-sm font-semibold text-ct-1">{t('hyrox.stationSplits')}</p>
           </div>
-          <span className="text-xs text-ct-2">{showStationTimes ? 'Hide' : 'Optional  -  tap to add'}</span>
+          <span className="text-xs text-ct-2">{showStationTimes ? t('common.hide') : t('hyrox.optionalTapToAdd')}</span>
         </button>
 
         {showStationTimes && (
@@ -147,7 +150,7 @@ export function HyroxLogger({ onSave, onClose }: HyroxLoggerProps) {
           <Trophy size={14} /> PR
         </button>
         <input value={notes} onChange={e => setNotes(e.target.value)}
-          placeholder="Notes (optional)"
+          placeholder={t('hyrox.notesPlaceholder')}
           className="flex-1 bg-ct-surface border border-ct-border rounded-xl py-2.5 px-3 text-ct-1 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-400" />
       </div>
 
@@ -160,7 +163,7 @@ export function HyroxLogger({ onSave, onClose }: HyroxLoggerProps) {
               ? 'bg-orange-500 text-slate-900 shadow-lg shadow-orange-500/30 active:scale-[0.98]'
               : 'bg-ct-elevated/60 text-ct-2 cursor-not-allowed'
           }`}>
-          Save HYROX Result
+          {t('hyrox.save')}
         </button>
       </div>
     </div>

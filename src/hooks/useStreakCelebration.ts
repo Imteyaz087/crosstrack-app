@@ -6,18 +6,12 @@
  * Also manages streak freeze: 1 free pass per week
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { E } from '../utils/emoji'
 
 const MILESTONES = [3, 7, 14, 30, 60, 90, 180, 365] as const
 const STORAGE_KEY = 'trackvolt_streak_celebrations'
 const FREEZE_KEY = 'trackvolt_streak_freeze'
-
-type MilestoneInfo = {
-  days: number
-  title: string
-  subtitle: string
-}
 
 const MILESTONE_MESSAGES: Record<number, { title: string; subtitle: string }> = {
   3:   { title: '3-Day Streak!',   subtitle: `You're building a habit ${E.muscle}` },
@@ -46,10 +40,12 @@ function markCelebrated(milestone: number): void {
 }
 
 export function useStreakCelebration(currentStreak: number) {
-  const [pendingMilestone, setPendingMilestone] = useState<MilestoneInfo | null>(null)
+  const [dismissedMilestone, setDismissedMilestone] = useState<number | null>(null)
 
-  useEffect(() => {
-    if (currentStreak <= 0) return
+  // Compute pending milestone derived from currentStreak
+  // No need for setState in effect - compute directly based on input
+  const pendingMilestone = (() => {
+    if (currentStreak <= 0 || dismissedMilestone !== null) return null
 
     const celebrated = getCelebratedMilestones()
 
@@ -58,16 +54,16 @@ export function useStreakCelebration(currentStreak: number) {
       const m = MILESTONES[i]
       if (currentStreak >= m && !celebrated.has(m)) {
         const msg = MILESTONE_MESSAGES[m]
-        setPendingMilestone({ days: m, ...msg })
-        break
+        return { days: m, ...msg }
       }
     }
-  }, [currentStreak])
+    return null
+  })()
 
   const dismiss = useCallback(() => {
     if (pendingMilestone) {
       markCelebrated(pendingMilestone.days)
-      setPendingMilestone(null)
+      setDismissedMilestone(pendingMilestone.days)
     }
   }, [pendingMilestone])
 

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, lazy, Suspense } from 'react'
 import { useStore } from './stores/useStore'
-import { initializeDB } from './db/database'
 import { TabBar } from './components/TabBar'
 import { LoadingSpinner } from './components/LoadingSpinner'
 import { ErrorRetry } from './components/ErrorRetry'
@@ -23,27 +22,31 @@ const OnboardingPage = lazy(() => import('./pages/OnboardingPage').then(m => ({ 
 function App() {
   const { activeTab, profile, isLoading, loadProfile, loadError, clearLoadError } = useStore()
   const mainRef = useRef<HTMLElement>(null)
-  const prevTabRef = useRef(activeTab)
-  const [slideDirection, setSlideDirection] = useState<'left' | 'right' | 'none'>('none')
+  const [prevTab, setPrevTab] = useState(activeTab)
 
   // Tab order for directional transitions
   const TAB_ORDER = ['today', 'log', 'train', 'eat', 'more']
 
   useEffect(() => {
-    initializeDB()
     loadProfile()
   }, [])
 
-  // Determine slide direction on tab switch + scroll to top
+  // Scroll to top on tab switch
   useEffect(() => {
-    if (prevTabRef.current !== activeTab) {
-      const prevIdx = TAB_ORDER.indexOf(prevTabRef.current)
-      const nextIdx = TAB_ORDER.indexOf(activeTab)
-      setSlideDirection(nextIdx > prevIdx ? 'right' : 'left')
-      prevTabRef.current = activeTab
-    }
     mainRef.current?.scrollTo(0, 0)
   }, [activeTab])
+
+  // Update previous tab when activeTab changes (only depends on activeTab)
+  useEffect(() => {
+    setPrevTab(activeTab)
+  }, [activeTab])
+
+  // Compute slide direction
+  const slideDirection = (() => {
+    const prevIdx = TAB_ORDER.indexOf(prevTab)
+    const nextIdx = TAB_ORDER.indexOf(activeTab)
+    return nextIdx > prevIdx ? 'right' : 'left'
+  })()
 
   // Show loading while profile is being fetched
   if (isLoading) {

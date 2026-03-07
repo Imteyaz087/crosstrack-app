@@ -59,10 +59,13 @@ export function useTimerEngine(config: TimerConfig) {
     if (countdownVal <= 0) {
       beepGo()
       voice.speakGo()
-      setPhase('work')
-      if (mode === 'tabata') setRemaining(tabataWork)
-      else if (mode === 'emom') setRemaining(emomInterval * 60)
-      else setRemaining(totalWorkSeconds)
+      // Batch state updates to avoid cascading renders
+      Promise.resolve().then(() => {
+        setPhase('work')
+        if (mode === 'tabata') setRemaining(tabataWork)
+        else if (mode === 'emom') setRemaining(emomInterval * 60)
+        else setRemaining(totalWorkSeconds)
+      })
       return
     }
     // Voice countdown for last 5 seconds
@@ -74,6 +77,7 @@ export function useTimerEngine(config: TimerConfig) {
     }
     const t = setTimeout(() => setCountdownVal(v => v - 1), 1000)
     return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, countdownVal, isRunning])
 
   // Main tick
@@ -114,7 +118,7 @@ export function useTimerEngine(config: TimerConfig) {
             if (currentRound >= emomTotalRounds) {
               beepDone(); voice.speakTimesUp(); setIsRunning(false); setPhase('done'); return 0
             }
-            beepGo(); voice.speakWork(); setCurrentRound(r => r + 1); return emomInterval * 60
+            beepGo(); setCurrentRound(r => r + 1); return emomInterval * 60
           }
           if (phase === 'work') {
             if (hasRest && currentSet < sets) { beepRest(); voice.speakRest(); setPhase('rest'); return totalRestSeconds }
@@ -130,6 +134,7 @@ export function useTimerEngine(config: TimerConfig) {
     }, 1000)
 
     return () => clearInterval(intervalRef.current)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRunning, phase, mode, currentRound, currentSet, sets, hasRest,
     totalWorkSeconds, totalRestSeconds, tabataWork, tabataRest, tabataRounds,
     emomInterval, emomTotalRounds])

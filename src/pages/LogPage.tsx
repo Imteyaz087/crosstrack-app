@@ -277,6 +277,7 @@ export function LogPage() {
     return (
       <Suspense fallback={<LazyFallback />}>
         {toastEl}{achievementEl}{prToastEl}<CycleLogger
+          key={cycle.todayLog?.date}
           currentPhase={cycle.currentPhase}
           cycleDay={cycle.cycleDay}
           daysUntilPeriod={cycle.daysUntilPeriod}
@@ -421,6 +422,8 @@ export function LogPage() {
         apiResults={meal.apiResults} apiSearching={meal.apiSearching}
         onSelectApiResult={meal.handleSelectApiResult}
         savingMeal={meal.savingMeal}
+        onToggleFavorite={meal.handleToggleFavorite}
+        onCloneYesterday={meal.handleCloneYesterday}
       /></>
     )
   }
