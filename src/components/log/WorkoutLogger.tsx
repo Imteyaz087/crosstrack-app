@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { X, ChevronLeft, Trophy, Plus, Minus, Dumbbell, BookOpen, Flame, Zap, Target, Pencil, Trash2, Award, Camera } from 'lucide-react'
 import type { WodType, RxScaled, Workout } from '../../types'
@@ -314,7 +314,6 @@ export function WorkoutLogger({
   const [showStrengthMovementPicker, setShowStrengthMovementPicker] = useState(false)
   const [strengthMovementSearch, setStrengthMovementSearch] = useState('')
   const [showMovementDetails, setShowMovementDetails] = useState(false)
-  const [showStrengthProgression, setShowStrengthProgression] = useState(Boolean(strengthStartWeight))
   const hasStrength = classFormat === 'full' || classFormat === 'strength_only'
   const hasWod = classFormat === 'full' || classFormat === 'wod_only'
   const hasMovementEntries = movements.length > 0
@@ -323,10 +322,6 @@ export function WorkoutLogger({
   const movementPreview = getMovementPreview(movements)
   const saveSummary = getSaveSummary(classFormat, wodType, wodName, strengthMovement, timeCap, movements)
   const scoreHelper = getScoreHelper(wodType)
-
-  useEffect(() => {
-    setShowStrengthProgression(Boolean(strengthStartWeight))
-  }, [strengthStartWeight, editingWorkoutId])
 
   const handleMovementHeaderAction = () => {
     if (showMovementPicker) {
@@ -626,39 +621,22 @@ export function WorkoutLogger({
             </div>
           )}
 
-          {/* Weight entry  -  simpler default with optional progression */}
+          {/* Weight entry  -  match the strength prescription style */}
           <div className="bg-ct-elevated/30 rounded-xl p-3 space-y-3">
-            <div className="flex items-center justify-between gap-3">
+            <div>
               <div>
                 <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">Weight</p>
                 <p className="text-xs text-ct-2 mt-1">
-                  {showStrengthProgression ? 'Track how the load changed across sets.' : 'Log the main work weight from class.'}
+                  {strengthSchemeType === 'programmed'
+                    ? 'First work set -> final work set.'
+                    : 'Log the heaviest successful set from class.'}
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  if (showStrengthProgression) {
-                    setShowStrengthProgression(false)
-                    onStrengthStartWeightChange('')
-                    return
-                  }
-                  setShowStrengthProgression(true)
-                  if (!strengthStartWeight && strengthEndWeight) onStrengthStartWeightChange(strengthEndWeight)
-                }}
-                className={`px-3 py-2 rounded-xl text-[11px] font-semibold transition-all ${
-                  showStrengthProgression
-                    ? 'bg-purple-500/18 text-purple-300 border border-purple-400/25'
-                    : 'bg-ct-elevated/60 text-ct-2 border border-ct-border/25'
-                }`}
-              >
-                {showStrengthProgression ? 'Progression On' : 'Track Progression'}
-              </button>
             </div>
 
-            {!showStrengthProgression ? (
+            {strengthSchemeType === 'build' ? (
               <div>
-                <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">Work Weight ({weightUnit})</label>
+                <label className="text-[11px] text-ct-2 block mb-1.5 font-medium">Top Weight ({weightUnit})</label>
                 <input
                   type="text"
                   inputMode="numeric"
