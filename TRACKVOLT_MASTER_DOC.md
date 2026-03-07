@@ -631,3 +631,249 @@ Production has sub-folders and many more components:
   - plan Apple Health / Health Connect imports
   - add weight/fat-loss goal projection that protects athletic performance
   - later add an exercise library with search/create/favorites inside the hybrid-athlete workflow
+
+## 2026-03-07 - Unit toggle clarity polish
+- Increased the visibility and tapability of weight-unit controls in the CrossFit logger.
+- `WorkoutLogger.tsx` now uses a larger segmented `kg / lbs` control with more spacing and stronger active contrast.
+- `MovementPRPage.tsx` also got a clearer unit selector so unit choice remains readable across the app.
+
+## 2026-03-07 - Weight unit default/order
+- CrossFit logging now presents `lbs` first in the visible unit toggle, matching the existing default workout-form state.
+- `kg` remains immediately switchable from the same segmented control.
+
+## 2026-03-07 - Benchmark chip toggle behavior
+- CrossFit quick-select benchmark chips now behave as toggles.
+- Selecting a benchmark still auto-fills the WOD.
+- Re-tapping the same benchmark now clears the benchmark autofill so the user no longer has to manually delete the benchmark name/description.
+
+## 2026-03-07 - Strength Rep Scheme Recommendation
+
+Context: reviewed the Full Class strength UI in `src/components/log/WorkoutLogger.tsx` and compared current presets against common CrossFit heavy-day patterns.
+
+Recommendation:
+- Keep core default presets focused on universally recognizable class-strength patterns:
+  - `5 x 5` -> `5-5-5-5-5`
+  - `5 x 3` -> `3-3-3-3-3`
+  - `5 x 2` -> `2-2-2-2-2`
+  - `5 x 1` -> `1-1-1-1-1`
+  - `3 x 8` -> `8-8-8`
+  - `Wave 3/2/1` -> `3-3-3-2-2-1-1`
+- Move `6-6-6-6-6` and `12-12-12-12` out of the primary preset row. They are valid but read more like volume/accessory presets than default class-strength presets.
+- Keep custom text entry for any non-standard programming.
+
+UI/UX recommendation for this page:
+- Show human-readable chips like `5 x 5`, not only raw dashed strings.
+- Auto-sync `Sets` from the selected scheme so the user cannot choose mismatched values.
+- Make the rep scheme row wrap or use a 2-row grid instead of a cramped horizontal rail.
+- Default strength weight logging to one clear `Work Weight` / `Top Set` field, with `Start -> End` as an advanced/progression option.
+- Rename `Every` to `Interval` or `Every 2:00` style wording for clearer scanning.
+
+Reasoning:
+- Official CrossFit heavy-day examples strongly support repeated 5s, 3s, 2s, and singles, while higher-rep work exists but is better treated as secondary volume/accessory work.
+
+## 2026-03-07 - Strength Logging Simplification
+
+Updated `src/components/log/WorkoutLogger.tsx` strength programmed-sets UX to reduce decision load.
+
+Changes:
+- Replaced raw rep-scheme chips with coach-style presets:
+  - `5 x 5`, `5 x 3`, `5 x 2`, `5 x 1`, `3 x 8`, `Wave 3/2/1`
+- Each preset now auto-fills both `strengthRepScheme` and `strengthSets`
+- Manual rep-scheme entry now auto-counts set total from dashed input
+- Renamed `Every` label to `Interval`
+- Added helper copy so users understand that tapping a preset fills the strength prescription
+
+Reason:
+- Strength logging should read like a class prescription, not make users mentally translate dashed strings into set count.
+
+Verification:
+- `npm run build` passes
+
+## 2026-03-07 - Strength Movement Quick Pick
+
+Updated `src/components/log/WorkoutLogger.tsx` strength movement entry to reduce typing.
+
+Changes:
+- Added quick-pick chips for major strength lifts:
+  - Back Squat, Front Squat, Deadlift, Strict Press, Push Press, Push Jerk, Bench Press, Power Clean, Squat Clean, Power Snatch, Squat Snatch, Clean & Jerk
+- Added `All Lifts` expandable picker with search powered by `src/data/movements.json`
+- Strength movement can now be selected from the library or typed manually
+- Re-tapping an active quick-pick or active picker item clears it
+
+Reason:
+- Common strength movements should be one tap away. Users should not need to type repeated class lifts manually.
+
+Verification:
+- `npm run build` passes
+
+## 2026-03-07 - Strength to WOD Section Boundary Polish
+
+Updated `src/components/log/WorkoutLogger.tsx` to improve the transition from Strength to WOD.
+
+Changes:
+- `% of 1RM` is now treated as a strength footer with:
+  - top padding
+  - subtle divider line
+- WOD section now gets extra top margin when it appears below Strength in Full Class mode
+
+Reason:
+- The previous layout visually glued Strength and WOD together, making the page feel dense and harder to scan.
+- Strength now closes cleanly before WOD starts.
+
+Also fixed unrelated project build issue:
+- Removed dead `initializeDB` import and call from `src/App.tsx`
+- `src/db/database.ts` exports `db` only; the old initializer no longer exists
+
+Verification:
+- `npm run build` passes
+
+## 2026-03-07 - Build to Heavy Label Simplification
+
+Updated the Full Class / Strength "Build to Heavy" choices to remove duplicate labels.
+
+Changes:
+- UI options are now only: `1RM`, `3RM`, `5RM`
+- Removed redundant duplicates: `Heavy Single`, `Heavy 3`, `Heavy 5`
+- Default build target is now `1RM`
+- Old saved values are normalized on load:
+  - `Heavy Single` -> `1RM`
+  - `Heavy 3` -> `3RM`
+  - `Heavy 5` -> `5RM`
+
+Reason:
+- The old UI showed two names for the same target, which made the page look noisier and harder to scan.
+
+Verification:
+- `npm run build` passes
+
+## 2026-03-07 - Build Target Labels: Coach Language in UI
+
+Updated strength build-target UX to use coach-language labels in the logger:
+- `Heavy Single`
+- `Heavy Triple`
+- `Heavy 5`
+
+Implementation details:
+- `useWorkoutForm.ts`
+  - default build target reverted to `Heavy Single`
+  - old saved values normalize to current UI labels:
+    - `1RM` or `Heavy Single` -> `Heavy Single`
+    - `3RM`, `Heavy 3`, or `Heavy Triple` -> `Heavy Triple`
+    - `5RM` or `Heavy 5` -> `Heavy 5`
+- `usePRDetection.ts`
+  - still maps build targets to PR metric types `1rm` / `3rm` / `5rm`
+- `WorkoutLogger.tsx`
+  - selector buttons now show only coach-facing labels
+
+Reason:
+- Coach instructions should read like the whiteboard.
+- PR/history/analytics should continue to use standard RM metrics.
+
+Verification:
+- `npm run build` passes
+
+## 2026-03-07 - WOD Movements Above Score
+
+User clarified via screenshot that in the Full Class / WOD area, the `Movements` block should appear above `Score` (`Rounds / + Reps`).
+
+Implemented in `src/components/log/WorkoutLogger.tsx`:
+- extracted the WOD movements editor into a reusable section
+- moved it above the score card in the WOD layout
+- preserved existing movement behavior and controls
+
+Reason:
+- Matches the user's intended mental flow for WOD logging in Full Class mode.
+- Implemented directly from screenshot feedback rather than inferred redesign.
+
+Verification:
+- `npm run build` passes
+
+## 2026-03-07 - CrossFit Logger WOD Polish
+
+Refined the Full Class / WOD area in src/components/log/WorkoutLogger.tsx without changing workflow order.
+
+Changes:
+- Movements now acts as a summary surface, not just a blank editor region.
+  - empty state: tappable add card
+  - filled state: movement count, preview chips, Edit action
+- Added a compact save summary card above the primary save button
+- Added more breathing room in the lower control stack so RX / Scaled / Elite, PR / Benchmark, notes, and save feel less compressed
+
+Product intent:
+- Keep score and save fast.
+- Make movement logging feel optional but useful.
+- Preserve the current CrossFit-first structure while improving readability.
+
+## 2026-03-07 - Movements Empty State Simplification
+
+Refined the WOD Movements empty state in src/components/log/WorkoutLogger.tsx.
+
+Changes:
+- Removed the duplicate large + icon inside the empty state card
+- Kept the right-side Add action as the only primary add control
+- Updated the helper copy to reduce visual duplication and confusion
+
+## 2026-03-07 - Movements Empty State Copy Update
+
+Updated the WOD Movements empty-state helper text in src/components/log/WorkoutLogger.tsx so the wording matches the actual interaction.
+
+Change:
+- Use the Add button... -> Tap here...
+
+## 2026-03-07 - Contextual Movements Header Action
+
+Refined the WOD Movements header control in src/components/log/WorkoutLogger.tsx.
+
+Behavior:
+- no header action when movements are empty and the card itself is the primary CTA
+- Close while the picker is open
+- Add after movements exist so users can append more entries
+
+## 2026-03-07 - Full Class Strength to WOD Boundary Cleanup
+
+Refined the Full Class section boundary in src/components/log/WorkoutLogger.tsx.
+
+Changes:
+- More space between Strength and WOD
+- Subtle divider between the sections in Full Class
+- Calmer section shell colors to reduce visual noise while preserving CrossFit identity
+
+## 2026-03-07 - CrossFit-First WOD Visual Simplification
+
+Refined the Full Class / WOD presentation in src/components/log/WorkoutLogger.tsx.
+
+Changes:
+- Calmer top-right utility buttons in the WOD header
+- Benchmark quick-select row now sits in a quieter shell with lower visual intensity
+- Score card now has a clearer premium hierarchy and a small helper label by WOD type
+- AMRAP score entry now reads as two clearer sub-blocks: Rounds and + Reps
+
+Design intent:
+- Keep CrossFit logging fast and readable.
+- Use color to guide action, not to create noise.
+- Make the logger feel like a premium training console.
+
+## 2026-03-07 - Movements Empty Card CTA Cue
+
+Updated the WOD Movements empty state in src/components/log/WorkoutLogger.tsx.
+
+Change:
+- Added a visible + cue inside the empty card while keeping the card itself as the single primary action
+
+## 2026-03-07 - WOD Empty State + Save Area Refinement
+
+Final polish pass on src/components/log/WorkoutLogger.tsx.
+
+Changes:
+- No WOD movements added yet wording for the empty movements state
+- Calmer premium save summary shell
+- Softer main save button treatment with cleaner hierarchy
+## Brand Surface Decision (2026-03-07)
+
+- Problem: the app's first-view onboarding/loading surfaces were still rendering the older inline `T` bolt icon, even though the desired brand direction is the orange TrackVolt wordmark with bars.
+- Decision: use the existing orange hero wordmark image (`public/og-image.png`) on the first-screen onboarding and loading surfaces.
+- Reason:
+  - matches the desired user-facing screenshot
+  - keeps branding consistent with the social preview treatment
+  - avoids continuing to show the obsolete inline icon on first launch
+- Note: the tiny square icon used by browser/PWA/favicon surfaces is a separate asset class and can be changed independently later if needed.

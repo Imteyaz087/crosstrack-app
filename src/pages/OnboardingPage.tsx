@@ -28,21 +28,18 @@ export function OnboardingPage() {
   const steps = [
     // Step 0: Welcome
     <div key="welcome" className="text-center space-y-8 stagger-children">
-      <div className="w-24 h-24 mx-auto rounded-2xl flex items-center justify-center overflow-hidden" style={{background: '#161B22'}}>
-        <svg viewBox="0 0 512 512" className="w-20 h-20">
-          <defs>
-            <linearGradient id="obg" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#00D4AA"/>
-              <stop offset="50%" stopColor="#4488FF"/>
-              <stop offset="100%" stopColor="#7B61FF"/>
-            </linearGradient>
-          </defs>
-          <path d="M 184.5 120.2 L 320.4 120.2 L 320.4 163.1 L 273.2 163.1 L 273.2 241.7 L 327.5 241.7 L 241.7 406.2 L 270.3 277.5 L 220.3 277.5 L 220.3 163.1 L 184.5 163.1 Z" fill="url(#obg)"/>
-        </svg>
+      <div className="mx-auto w-full max-w-sm rounded-[28px] overflow-hidden border border-orange-500/20 bg-[#161B22] shadow-[0_24px_80px_rgba(249,115,22,0.12)]">
+        <img
+          src="/og-image.png"
+          alt="TrackVolt logo"
+          className="block w-full h-auto"
+          width={1200}
+          height={630}
+          loading="eager"
+        />
       </div>
-      <div className="space-y-3">
-        <h1 className="text-4xl font-black text-ct-1 tracking-tight">TRACKVOLT</h1>
-        <p className="text-ct-2 text-base leading-relaxed max-w-xs mx-auto">{t('onboarding.tagline')}</p>
+      <div className="space-y-3 max-w-sm mx-auto">
+        <p className="text-ct-2 text-base leading-relaxed">{t('onboarding.tagline')}</p>
       </div>
       <div className="flex gap-3 justify-center">
         <button onClick={() => { setLanguage('en'); i18n.changeLanguage('en') }}
