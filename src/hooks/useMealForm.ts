@@ -5,6 +5,8 @@ import { calcGoalTargets, goalLabel } from '../utils/goalTargets'
 import type { FoodItem, MealType, NutritionResult } from '../types'
 import { searchFood, resultToFoodItem } from '../services/nutritionApi'
 
+const hasCjk = (value: string) => /[\u3400-\u9FFF]/.test(value)
+
 export function useMealForm(
   onToast: (msg: string, type: 'success' | 'error') => void,
 ) {
@@ -39,7 +41,8 @@ export function useMealForm(
     if (debounceRef.current) clearTimeout(debounceRef.current)
 
     const query = foodSearch.trim()
-    if (query.length < 3) {
+    const minQueryLength = hasCjk(query) ? 1 : 2
+    if (query.length < minQueryLength) {
       setApiResults([])
       setApiSearching(false)
       return

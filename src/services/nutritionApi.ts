@@ -7,6 +7,7 @@
 
 import { db } from '../db/database'
 import type { NutritionResult, NutritionCache, FoodItem } from '../types'
+import { filterFoodsByQuery } from '../utils/nutritionSearch'
 
 // Cache TTLs
 const SEARCH_CACHE_TTL = 7 * 24 * 60 * 60 * 1000   // 7 days for search results
@@ -95,12 +96,7 @@ async function setCache(cacheKey: string, source: 'usda' | 'off', data: Nutritio
 async function searchLocalLibrary(query: string): Promise<NutritionResult[]> {
   try {
     const foods = await db.foodLibrary.toArray()
-    const q = query.toLowerCase()
-    return foods
-      .filter(f =>
-        f.name.toLowerCase().includes(q) ||
-        (f.nameZh && f.nameZh.includes(query))
-      )
+    return filterFoodsByQuery(foods, query)
       .slice(0, 15)
       .map(foodItemToResult)
   } catch {

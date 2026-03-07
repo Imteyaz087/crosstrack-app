@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Search, X, Clock, ChevronDown, Trash2, ArrowLeft, ScanBarcode, PlusCircle, Loader2, Globe, Star, Copy } from 'lucide-react'
 import type { FoodItem, MealType, MealLog, DailyMacros, NutritionResult } from '../../types'
+import { filterFoodsByQuery } from '../../utils/nutritionSearch'
 
 interface Macros {
   calories: number
@@ -13,6 +14,7 @@ interface Macros {
 interface RecentFood {
   food: FoodItem
   lastGrams: number
+  lastMealType: MealType
   count: number
 }
 
@@ -57,12 +59,6 @@ interface MealLoggerProps {
 const mealTypes: MealType[] = ['breakfast', 'post_workout', 'lunch', 'snack', 'dinner']
 const quickPortions = [50, 100, 150, 200, 250, 300]
 
-const filteredFoods = (foods: FoodItem[], foodSearch: string) =>
-  foods.filter(f =>
-    f.name.toLowerCase().includes(foodSearch.toLowerCase()) ||
-    (f.nameZh && f.nameZh.includes(foodSearch))
-  )
-
 export function MealLogger({
   t,
   mealType,
@@ -104,8 +100,17 @@ export function MealLogger({
   const [quickAddProt, setQuickAddProt] = useState('')
   const [quickAddCarbs, setQuickAddCarbs] = useState('')
   const [quickAddFat, setQuickAddFat] = useState('')
-  const searchFiltered = filteredFoods(foods, foodSearch)
+  const searchFiltered = filterFoodsByQuery(foods, foodSearch)
   const favorites = foods.filter(f => f.isFavorite)
+  const rankedRecentFoods = [...recentFoods].sort((a, b) => {
+    const mealTypeDelta = Number(b.lastMealType === mealType) - Number(a.lastMealType === mealType)
+    if (mealTypeDelta !== 0) return mealTypeDelta
+    if (b.count !== a.count) return b.count - a.count
+    if (Boolean(b.food.isFavorite) !== Boolean(a.food.isFavorite)) {
+      return Number(Boolean(b.food.isFavorite)) - Number(Boolean(a.food.isFavorite))
+    }
+    return a.food.name.localeCompare(b.food.name)
+  })
 
   // Remaining (can go negative if over target)
   const remainingCal = targets.calories - todayMacros.calories
@@ -270,6 +275,9 @@ export function MealLogger({
                 <button key={food.id} onClick={() => onSelectFood(food)}
                   className="w-full text-left px-4 py-3 border-b border-ct-border last:border-0 active:bg-ct-elevated/50 min-h-[44px]">
                   <p className="text-sm font-medium text-ct-1">{food.name}</p>
+                  {food.nameZh && (
+                    <p className="text-[11px] text-ct-2 mt-0.5">{food.nameZh}</p>
+                  )}
                   <p className="text-[11px] text-ct-2 mt-0.5 tabular-nums">
                     {food.caloriesPer100g} cal · P:{food.proteinPer100g}g · C:{food.carbsPer100g}g · F:{food.fatPer100g}g /100g
                   </p>
@@ -454,6 +462,7 @@ export function MealLogger({
               className="w-full text-left px-4 py-3 border-b border-ct-border last:border-0 active:bg-ct-elevated/50 flex items-center justify-between min-h-[44px]">
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-ct-1 truncate">{food.name}</p>
+                <p className="text-[11px] text-ct-2 truncate">{food.nameZh || food.category}</p>
                 <p className="text-[11px] text-ct-2 tabular-nums">{food.defaultServingG}g · {food.caloriesPer100g} cal/100g</p>
               </div>
               <span className="text-xs text-amber-400 font-semibold shrink-0 ml-2">{t('log.add')}</span>
@@ -469,12 +478,13 @@ export function MealLogger({
             <Clock size={12} className="text-ct-2" />
             <p className="text-[11px] uppercase tracking-[0.1em] text-ct-2 font-semibold">{t('log.recentFoods')}</p>
           </div>
-          {recentFoods.slice(0, 6).map(({ food, lastGrams, count }) => (
+          {rankedRecentFoods.slice(0, 6).map(({ food, lastGrams, count, lastMealType }) => (
             <div key={food.id} className="flex items-center border-b border-ct-border last:border-0">
               <button onClick={() => onSelectFood(food, lastGrams)}
                 className="flex-1 text-left px-4 py-3 active:bg-ct-elevated/50 flex items-center justify-between min-h-[44px]">
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-ct-1 truncate">{food.name}</p>
+                  <p className="text-[11px] text-ct-2 truncate">{food.nameZh || t(`meals.${lastMealType}`)}</p>
                   <p className="text-[11px] text-ct-2">{t('log.lastTimeGrams', { grams: lastGrams })}{count > 1 ? ` ${t('log.lastTimeCount', { count })}` : ''}</p>
                 </div>
                 <span className="text-xs text-cyan-400 font-semibold shrink-0 ml-2">{t('log.add')}</span>
@@ -510,6 +520,9 @@ export function MealLogger({
                   <button onClick={() => onSelectFood(food)}
                     className="flex-1 text-left px-4 py-3 active:bg-ct-elevated/50 min-h-[44px]">
                     <p className="text-sm font-medium text-ct-1">{food.name}</p>
+                    {food.nameZh && (
+                      <p className="text-[11px] text-ct-2 mt-0.5">{food.nameZh}</p>
+                    )}
                     <p className="text-[11px] text-ct-2 tabular-nums">{food.caloriesPer100g} cal · P:{food.proteinPer100g}g /100g</p>
                   </button>
                   {onToggleFavorite && (
