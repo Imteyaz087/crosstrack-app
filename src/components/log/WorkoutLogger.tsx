@@ -730,7 +730,7 @@ export function WorkoutLogger({
 
       {/* ====== WOD SECTION ====== */}
       {hasWod && (
-        <div className={`bg-gradient-to-b from-cyan-500/5 to-ct-surface/40 rounded-ct-lg p-4 border border-cyan-400/15 space-y-4 ${hasStrength ? 'mt-5 pt-5 border-t border-cyan-400/20' : ''}`}>
+        <div className={`bg-gradient-to-b from-cyan-500/5 to-ct-surface/40 rounded-ct-lg p-4 border border-cyan-400/15 space-y-4 ${hasStrength ? 'mt-7' : ''}`}>
           <div className="flex items-center justify-between">
             <SectionHeader icon={Flame} label="WOD" color="cyan" />
             <div className="flex items-center gap-2 rounded-xl border border-ct-border/20 bg-ct-elevated/25 px-1.5 py-1">
