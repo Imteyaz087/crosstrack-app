@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { X, ChevronLeft, Trophy, Plus, Minus, Dumbbell, BookOpen, Flame, Zap, Target, Pencil, Trash2, Award, Camera } from 'lucide-react'
+import { X, ChevronLeft, Trophy, Plus, Minus, Dumbbell, BookOpen, Flame, Zap, Target, Pencil, Trash2, Award, Camera, RotateCcw } from 'lucide-react'
 import type { WodType, RxScaled, Workout } from '../../types'
 import { MovementPicker } from './MovementPicker'
 import { BenchmarkWodPicker, BenchmarkSuggestions } from './BenchmarkWodPicker'
@@ -150,7 +150,7 @@ function getScoreHelper(wodType: WodType): string {
 
 function getMovementPreview(movements: MovementEntry[]): string {
   if (movements.length === 0) return 'No movement details added'
-  const preview = movements.slice(0, 3).map(m => m.name).join(' · ')
+  const preview = movements.slice(0, 3).map(m => m.name).join(' / ')
   return movements.length > 3 ? `${preview} +${movements.length - 3} more` : preview
 }
 
@@ -169,7 +169,7 @@ function getSaveSummary(
   const parts = [mainLabel]
   if (classFormat !== 'strength_only' && timeCap) parts.push(`${timeCap} min cap`)
   if (movements.length > 0) parts.push(`${movements.length} movement${movements.length === 1 ? '' : 's'}`)
-  return parts.join(' · ')
+  return parts.join(' / ')
 }
 
 /** Previous results inline card */
@@ -375,7 +375,7 @@ export function WorkoutLogger({
           </button>
         </div>
 
-        {/* ── Hero: Full Class ── */}
+        {/* â”€â”€ Hero: Full Class â”€â”€ */}
         <button onClick={() => { onClassFormatChange('full'); onWorkoutStepChange(2) }}
           className="w-full relative overflow-hidden bg-gradient-to-br from-cyan-500/15 via-ct-surface to-ct-surface border border-cyan-400/30 rounded-2xl p-5 text-left active:scale-[0.97] transition-all duration-200 shadow-lg shadow-cyan-500/5 group">
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-cyan-400/8 to-transparent rounded-bl-full" />
@@ -393,7 +393,7 @@ export function WorkoutLogger({
           </div>
         </button>
 
-        {/* ── Grid: WOD Only + Strength Only ── */}
+        {/* â”€â”€ Grid: WOD Only + Strength Only â”€â”€ */}
         <div className="grid grid-cols-2 gap-3">
           <button onClick={() => { onClassFormatChange('wod_only'); onWorkoutStepChange(2) }}
             className="relative overflow-hidden bg-gradient-to-br from-green-500/12 to-ct-surface border border-green-400/25 rounded-2xl p-4 flex flex-col items-center justify-center aspect-[4/3] active:scale-[0.93] transition-all duration-200 shadow-lg shadow-green-500/5 group">
@@ -413,7 +413,7 @@ export function WorkoutLogger({
           </button>
         </div>
 
-        {/* ── Events  -  Open, Hero WODs, Girls Benchmarks ── */}
+        {/* â”€â”€ Events  -  Open, Hero WODs, Girls Benchmarks â”€â”€ */}
         {onSwitchToEvents && (
           <button onClick={onSwitchToEvents}
             className="w-full relative overflow-hidden bg-gradient-to-r from-violet-500/12 via-indigo-500/8 to-cyan-500/8 border border-violet-400/25 rounded-2xl p-4 text-left active:scale-[0.97] transition-all duration-200 shadow-lg shadow-violet-500/5 group">
@@ -435,25 +435,34 @@ export function WorkoutLogger({
         {/* Recent workouts  -  tappable to edit */}
         {workouts.length > 0 && (
           <div className="bg-ct-surface rounded-ct-lg border border-ct-border overflow-hidden">
-            <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold px-4 pt-3 pb-2">{t('workout.recentWorkouts')}</p>
+            <div className="px-4 pt-3 pb-2">
+              <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">{t('workout.recentWorkouts')}</p>
+              <p className="mt-1 text-[11px] text-ct-2">Reuse a class structure fast, or open it to edit.</p>
+            </div>
             {workouts.slice(0, 4).map(w => (
               <button key={w.id} onClick={() => onLoadWorkoutForEdit(w)}
-                className="w-full px-4 py-2.5 border-b border-ct-border last:border-0 text-left active:bg-ct-elevated/50 transition-colors">
-                <div className="flex justify-between items-center">
-                  <p className="text-sm text-ct-1 font-medium">{w.name}</p>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-ct-2">{w.date}</span>
+                className="w-full px-4 py-3 border-b border-ct-border last:border-0 text-left active:bg-ct-elevated/50 transition-colors">
+                <div className="flex justify-between items-start gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm text-ct-1 font-medium truncate">{w.name}</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-[11px] text-ct-2">{w.workoutType}</span>
+                      <span className="text-[11px] text-ct-2 tabular-nums">{w.scoreDisplay || ' - '}</span>
+                      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+                        w.rxOrScaled === 'RX' ? 'bg-green-500/20 text-green-400' :
+                        w.rxOrScaled === 'Elite' ? 'bg-purple-500/20 text-purple-400' :
+                        'bg-orange-500/20 text-orange-400'
+                      }`}>{w.rxOrScaled}</span>
+                    </div>
+                    <p className="mt-1 text-[11px] text-ct-2">{w.date}</p>
+                  </div>
+                  <div className="shrink-0 flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 rounded-lg border border-cyan-400/18 bg-cyan-500/10 px-2.5 py-1.5 text-[11px] font-semibold text-cyan-300">
+                      <RotateCcw size={12} />
+                      Reuse
+                    </span>
                     <Pencil size={12} className="text-ct-2" />
                   </div>
-                </div>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-[11px] text-ct-2">{w.workoutType}</span>
-                  <span className="text-[11px] text-ct-2 tabular-nums">{w.scoreDisplay || ' - '}</span>
-                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
-                    w.rxOrScaled === 'RX' ? 'bg-green-500/20 text-green-400' :
-                    w.rxOrScaled === 'Elite' ? 'bg-purple-500/20 text-purple-400' :
-                    'bg-orange-500/20 text-orange-400'
-                  }`}>{w.rxOrScaled}</span>
                 </div>
               </button>
             ))}
