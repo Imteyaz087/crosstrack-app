@@ -128,6 +128,50 @@ function countRepSchemeSets(value: string): string {
   return reps.length > 0 ? String(reps.length) : ''
 }
 
+function formatWodTypeLabel(wodType: WodType): string {
+  return wodType === 'ForTime' ? 'For Time' : wodType
+}
+
+function getScoreHelper(wodType: WodType): string {
+  switch (wodType) {
+    case 'AMRAP':
+      return 'Rounds plus extra reps'
+    case 'ForTime':
+    case 'Chipper':
+      return 'Finish time'
+    case 'EMOM':
+      return 'Completed rounds'
+    case 'Tabata':
+      return 'Lowest reps'
+    default:
+      return 'Workout result'
+  }
+}
+
+function getMovementPreview(movements: MovementEntry[]): string {
+  if (movements.length === 0) return 'No movement details added'
+  const preview = movements.slice(0, 3).map(m => m.name).join(' · ')
+  return movements.length > 3 ? `${preview} +${movements.length - 3} more` : preview
+}
+
+function getSaveSummary(
+  classFormat: 'full' | 'wod_only' | 'strength_only',
+  wodType: WodType,
+  wodName: string,
+  strengthMovement: string,
+  timeCap: string,
+  movements: MovementEntry[],
+): string {
+  const mainLabel = classFormat === 'strength_only'
+    ? (strengthMovement || 'Strength session')
+    : (wodName.trim() || formatWodTypeLabel(wodType))
+
+  const parts = [mainLabel]
+  if (classFormat !== 'strength_only' && timeCap) parts.push(`${timeCap} min cap`)
+  if (movements.length > 0) parts.push(`${movements.length} movement${movements.length === 1 ? '' : 's'}`)
+  return parts.join(' · ')
+}
+
 /** Previous results inline card */
 function PrevResultsCard({ results, label }: { results: Workout[]; label?: string }) {
   const { t } = useTranslation()
@@ -273,6 +317,9 @@ export function WorkoutLogger({
   const hasWod = classFormat === 'full' || classFormat === 'wod_only'
   const hasMovementEntries = movements.length > 0
   const movementHeaderActionLabel = showMovementPicker ? 'Close' : 'Add'
+  const movementPreview = getMovementPreview(movements)
+  const saveSummary = getSaveSummary(classFormat, wodType, wodName, strengthMovement, timeCap, movements)
+  const scoreHelper = getScoreHelper(wodType)
 
   const handleMovementHeaderAction = () => {
     if (showMovementPicker) {
@@ -616,7 +663,7 @@ export function WorkoutLogger({
               {onScanWod && (
                 <button
                   onClick={onScanWod}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold bg-violet-500/10 text-violet-400 border border-violet-400/25 card-press"
+                  className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-[11px] font-bold bg-violet-500/[0.08] text-violet-300 border border-violet-400/20 card-press"
                 >
                   <Camera size={12} />
                   {t('workout.scan')}
@@ -625,7 +672,7 @@ export function WorkoutLogger({
               {/* Benchmark WOD Library Button */}
               <button
                 onClick={() => onShowBenchmarkPickerChange(!showBenchmarkPicker)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-400/25 card-press"
+                className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-[11px] font-bold bg-cyan-500/[0.08] text-cyan-300 border border-cyan-400/20 card-press"
               >
                 <BookOpen size={12} />
                 {t('workout.all')}
@@ -634,8 +681,10 @@ export function WorkoutLogger({
           </div>
 
           {/* Quick Select  -  popular benchmarks */}
-          <div className="overflow-x-auto -mx-1 px-1 scrollbar-hide">
-            <div className="inline-flex gap-1.5 rounded-xl bg-ct-elevated/20 p-1 pb-1.5" style={{ minWidth: 'max-content' }}>
+          <div className="space-y-2">
+            <p className="text-[10px] uppercase tracking-[0.22em] text-ct-2 font-semibold">Popular benchmarks</p>
+            <div className="overflow-x-auto -mx-1 px-1 scrollbar-hide">
+            <div className="inline-flex gap-1.5 rounded-2xl border border-cyan-500/10 bg-cyan-500/[0.03] p-1.5" style={{ minWidth: 'max-content' }}>
               {QUICK_SELECT_IDS.map(id => {
                 const wod = allBenchmarks.find(w => w.id === id)
                 if (!wod) return null
@@ -643,9 +692,9 @@ export function WorkoutLogger({
                 return (
                   <button key={id}
                     onClick={() => onSelectBenchmarkWod(wod)}
-                    className={`px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all min-h-[34px] ${
+                    className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap transition-all min-h-[34px] ${
                       isActive
-                        ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/30 shadow-sm'
+                        ? 'bg-cyan-500/18 text-cyan-300 border border-cyan-400/25 shadow-sm'
                         : 'bg-ct-elevated/50 text-ct-2 border border-transparent active:scale-95'
                     }`}
                   >
@@ -654,6 +703,7 @@ export function WorkoutLogger({
                 )
               })}
             </div>
+          </div>
           </div>
 
           {/* Benchmark WOD Picker */}
@@ -729,6 +779,18 @@ export function WorkoutLogger({
               )}
             </div>
 
+            {hasMovementEntries && !showMovementPicker && (
+              <div className="mb-2 rounded-xl border border-cyan-500/10 bg-cyan-500/[0.04] px-3 py-2.5">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-semibold text-ct-1">{movements.length} movement{movements.length === 1 ? '' : 's'} added</p>
+                    <p className="text-[11px] text-ct-2 truncate">{movementPreview}</p>
+                  </div>
+                  <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-300">Ready</span>
+                </div>
+              </div>
+            )}
+
             {movements.map((m, idx) => (
               <div key={idx} className="bg-ct-elevated/30 rounded-xl p-3 mb-2 space-y-2 border border-ct-border/20">
                 <div className="flex justify-between items-center">
@@ -785,13 +847,7 @@ export function WorkoutLogger({
           <div className="bg-ct-elevated/30 rounded-xl p-3">
             <div className="flex items-center justify-between gap-3 mb-3">
               <p className="text-[11px] uppercase tracking-widest text-ct-2 font-semibold">{t('workout.score')}</p>
-              <p className="text-[11px] text-ct-2">
-                {wodType === 'AMRAP' ? 'Rounds plus extra reps'
-                  : wodType === 'ForTime' || wodType === 'Chipper' ? 'Finish time'
-                  : wodType === 'EMOM' ? 'Completed rounds'
-                  : wodType === 'Tabata' ? 'Lowest reps'
-                  : 'Workout result'}
-              </p>
+              <p className="text-[11px] text-ct-2">{scoreHelper}</p>
             </div>
 
             {/* AMRAP: Rounds + Reps */}
@@ -876,6 +932,7 @@ export function WorkoutLogger({
       )}
 
       {/* Scaled / RX / Elite  -  pill toggle style */}
+      <div className="pt-1">
       <div className="flex bg-ct-surface rounded-xl p-1">
         {(['Scaled', 'RX', 'Elite'] as RxScaled[]).map(rx => (
           <button key={rx} onClick={() => onRxScaledChange(rx)}
@@ -888,9 +945,10 @@ export function WorkoutLogger({
             }`}>{rx}</button>
         ))}
       </div>
+      </div>
 
       {/* PR + Benchmark  -  icon buttons */}
-      <div className="flex gap-3">
+      <div className="flex gap-3 pt-1">
         <button onClick={() => onPrFlagChange(!prFlag)}
           className={`flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold transition-all ${
             prFlag ? 'bg-red-500/15 text-red-400 border border-red-400/30 shadow-sm' : 'bg-ct-surface text-ct-2 border border-ct-border'
@@ -908,8 +966,13 @@ export function WorkoutLogger({
 
       {/* Save + Delete buttons */}
       <div className="sticky-save space-y-2">
+        <div className="rounded-2xl border border-cyan-500/10 bg-gradient-to-r from-cyan-500/[0.06] to-transparent px-4 py-3">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-cyan-300 font-semibold">Ready to save</p>
+          <p className="text-sm font-semibold text-ct-1 mt-1">{saveSummary}</p>
+          <p className="text-[11px] text-ct-2 mt-1">Review score, tags, and notes, then save this workout.</p>
+        </div>
         <button onClick={onSaveWorkout}
-          className="w-full bg-gradient-to-r from-cyan-500 to-cyan-400 text-slate-900 font-bold py-4 rounded-xl btn-press text-base shadow-lg shadow-cyan-500/25">
+          className="w-full bg-cyan-400 text-slate-950 font-bold py-4 rounded-xl btn-press text-base shadow-lg shadow-cyan-500/20 border border-cyan-300/30">
           {editingWorkoutId ? t('workout.updateWorkout') : t('workout.saveWorkout')}
         </button>
         {editingWorkoutId && (
