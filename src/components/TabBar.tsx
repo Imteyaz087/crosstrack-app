@@ -53,13 +53,13 @@ export function TabBar() {
             className={`flex flex-col items-center gap-0.5 transition-all duration-150 relative ${
               isCta ? 'relative -mt-3' : 'px-3 py-2 min-h-[44px] min-w-[44px]'
             } ${
-              isActive && !isCta ? 'text-cyan-400' : !isCta ? 'text-ct-2 active:text-ct-2' : ''
+              isActive && !isCta ? 'text-ct-brand' : !isCta ? 'text-ct-2 active:text-ct-2' : ''
             }`}
           >
             {/* Active indicator  -  pill highlight behind icon */}
             {isActive && !isCta && (
               <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0">
-                <div className="w-1.5 h-1.5 rounded-full bg-v21 animate-tab-dot" />
+                <div className="w-1.5 h-1.5 rounded-full bg-ct-brand animate-tab-dot" />
               </div>
             )}
 
@@ -77,8 +77,8 @@ export function TabBar() {
               </div>
             )}
             <span className={`text-[11px] transition-all duration-150 ${
-              isActive && !isCta ? 'font-semibold text-cyan-400' :
-              isCta ? (isActive ? 'font-semibold text-cyan-400' : 'font-medium text-ct-2') :
+              isActive && !isCta ? 'font-semibold text-ct-brand' :
+              isCta ? (isActive ? 'font-semibold text-ct-brand' : 'font-medium text-ct-2') :
               'font-medium'
             }`}>
               {t(key)}

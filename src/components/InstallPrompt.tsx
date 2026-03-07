@@ -44,13 +44,15 @@ export function InstallPrompt({ blocked = false }: InstallPromptProps) {
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[90] p-3 animate-fade-in" style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 12px)' }}>
-      <div className="max-w-lg mx-auto bg-cyan-500/15 border border-cyan-500/30 rounded-xl p-3 flex items-center gap-3">
-        <Download size={20} className="text-cyan-400 shrink-0" />
+      <div className="max-w-lg mx-auto bg-ct-surface-high/95 border border-ct-brand/35 rounded-xl p-3 flex items-center gap-3 shadow-v21 backdrop-blur-sm">
+        <div className="w-10 h-10 rounded-xl bg-ct-brand/15 border border-ct-brand/25 flex items-center justify-center shrink-0">
+          <Download size={18} className="text-ct-brand" />
+        </div>
         <div className="flex-1 min-w-0">
           <p className="text-xs font-semibold text-ct-1">Install TRACKVOLT</p>
-          <p className="text-[11px] text-ct-2">Add to home screen for the best experience</p>
+          <p className="text-[11px] text-ct-2">Install the app for a faster, more reliable training flow.</p>
         </div>
-        <button onClick={handleInstall} className="px-3 py-1.5 bg-cyan-500 text-black text-xs font-bold rounded-lg shrink-0">
+        <button onClick={handleInstall} className="px-3 py-1.5 bg-ct-brand text-slate-950 text-xs font-bold rounded-lg shrink-0 shadow-v21 btn-press">
           Install
         </button>
         <button onClick={handleDismiss} className="p-1 shrink-0" aria-label="Dismiss">

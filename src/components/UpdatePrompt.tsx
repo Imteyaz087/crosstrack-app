@@ -65,9 +65,9 @@ export function UpdatePrompt({ onVisibilityChange }: UpdatePromptProps) {
         className="fixed top-0 left-0 right-0 z-[95] p-3 animate-fade-in"
         style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 12px)' }}
       >
-        <div className="max-w-lg mx-auto bg-amber-500/15 border border-amber-500/30 rounded-xl p-3 flex items-center gap-3 shadow-lg backdrop-blur-sm">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center shrink-0">
-            <RefreshCw size={18} className="text-amber-300" />
+        <div className="max-w-lg mx-auto bg-ct-surface-high/95 border border-ct-brand/35 rounded-xl p-3 flex items-center gap-3 shadow-v21 backdrop-blur-sm">
+          <div className="w-10 h-10 rounded-xl bg-ct-brand/15 border border-ct-brand/25 flex items-center justify-center shrink-0">
+            <RefreshCw size={18} className="text-ct-brand" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-ct-1">New TRACKVOLT update ready</p>
@@ -75,7 +75,7 @@ export function UpdatePrompt({ onVisibilityChange }: UpdatePromptProps) {
           </div>
           <button
             onClick={() => void updateServiceWorker(true)}
-            className="px-3 py-1.5 bg-amber-400 text-slate-950 text-xs font-bold rounded-lg shrink-0"
+            className="px-3 py-1.5 bg-ct-brand text-slate-950 text-xs font-bold rounded-lg shrink-0 shadow-v21 btn-press"
           >
             Update
           </button>
@@ -97,7 +97,7 @@ export function UpdatePrompt({ onVisibilityChange }: UpdatePromptProps) {
         className="fixed top-0 left-0 right-0 z-[95] p-3 animate-fade-in"
         style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 12px)' }}
       >
-        <div className="max-w-lg mx-auto bg-green-500/15 border border-green-500/30 rounded-xl p-3 flex items-center gap-3 shadow-lg backdrop-blur-sm">
+        <div className="max-w-lg mx-auto bg-ct-surface-high/95 border border-green-500/30 rounded-xl p-3 flex items-center gap-3 shadow-lg backdrop-blur-sm">
           <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center shrink-0">
             <RefreshCw size={18} className="text-green-300" />
           </div>

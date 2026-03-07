@@ -87,7 +87,7 @@ function App() {
 
   return (
     <div className="h-screen-safe bg-ct-bg text-white flex flex-col overflow-hidden">
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-[999] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-cyan-500 focus:text-slate-900 focus:rounded-lg focus:text-sm focus:font-bold">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-[999] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-ct-brand focus:text-slate-950 focus:rounded-lg focus:text-sm focus:font-bold shadow-v21">
         Skip to content
       </a>
       <main ref={mainRef} id="main-content" className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain" role="tabpanel" aria-label={activeTab}>
